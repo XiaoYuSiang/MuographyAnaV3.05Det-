@@ -40,7 +40,7 @@ void MainControl(
   
   int OPT = runOPTDetect(runOPT);
   
-  
+  /* @AdjustOpMode */
   bool testMode        = false;//pwidth ana. test mode
   bool normalizeMode   = true;
   bool NegHiRatChMode  = false;
@@ -48,6 +48,7 @@ void MainControl(
   bool rootFileMode    = true;  
   bool SETightMode     = false;
   bool PointTextMode   = true;
+  
   bool OperMode[7]={
     testMode,         normalizeMode,    NegHiRatChMode,
     lowstatisticMode, rootFileMode,     SETightMode,
