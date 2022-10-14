@@ -40,7 +40,14 @@ Q: How to use?
         Ex3. case for name_Raw = "*":
             Will analyze the file: Name.txt & Name1.txt % N.txt
         @@@
-07.Change the operation mode for you want: testMode : default: false; //use small sample number in some pwidth ana. program. normalizeMode : default: true ; //normalize the difference by the statistic in pwidth ana. program. NegHiRatChMode : default: true ; //Could not use now! lowstatisticMode: default: false; //when the data come from large theta, use MuEelID to analyze the pwidth. rootFileMode : default: true ; //re save the data of pwidth ana. want to use. SETightMode : default: true ; //select event tightly for MuEelID in pwidth ana. PointTextMode : default: true ; //draw the data point of HK VS Rate to be text(save time).
+07.Change the operation mode for you want: 
+    07(0).testMode        : default: false; //use small sample number in some pwidth ana. program.
+    07(0).normalizeMode   : default: true ; //normalize the difference by the statistic in pwidth ana. program.
+    07(0).NegHiRatChMode  : default: true ; //Could not use now!
+    07(0).lowstatisticMode: default: false; //when the data come from large theta, use MuEelID to analyze the pwidth.
+    07(0).rootFileMode    : default: true ; //re save the data of pwidth ana. want to use. 
+    07(0).SETightMode     : default: true ; //select event tightly for MuEelID in pwidth ana. 
+    07(0).PointTextMode   : default: true ; //draw the data point of HK VS Rate to be text(save time).
 
 08.Set if you want to skip some block of program: bool SkipBlock : default: true ; //true : Skip the programs in the range for: if(SkipBlock==false){} //false: enable all of the programs except the "DSLAna.h" bool ReDSLAna : default: true ; //rerun the DSLAna.h to save DSLData.h if change something in "AnaVariable.h"
 
