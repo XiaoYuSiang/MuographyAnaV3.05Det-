@@ -12,7 +12,7 @@ Q: How to use?
     example: change the trigger for anylize, color palette, default fitting function parameter
              detector/ scintillator size and numbers, runs time range.
 
-02. Now, You can change the information in the "MainControl.C". Find the flag @AdjustPath
+02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.
 
 03. Changing the path of floder which "input files" and want to do analysis for: 
     03(0). Ori_path_Mac: raw(original) macros dir path example: "./Macro/"
@@ -40,21 +40,26 @@ Q: How to use?
         Ex3. case for name_Raw = "*":
             Will analyze the file: Name.txt & Name1.txt % N.txt
         @@@
-07.Change the operation mode for you want: 
-    07(0).testMode        : default: false; //use small sample number in some pwidth ana. program.
-    07(0).normalizeMode   : default: true ; //normalize the difference by the statistic in pwidth ana. program.
-    07(0).NegHiRatChMode  : default: true ; //Could not use now!
-    07(0).lowstatisticMode: default: false; //when the data come from large theta, use MuEelID to analyze the pwidth.
-    07(0).rootFileMode    : default: true ; //re save the data of pwidth ana. want to use. 
-    07(0).SETightMode     : default: true ; //select event tightly for MuEelID in pwidth ana. 
-    07(0).PointTextMode   : default: true ; //draw the data point of HK VS Rate to be text(save time).
+07.Change the operation mode for you want, and search marker @AdjustOpMode to adjust.
+    07(0).testMode        : default: false; //Test code by using small sample number in some pwidth ana. program.
+    07(1).normalizeMode   : default: true ; //Normalize the difference by the statistic in pwidth ana. program.
+    07(2).NegHiRatChMode  : default: true ; //Could not use now!
+    07(3).lowstatisticMode: default: false; //when the data come from large theta, use MuEelID to analyze the pwidth.
+    07(4).rootFileMode    : default: true ; //re save the data of pwidth ana. want to use. 
+    07(5).SETightMode     : default: true ; //select event tightly for MuEelID in pwidth ana. 
+    07(6).PointTextMode   : default: true ; //draw the data point of HK VS Rate to be text(save time).
 
-08.Set if you want to skip some block of program: bool SkipBlock : default: true ; //true : Skip the programs in the range for: if(SkipBlock==false){} //false: enable all of the programs except the "DSLAna.h" bool ReDSLAna : default: true ; //rerun the DSLAna.h to save DSLData.h if change something in "AnaVariable.h"
+08.Set if you want to skip some block of program: 
+    08(0).bool SkipBlock  : default: true ; 
+        true : Skip the programs in the range for: if(SkipBlock==false){} 
+        false: Enable all of the programs except the "DSLAna.h"
+    08(1).bool ReDSLAna   : default: true ; 
+        rerun the DSLAna.h to save DSLData.h when you change anything in "AnaVariable.h" or change the select data.
 
 09.Select the program want to be used: Put the program block to the outer of range for: if(SkipBlock==false){}
 
-10.Go to the path you save the result, to check the graph.
+10.Go to the path you save the result, and check the result.
 
-11.If the program or the graph has something wrong, or the graph has something that needs to improve. Please connect with Yu Siang Xiao.
+11.If the program or the graph has something wrong, or the graph for result has something that needs to improve. Please connect with Yu Siang Xiao.
 
 Thank you for your use.
