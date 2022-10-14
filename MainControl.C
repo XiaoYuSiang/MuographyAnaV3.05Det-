@@ -277,6 +277,13 @@ void MainControl(
 }
 
 
+
+
+
+
+
+
+/* @AdjustPath */
 void MainControl()
 {
   //path of original Macros, it is the Macro path your download from GitHub  
@@ -298,7 +305,7 @@ void MainControl()
   char *path_OpR = "/data4/YuSiang/DaXi/Ana/";
     
   //path of result and operation data
-  char *path_Mac = "./Macro1/";
+  char *path_Mac = "./MacroTmp/";
   //path of operation Macros, it is the Macro path your put in the case dir
   
   /* Data name want to search!! */
