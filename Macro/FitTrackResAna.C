@@ -11,7 +11,7 @@
 #include "GobelFunctions.h"
 #include "path_dir.h"
 #include "DSLData.h"
-#include "/home/yusiang/personalLib/Style/DBMTStyle.h"
+#include "/data4/YuSiang/personalLib/Style/DBMTStyle.h"
 
 using namespace MuographAnaVariable;
 using namespace MuographGobelFuns;

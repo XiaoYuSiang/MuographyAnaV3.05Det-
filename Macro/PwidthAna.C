@@ -21,8 +21,8 @@
 #include <TChain.h>
 #include <TObject.h>
 #include <TStopwatch.h>
-#include "/home/yusiang/personalLib/Style/DBMTStyle.h"
-#include "/home/yusiang/personalLib/RootFile/untuplizerv8_YuSiang.h"
+#include "/data4/YuSiang/personalLib/Style/DBMTStyle.h"
+#include "/data4/YuSiang/personalLib/RootFile/untuplizerv8_YuSiang.h"
 #include "AnaVariable.h"
 #include "GobelFunctions.h"
 #include "path_dir.h"
@@ -46,6 +46,7 @@ void PwidthAna() {
 
 void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
   defstyle();
+  
   bool testMode        =true;  testMode         = OperMode[0];
   bool normalizeMode   =true;  normalizeMode    = OperMode[1];
   bool NegHiRatChMode  =true;  NegHiRatChMode   = OperMode[2];
@@ -54,23 +55,23 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
   bool SETightMode     =true;  SETightMode      = OperMode[5];
   vector<string> vRootFiles = RawRootList(DirOperate);
   // for(int i=0;i<100;i++) cout<<vRootFiles[i]<<endl;
-  
+  cout<<58<<endl;
   vector<Long64_t> VNUTRS, VNUTRF;//Vector of Neglect Unixtime Range Start to Final
-  GetNegHourRange(VNUTRS,VNUTRF, DirOperate);
+  GetNegHourRange(VNUTRS,VNUTRF, DirOperate);cout<<60<<endl;
   string Tmp_SGTR = UTNotInNegHourRange(VNUTRS,VNUTRF);//Tmp_StrGoodTimeRange
-  char SGTR[Tmp_SGTR.length()+1];
+  char SGTR[Tmp_SGTR.length()+1]; cout<<62<<endl;
   for(int i=0;i<int(Tmp_SGTR.length()+1);i++) SGTR[i]=Tmp_SGTR[i];
-    
+  cout<<64<<endl;
   int binrt = 0;
   int Starttime = unixtimei, Endtime = unixtimef;
   char TestMarker[15]={};
-
+  cout<<68<<endl;
   if (testMode){
     sprintf(TestMarker,"TST_");
     // NumBD = 1;
     // NumCh = 1;
   }
-  
+  cout<<74<<endl;
   if(SETightMode==false&&testMode) sprintf(TestMarker,"TST_Loose_");
   else if(SETightMode==false) sprintf(TestMarker,"Loose_");
   
@@ -86,7 +87,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
   cout<<"opening....."<<SelectRfile->GetName()<<endl;
   
   
-  
+  cout<<90<<endl;
 
   char DirResultGPw[150]={""}, DirResultGRt[150]={""}, DirResultBDD[170]={""};
   //save path graph of Pwidth Rate
@@ -97,7 +98,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
   if (system(Form("mkdir -p %s",DirResultGRt))!=0) system(Form("mkdir -p %s",DirResultGRt));
   sprintf(DirResultBDD,"%sBoardDetail/",DirResultGPw);  
   if (system(Form("mkdir -p %s",DirResultBDD))!=0) system(Form("mkdir -p %s",DirResultBDD));
-  
+  cout<<101<<endl;
   TStopwatch optime;
   optime.Start();
   binrt = (Endtime-Starttime)*1.0/th2fbinwidth;
@@ -113,7 +114,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
     t->Add(infilename[i]);
     ////cout<<infilename[i]<<endl;
   }
-  
+  cout<<117<<endl;
   
   
   gStyle->SetLineScalePS(0.3);
@@ -159,19 +160,14 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
     
     //cpwch->Update();
     char devoteCondition[40]={};
-    if(NegHiRatChMode){
-      sprintf(devoteCondition,"channel!=15||board!=3");
-      t->Draw(Form("(channel+(board-1)*16):pwidth>>hchPw"),Form("%s",devoteCondition),"colz");
-    }
+
     for(int i=0;i<2;i++){
       ofstream outPwData(PWDDataName[i]);
       
       if(normalizeMode){
         for(int ibd=0;ibd<NumBD;ibd++){
           for(int ich=0;ich<NumCh;ich++){
-            if(NegHiRatChMode){
-              if(BD[ibd]==3&&ich==15) continue;
-            }
+
             int Tmp_CHGID = (BD[ibd]-1)*16+ich;
             // cout<<"Doing the normalization: ChGID: " <<Tmp_CHGID<<endl;
             double ChIntegralNum  = hchPwDS[i]->Integral(-1,-1,Tmp_CHGID+1,Tmp_CHGID+1);
@@ -478,7 +474,6 @@ void PwidthAnaV2P(const bool*OperMode, const int itcntgap=28) {
   defstyle();
   bool testMode        =true;  testMode         = OperMode[0];
   bool normalizeMode   =true;  normalizeMode    = OperMode[1];
-  bool NegHiRatChMode  =true;  NegHiRatChMode   = OperMode[2];
   bool lowstatisticMode=false; lowstatisticMode = OperMode[3];
   bool rootFileMode    =true;  rootFileMode     = OperMode[4];
   bool SETightMode     =true; 

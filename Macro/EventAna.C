@@ -13,8 +13,8 @@
 #include <TText.h>
 #include <TStyle.h>
 #include <TPaveStats.h>
-#include "/home/yusiang/personalLib/Style/DBMTStyle.h"
-#include "/home/yusiang/personalLib/RootFile/untuplizerv8_YuSiang.h"
+#include "/data4/YuSiang/personalLib/Style/DBMTStyle.h"
+#include "/data4/YuSiang/personalLib/RootFile/untuplizerv8_YuSiang.h"
 #include "AnaVariable.h"
 #include "GobelFunctions.h"
 #include "path_dir.h"
@@ -32,25 +32,24 @@ using namespace DataConst;
 void EventAna(const int indexi=28, const int indexf=29, const int unixtimeini = unixtimei, const int unixtimefin = unixtimef, const char * runName="-NA-" ) {//140
   defstyle();
   double eventGap[50]={};
-  
+
   vector<string> vRootFiles = RawRootList(DirOperate);
   // for(int i=0;i<100;i++) cout<<vRootFiles[i]<<endl;
   TreeReader data(vRootFiles);
-
   vector<Long64_t> VNegUTRangeStart, VNegUTRangeFinal;
+
   GetNegHourRange(VNegUTRangeStart, VNegUTRangeFinal, DirOperate);
-  
   // for(int i=0;i<int(VNegUTRangeStart.size());i++) cout<<VNegUTRangeStart[i]<<"  "<<VNegUTRangeFinal[i]<<"\n";
   // throw;
   
   ofstream out(Form("%sEvNumForGap.dat",DirOperate), ofstream::out | ofstream::app );
   ofstream out1(Form("%sEvDisplay.dat",DirOperate));
   ofstream outEvP(Form("%sEvProblem.dat",DirOperate));
-  
+
   Int_t Index =0;
   //Data Variable
   for(int i0=indexi;i0<indexf;i0++){
-    
+
     eventGap[i0] = eventGapTcnt[i0];
     cout<<"EVG:\t"<<eventGap[i0]<<endl;
     char rtfN[200]; sprintf(rtfN,"%sGapT%d_%s_nHTH%dL%d.root",DirOperate,eventGapTcnt[i0],TimeStr,TriggerS,TriggerL);

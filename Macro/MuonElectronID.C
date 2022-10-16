@@ -14,8 +14,8 @@
 #include <TStyle.h>
 #include <TPaveStats.h>
 #include <THStack.h>
-#include "/home/yusiang/personalLib/Style/DBMTStyle.h"
-#include "/home/yusiang/personalLib/RootFile/untuplizerv8_YuSiang.h"
+#include "/data4/YuSiang/personalLib/Style/DBMTStyle.h"
+#include "/data4/YuSiang/personalLib/RootFile/untuplizerv8_YuSiang.h"
 #include "AnaVariable.h"
 #include "GobelFunctions.h"
 #include "path_dir.h"
@@ -676,6 +676,6 @@ void GTCaseNumAna(const char* DirOperate,const char* DirResult){
 }
 
 void MuoEleIDAna( const bool*OperMode, const int indexi=28, const int indexf=29){
-  IDCaseNumAna( OperMode, indexi, indexf);
   MuonElectronID( OperMode, indexi, indexf);
+  IDCaseNumAna( OperMode, indexi, indexf);
 }

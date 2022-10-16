@@ -1,6 +1,25 @@
 #include <typeinfo>
 #include <algorithm>
 #include <TStyle.h>
+#include <TF1.h>
+#include <TH1F.h>
+#include <TH2F.h>
+#include <TGraph.h>
+#include <TRandom.h>
+#include <TCanvas.h>
+#include <TLegend.h>
+#include <TLegendEntry.h>
+#include <TText.h>
+#include <TPDF.h>
+#include "TH2.h"
+#include "TProfile.h"
+#include <TProfile2D.h>
+#include <TStyle.h>
+#include <TPaveStats.h>
+#include <TGaxis.h>
+#include <TChain.h>
+#include <TObject.h>
+#include <TStopwatch.h>
 using namespace MuographAnaVariable;
 namespace MuographGobelFuns{
   int BDcheck(const int b){
@@ -331,7 +350,7 @@ namespace MuographGobelFuns{
       cout<<"Error! GobelFunction.h::GetNegHourRange() VUTS.size()!=VUTF.size()"<<endl;
       throw;
     }
-    SortNegHourRange(VUTS,VUTF);
+    if (VUTS.size()!=0)  SortNegHourRange(VUTS,VUTF);
     /* 
     for(int iRange = 0 ; iRange<int (VUTS.size()) ; iRange++){
       cout<<VUTS[iRange]<<"\t"<<VUTF[iRange]<<endl;
@@ -351,11 +370,14 @@ namespace MuographGobelFuns{
   string UTNotInNegHourRange(const vector<Long64_t> VUTS, const vector<Long64_t> VUTF){
     string str;
     str="(";
-    if(int(VUTS.size())==0) str+="1)";
-    for(int iRange = 0 ; iRange<int (VUTS.size())-1 ; iRange++){
-      str+=Form("(unixtime<%d||unixtime>%d)&&",VUTS[iRange],VUTF[iRange]);
+    if(int(VUTS.size())==0) str+="1)"; 
+    else{
+      for(int iRange = 0 ; iRange<int (VUTS.size())-1 ; iRange++){ 
+        str+=Form("(unixtime<%d||unixtime>%d)&&",VUTS[iRange],VUTF[iRange]);
+      }
+      str+=Form("(unixtime<%d||unixtime>%d))",VUTS[VUTS.size()-1],VUTF[VUTF.size()-1]);
     }
-    str+=Form("(unixtime<%d||unixtime>%d))",VUTS[VUTS.size()-1],VUTF[VUTF.size()-1]);
+    
     return str;
   }
   
