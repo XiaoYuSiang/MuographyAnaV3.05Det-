@@ -399,14 +399,177 @@ void ODectImfAna(char Opt='q') {
 }
 
 
-
-
-
-
-
-
+void RunODectImfAna(int runNumber) {
+  
+  char Path_ODetIMFData[180];
+  sprintf(Path_ODetIMFData,"%s",DirIMFdat);
+  char Path_rotfile[100];
+  sprintf(Path_rotfile,"%sSciPosDatV02_00",Path_ODetIMFData);
+  TFile *rotfile = new TFile(Form("%s.root",Path_rotfile),"RECREATE");
+  ofstream outfiletxt(Form("%s.txt",Path_rotfile));
+  ofstream outfilecsv(Form("%s.csv",Path_rotfile));
   
   
   
+}
+
+
+
+
+
+int FindAllTillFile(
+  const char *dataPath_RTill, const char *dataPath_RODet,
+  const char *version       , int &iRunStart, int &iRunFinal)
+{
+  const int TriggerOfRunINum = 50;
+  iRunStart = 0;
+  char tmpfile[250];
+  while(true){
+    sprintf(tmpfile,"%sSetup_Till_Run%d.root",dataPath_RTill,iRunStart);
+    cout<<"Checking: "<<tmpfile<<endl;
+    Long64_t SizeOfFile = FileSize(tmpfile,'q');
+    if(SizeOfFile>5120) break;
+    iRunStart++;
+    if(iRunStart>TriggerOfRunINum){
+      cout<<"Error: iRunStart of run data files is too large!!!"<<endl;
+      cout<<"Identify this case to be \"No Run data files\"."<<endl;
+      cout<<"Stop the program, if case is really > TriggerOfRunINum,"<<endl;
+      cout<<"  please adjust the ODectImfAna.C::FindAllTillFile()::TriggerOfRunINum = ?."<<endl;
+      throw;
+    }
+  }
+  iRunFinal = iRunStart+1;
+  while(true){
+    sprintf(tmpfile,"%sSetup_Till_Run%d.root",dataPath_RTill,iRunFinal);
+    cout<<"Checking: "<<tmpfile<<endl;
+    Long64_t SizeOfFile = FileSize(tmpfile,'q');
+    if(SizeOfFile<5120) break;
+    iRunFinal++;
+  }
+  
+  while(true){
+    sprintf(tmpfile,"%sODetCh%s_Till_Run%d.root",DirIMFdat,version,iRunStart);
+    cout<<"Checking: "<<tmpfile<<endl;
+    Long64_t SizeOfFile = FileSize(tmpfile,'q');
+    if(SizeOfFile<5120) break;
+    iRunStart++;
+  }
+  
+  return iRunFinal - iRunStart;
+}
+  
+
+void TillRunODInf(){
+  
+  char version[8] = {};
+  DetVerCheck(version,detVer);
+  cout<<"Now, detector Ver is:  "<<version<<endl;
+  
+  int iRunStart = 0, iRunFinal = 0;
+  FindAllTillFile(DirRunTillfile, DirIMFdat, version, iRunStart, iRunFinal);
+  char infileName[150];
   
   
+  for(int iR = iRunStart ; iR < iRunFinal ; iR++){
+    
+
+    char Path_file_O[100];
+    sprintf(Path_file_O,"%sSciPosDat%s.root",DirIMFdat,version);
+    cout<<"Opening the file:  "<<Path_file_O<<endl;
+    TFile *Scin_fileO = TFile::Open(Form("%s",Path_file_O));
+    scintillator Scintstmp;
+    TTree *tPos = (TTree*) Scin_fileO ->Get("tPos");
+    
+    tPos->SetBranchAddress("GeneralID"   ,&Scintstmp.GeneralID);
+    tPos->SetBranchAddress("name"        ,&Scintstmp.name     );
+    tPos->SetBranchAddress("boardID"     ,&Scintstmp.boardID  );
+    tPos->SetBranchAddress("channelID"   ,&Scintstmp.channelID);
+    tPos->SetBranchAddress("iX"          ,&Scintstmp.iX       );
+    tPos->SetBranchAddress("iY"          ,&Scintstmp.iY       );
+    tPos->SetBranchAddress("iZ"          ,&Scintstmp.iZ       );
+    tPos->SetBranchAddress("BiX"         ,&Scintstmp.BiX      );
+    tPos->SetBranchAddress("BiY"         ,&Scintstmp.BiY      );
+    tPos->SetBranchAddress("BiZ"         ,&Scintstmp.BiZ      );
+    tPos->SetBranchAddress("pX"          ,&Scintstmp.pX       );
+    tPos->SetBranchAddress("pY"          ,&Scintstmp.pY       );
+    tPos->SetBranchAddress("pZ"          ,&Scintstmp.pZ       );
+    tPos->SetBranchAddress("face"        ,&Scintstmp.face     );
+    tPos->SetBranchAddress("PwWei"       ,&Scintstmp.PwWei    );
+    
+    
+      
+    
+    char Path_file_R[100];
+    sprintf(Path_file_R,"%sSetup_Till_Run%d.root",DirRunTillfile,iR);
+    cout<<"Opening the file:  "<<Path_file_R<<endl;
+    TFile *Scin_fileR = TFile::Open(Form("%s",Path_file_R));
+    TTree *tRun = (TTree*) Scin_fileR ->Get("tRun");
+    RunData      runDatatmp;
+    scintillator RunScints;
+    
+    tRun->SetBranchAddress("RunName"     ,&runDatatmp.RunName  );
+    tRun->SetBranchAddress("RID"         ,&runDatatmp.RunID    );
+    tRun->SetBranchAddress("DPhi"        ,&runDatatmp.DPhi     );
+    tRun->SetBranchAddress("DTheta"      ,&runDatatmp.DTheta   );
+    // tRun->Branch("Sta"         ,&runDatatmp.StartDay , "StaDay/I"     );
+    // tRun->Branch("End"         ,&runDatatmp.EndDay   , "EndDay/I"     );
+    // tRun->Branch("StaYear"     ,&runDatatmp.StaY     , "StaDay/I"     );
+    // tRun->Branch("EndYear"     ,&runDatatmp.EndY     , "EndDay/I"     );
+    // tRun->Branch("StaMon"      ,&runDatatmp.StaM     , "StaDay/I"     );
+    // tRun->Branch("EndMon"      ,&runDatatmp.EndM     , "EndDay/I"     );
+    // tRun->Branch("StaDay"      ,&runDatatmp.StaD     , "StaDay/I"     );
+    // tRun->Branch("EndDay"      ,&runDatatmp.EndD     , "EndDay/I"     );
+    // tRun->Branch("StartUT"     ,&runDatatmp.StartUT  , "StartUT/L"    );
+    // tRun->Branch("EndUT"       ,&runDatatmp.EndUT    , "EndUT/L"      );
+    tRun->SetBranchAddress("GeneralID"   ,&RunScints.GeneralID  );
+    tRun->SetBranchAddress("boardID"     ,&RunScints.boardID    );
+    tRun->SetBranchAddress("channelID"   ,&RunScints.channelID  );
+    tRun->SetBranchAddress("ChNames"     ,&RunScints.name       );
+    tRun->SetBranchAddress("Threshold"   ,&RunScints.Threshold  );
+    tRun->SetBranchAddress("Voltage"     ,&RunScints.Voltage    );
+    
+    sprintf(infileName,"%sODetCh%s_Till_Run%d.root",DirIMFdat,version,iR);
+    cout<<"Recreate the file:  "<<infileName<<endl;
+    TFile *rotfile = new TFile(Form("%s",infileName),"RECREATE");
+    TTree *tRPos = new TTree("tRPos","Scintillator data with Run Information");
+    
+    RunData      runData;
+    scintillator Scints;
+    
+    tRPos->Branch("RunName"     ,&runDatatmp.RunName  , "RunName[7]/C" );
+    tRPos->Branch("RunID"       ,&runDatatmp.RunID    , "RunID/I"      );
+    tRPos->Branch("DPhi"        ,&runDatatmp.DPhi     , "DPhi/F"       );
+    tRPos->Branch("DTheta"      ,&runDatatmp.DTheta   , "DTheta/F"     );
+    tRPos->Branch("GeneralID"   ,&Scintstmp.GeneralID , "GeneralID/I"  );
+    tRPos->Branch("boardID"     ,&Scintstmp.boardID   , "boardID/I"    );
+    tRPos->Branch("channelID"   ,&Scintstmp.channelID , "channelID/I"  );
+    tRPos->Branch("ChNames"     ,&RunScints.name      , "ChNames[15]/C");
+    tRPos->Branch("BiX"         ,&Scintstmp.BiX       , "BiX/I"        );
+    tRPos->Branch("BiY"         ,&Scintstmp.BiY       , "BiY/I"        );
+    tRPos->Branch("BiZ"         ,&Scintstmp.BiZ       , "BiZ/I"        );
+    tRPos->Branch("iX"          ,&Scintstmp.iX        , "iX/I"         );
+    tRPos->Branch("iY"          ,&Scintstmp.iY        , "iY/I"         );
+    tRPos->Branch("iZ"          ,&Scintstmp.iZ        , "iZ/I"         );
+    tRPos->Branch("pX"          ,&Scintstmp.pX        , "pX/F"         );
+    tRPos->Branch("pY"          ,&Scintstmp.pY        , "pY/F"         );
+    tRPos->Branch("pZ"          ,&Scintstmp.pZ        , "pZ/F"         );
+    tRPos->Branch("face"        ,&Scintstmp.face      , "face/O"       );
+    tRPos->Branch("Threshold"   ,&RunScints.Threshold , "Threshold/F"  );
+    tRPos->Branch("Voltage"     ,&RunScints.Voltage   , "Voltage/F"    );
+    tRPos->Branch("PwWei"       ,&Scintstmp.PwWei     , "PwWei/F"      );
+    
+    for(int i = 0; i<tPos->GetEntries(); i++){
+      tPos->GetEntry(i);
+      tRun->GetEntry(i);
+      tRPos->Fill();
+      
+    }
+    rotfile->Write();
+    
+    Scin_fileO->Close();
+    Scin_fileR->Close();
+    rotfile->Close();
+  }
+  
+  
+}

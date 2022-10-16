@@ -18,8 +18,9 @@ namespace MuographGobelForm{//@@ADD read.h at IMF
     float pX,  pY,  pZ;
     float sX,  sY,  sZ;
     bool  face;//true = face outside, false = face inside
+    float Threshold;
+    float Voltage;
     float PwWei;//true = face outside, false = face inside
-    float Voltage, Trigger;//@@
     
     scintillator(const char names[]="default", double GID=0,double BID=0,double CID=0){
       SetName(names);
@@ -228,7 +229,46 @@ namespace MuographGobelForm{//@@ADD read.h at IMF
   };
 
 
+  class RunData{
+  public:
+    char     RunName[7];
+    int      RunID;
+    int      StartDay, StaY, StaM, StaD;
+    int      EndDay  , EndY, EndM, EndD;
+    float    DPhi;
+    float    DTheta;
+    int      StartUT;
+    int      EndUT;
+    
+    RunData(){
+      SetIni();
+    }
 
+    ~RunData(){};
+    
+    void SetIni(){
+      RunName[0] = '-';
+      StartDay = -1;
+      EndDay   = -1;
+      StartUT = -1;
+      EndUT   = -1;
+      DPhi    =  0;
+      DTheta  =  0; 
+    }
+    
+    void sortRunInf(){
+      sscanf(RunName,"%*3s%d",&RunID);
+      sscanf(Form("%d",StartDay),"%4d%2d%2d",&StaY,&StaM,&StaD);
+      sscanf(Form("%d",EndDay  ),"%4d%2d%2d",&EndY,&EndM,&EndD);
+      StartUT = YMDHmSZtoUT(StaY,StaM,StaD);
+      EndUT   = YMDHmSZtoUT(EndY,EndM,EndD);
+    }
+    
+    
+  private:
+
+    
+  };
 
 
 };

@@ -71,8 +71,6 @@ void MainControl(
   
   bool SkipBlocks = true;
   
-  if(!SkipBlocks){}
-  
   if(BlockEnv){
     /* P.01 */
     /* Copy the AnaVariable.h and the macros into path_Mac and locate tmpdir*/
@@ -92,7 +90,7 @@ void MainControl(
   if(ReRunRunMode){
     /* P.03 *///-Able-
     gROOT->LoadMacro(Form("%sRunDataSortAna.C+",path_Mac));
-    RunDataSortAna();
+    //RunDataSortAna();
   }
   
   if(BlockODetImf){
@@ -100,150 +98,155 @@ void MainControl(
     /* Locate the data of detector */
     gROOT->LoadMacro(Form("%sODectImfAna.C+",path_Mac));
     //void ODectImfAna()
-    ODectImfAna();
+    //ODectImfAna();
+    TillRunODInf();
   }
-  
-  /* File search engine */
-  gROOT->LoadMacro(Form("%sDataNameAna.C+",path_Mac));
-  
-  if(BlockFindOriFile){
-    /* P.05 */
-    /* Find Raw .txt data Names and path */
-    int txtfnum = DataNameAnaTxt_Mu();
-    //int DataNameAnaTxt_Mu(const char OPT='P') 
-    cout<<"Find Raw .txt data Number:  "<<txtfnum<<endl;
     
-    /* P.06 */
-    /* Find HK .txt data Names and path */
-    // int Hktxtfnum = DataNameAnaTxt_Hk();
-    //int DataNameAnaTxt_Mu(const char OPT='P') 
-    // cout<<"Find Hk .txt data Number:  "<<Hktxtfnum<<endl;
-  }
-  
-  if(BlockConvertor){
-    /* P.07 *///-New-
-    /* Convert File from raw .txt to be raw .root */
-    gROOT->LoadMacro(Form("%sCaConvertor.C+",path_Mac));
-    MuoCaConvertor();
-  }
-  
-  if(BlockFindRFile){
-    /* P.08 */
-    /* Find Raw .root data Names and path */
-    int rotfnum = DataNameAnaRoot_Mu('');
-    //int DataNameAnaRoot_Mu(const char OPT='P') 
-    cout<<"Find Raw .root data Number:  "<<rotfnum<<endl;
-  }
-  
-  if(BlockDSLAna){
-    /* P.09 *///-Able-
-    /*Analize the Data for time start to end and save to head file*/
-    gROOT->LoadMacro(Form("%sDSLAnaV2.C+",path_Mac));
-    DSLAnaV2();
-  }
-  
-  if(BlockDayEff){
-    /* P.10 *///-New-
-    /* Data Collection Efficiency on every day */
-    gROOT->LoadMacro(Form("%sDayEAnaV3.C+",path_Mac));
-    DayEAnaV4();
-  }
-
-  if(BlockEventGaps){
-    /* P.11 *///-New-
-    /*Convert Raw_Mu.root to be Gap*.root by tcnt cut*/
-    gROOT->LoadMacro(Form("%sEventAna.C+",path_Mac));
-    //int Num_RawEVE = EventAna(33,34);
-    //void EventAna(const int indexi=28, const int indexf=29, const int unixtimeini = unixtimei, const int unixtimefin = unixtimef, const char * runName="-NA-" ) {//140
-    EventAna(33,34);
-    EventGapAna();
-  }
-  
-  if(BlockEzMuEID){
-    /* P.12 *///-New-
-    /*Simpling ID of Mu and Ele to be Events*.root */
-    gROOT->LoadMacro(Form("%sMuonElectronID.C+",path_Mac));
-    MuoEleIDAna(OperMode, 33,34);//300
-    //MuoEleIDAna(c.bool*OperMode, c.int indexi=28, c.int indexf=29)
-  }
-  
-  if(BlockVTrack){
-    /* P.13 */
-    /* Verticle Straight line Event Ana to be Track*.root */
-    gROOT->LoadMacro(Form("%sVerticalTracksAna.C+",path_Mac));
-    VerticalTracksAnaV2(OperMode,33,34);
-    //VerticalTracksAna(c.int indexi=28, c.int indexf=29 )
-  }
-  
-  if(BlockVTrackEff){
-    /* P.14 */
-    /* Find real events in straight line Tracking Ana. */
-    gROOT->LoadMacro(Form("%sSTRealEvAna.C+",path_Mac));
-    STRealEvAna(33);
-  }
-
-  if(BlockEzPWAna){
-    /* P.15 *///-New-
-    /* Pwidth analyze for function fitting and trigger ana. */
-    gROOT->LoadMacro(Form("%sPwidthAna.C+",path_Mac));
-    PwidthAnaV2(OperMode,33);
-    //PWidthPeakAna(c.bool*OperMode)
-  }
-
-  if(!SkipBlockStop){
-    /* P.16 */
-    /* Pwidth analyze for function fitting and trigger ana. */
-    //gROOT->LoadMacro(Form("%sPWidthPeakAna.C+",path_Mac));
-    //PWidthPeakAna(OperMode);
-    //PWidthPeakAna(const bool*OperMode)
-  }
-
-  if(BlockFitTrick){
-    /* P.17 *///-New--@@
-    /* Straight line Tracking of Event to be ETracks*.txt */
-    gROOT->LoadMacro(Form("%sTrackAna.C+",path_Mac));
-    TrackAna(33,34);
-    //void  FitTrackResAna(c.int indexi=28, c.int indexf=29 )
-  }
-  
-  if(BlockFitTrickRes){
-    /* P.18 *///-New--
-    /* Straight line Tracking Result display*.txt */
-    gROOT->LoadMacro(Form("%sFitTrackResAna.C+",path_Mac));
-    FitTrackResAna(33);
-    //void  FitTrackResAna(const int indexGap=28)
-  }
-  
-  if(BlockFitPWAna){
-    /* P.19 *///-New-
-    /* Pwidth analyze for function fitting and trigger ana. */
-    gROOT->LoadMacro(Form("%sPwidthAna.C+",path_Mac));
-    PwidthAnaV2P(OperMode,33);
-  }
-  
-  if(BlockFinalSelect){
-    /* P.20 */
-    /* ana. of Select Event numbers per day and pwidth distribution */
-    gROOT->LoadMacro(Form("%sSEAnaV2.C+",path_Mac));
-    SEAnaV2(33);
-  }
-
-  if(BlockRateVTime){
-    /* P.21 *///-New-
-    /* Rate ana for separate board and chID (easy to observe all) */
-    gROOT->LoadMacro(Form("%sR4VTAna.C+",path_Mac));
-    R4VTAna();
+  if(!SkipBlocks){
     
-    /* P.22 */
-    /* Rate ana for general chID (easy to observe all) */
-    gROOT->LoadMacro(Form("%sRVTAna.C+",path_Mac));
-    RVTAna();
+    /* File search engine */
+    gROOT->LoadMacro(Form("%sDataNameAna.C+",path_Mac));
     
-    /* P.23 */
-    /* Rate Vs Time cp of channel or board for different display way */
-    //gROOT->LoadMacro(Form("%sRVTCAna.C+",path_Mac));
-    //RVTCAna();
+    if(BlockFindOriFile){
+      /* P.05 */
+      /* Find Raw .txt data Names and path */
+      int txtfnum = DataNameAnaTxt_Mu();
+      //int DataNameAnaTxt_Mu(const char OPT='P') 
+      cout<<"Find Raw .txt data Number:  "<<txtfnum<<endl;
+      
+      /* P.06 */
+      /* Find HK .txt data Names and path */
+      // int Hktxtfnum = DataNameAnaTxt_Hk();
+      //int DataNameAnaTxt_Mu(const char OPT='P') 
+      // cout<<"Find Hk .txt data Number:  "<<Hktxtfnum<<endl;
+    }
+    
+    if(BlockConvertor){
+      /* P.07 *///-New-
+      /* Convert File from raw .txt to be raw .root */
+      gROOT->LoadMacro(Form("%sCaConvertor.C+",path_Mac));
+      MuoCaConvertor();
+    }
+    
+    if(BlockFindRFile){
+      /* P.08 */
+      /* Find Raw .root data Names and path */
+      int rotfnum = DataNameAnaRoot_Mu('');
+      //int DataNameAnaRoot_Mu(const char OPT='P') 
+      cout<<"Find Raw .root data Number:  "<<rotfnum<<endl;
+    }
+    
+    if(BlockDSLAna){
+      /* P.09 *///-Able-
+      /*Analize the Data for time start to end and save to head file*/
+      gROOT->LoadMacro(Form("%sDSLAnaV2.C+",path_Mac));
+      DSLAnaV2();
+    }
+    
+    if(BlockDayEff){
+      /* P.10 *///-New-
+      /* Data Collection Efficiency on every day */
+      gROOT->LoadMacro(Form("%sDayEAnaV3.C+",path_Mac));
+      DayEAnaV4();
+    }
+
+    if(BlockEventGaps){
+      /* P.11 *///-New-
+      /*Convert Raw_Mu.root to be Gap*.root by tcnt cut*/
+      gROOT->LoadMacro(Form("%sEventAna.C+",path_Mac));
+      //int Num_RawEVE = EventAna(33,34);
+      //void EventAna(const int indexi=28, const int indexf=29, const int unixtimeini = unixtimei, const int unixtimefin = unixtimef, const char * runName="-NA-" ) {//140
+      EventAna(33,34);
+      EventGapAna();
+    }
+    
+    if(BlockEzMuEID){
+      /* P.12 *///-New-
+      /*Simpling ID of Mu and Ele to be Events*.root */
+      gROOT->LoadMacro(Form("%sMuonElectronID.C+",path_Mac));
+      MuoEleIDAna(OperMode, 33,34);//300
+      //MuoEleIDAna(c.bool*OperMode, c.int indexi=28, c.int indexf=29)
+    }
+    
+    if(BlockVTrack){
+      /* P.13 */
+      /* Verticle Straight line Event Ana to be Track*.root */
+      gROOT->LoadMacro(Form("%sVerticalTracksAna.C+",path_Mac));
+      VerticalTracksAnaV2(OperMode,33,34);
+      //VerticalTracksAna(c.int indexi=28, c.int indexf=29 )
+    }
+    
+    if(BlockVTrackEff){
+      /* P.14 */
+      /* Find real events in straight line Tracking Ana. */
+      gROOT->LoadMacro(Form("%sSTRealEvAna.C+",path_Mac));
+      STRealEvAna(33);
+    }
+
+    if(BlockEzPWAna){
+      /* P.15 *///-New-
+      /* Pwidth analyze for function fitting and trigger ana. */
+      gROOT->LoadMacro(Form("%sPwidthAna.C+",path_Mac));
+      PwidthAnaV2(OperMode,33);
+      //PWidthPeakAna(c.bool*OperMode)
+    }
+
+    if(!SkipBlockStop){
+      /* P.16 */
+      /* Pwidth analyze for function fitting and trigger ana. */
+      //gROOT->LoadMacro(Form("%sPWidthPeakAna.C+",path_Mac));
+      //PWidthPeakAna(OperMode);
+      //PWidthPeakAna(const bool*OperMode)
+    }
+
+    if(BlockFitTrick){
+      /* P.17 *///-New--@@
+      /* Straight line Tracking of Event to be ETracks*.txt */
+      gROOT->LoadMacro(Form("%sTrackAna.C+",path_Mac));
+      TrackAna(33,34);
+      //void  FitTrackResAna(c.int indexi=28, c.int indexf=29 )
+    }
+    
+    if(BlockFitTrickRes){
+      /* P.18 *///-New--
+      /* Straight line Tracking Result display*.txt */
+      gROOT->LoadMacro(Form("%sFitTrackResAna.C+",path_Mac));
+      FitTrackResAna(33);
+      //void  FitTrackResAna(const int indexGap=28)
+    }
+    
+    if(BlockFitPWAna){
+      /* P.19 *///-New-
+      /* Pwidth analyze for function fitting and trigger ana. */
+      gROOT->LoadMacro(Form("%sPwidthAna.C+",path_Mac));
+      PwidthAnaV2P(OperMode,33);
+    }
+    
+    if(BlockFinalSelect){
+      /* P.20 */
+      /* ana. of Select Event numbers per day and pwidth distribution */
+      gROOT->LoadMacro(Form("%sSEAnaV2.C+",path_Mac));
+      SEAnaV2(33);
+    }
+
+    if(BlockRateVTime){
+      /* P.21 *///-New-
+      /* Rate ana for separate board and chID (easy to observe all) */
+      gROOT->LoadMacro(Form("%sR4VTAna.C+",path_Mac));
+      R4VTAna();
+      
+      /* P.22 */
+      /* Rate ana for general chID (easy to observe all) */
+      gROOT->LoadMacro(Form("%sRVTAna.C+",path_Mac));
+      RVTAna();
+      
+      /* P.23 */
+      /* Rate Vs Time cp of channel or board for different display way */
+      //gROOT->LoadMacro(Form("%sRVTCAna.C+",path_Mac));
+      //RVTCAna();
+    }
   }
+  
   
   if(!SkipBlockStop){
     /* P.24 */
