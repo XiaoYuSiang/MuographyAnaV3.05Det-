@@ -16,14 +16,14 @@ Q: How to use?
 ### 02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.
 
 ### 03. Changing the path of floder which "input files" and want to do analysis for: 
-    03(1). Ori_path_Mac: raw(original) macros dir path example: "./Macro/"
-    03(2). path_Raw: raw datas (XXX_Mu.txt) example: "/data4/YuSiang/ExampleSpace/"
-    03(3). path_Hk : raw house keeping datas (XXX_Hk.txt) example: "/data4/YuSiang/ExampleSpace/HKData/" 
+    03(0). Ori_path_Mac: raw(original) macros dir path example: "./Macro/"
+    03(1). path_Raw: raw datas (XXX_Mu.txt) example: "/data4/YuSiang/ExampleSpace/"
+    03(2). path_Hk : raw house keeping datas (XXX_Hk.txt) example: "/data4/YuSiang/ExampleSpace/HKData/" 
 
 ### 04. The path you want to save the root file of raw data (XXX_Mu.root), it can share with another runs data: 
-    * path_Rot: example: "/data4/YuSiang/ExampleSpace/rootfile/"
-    * The path you want to save the operation data and the results: 
-    * path_OpR: example: "/data4/YuSiang/ExampleSpace/Ana/"
+    04(0). path_Rot: example: "/data4/YuSiang/ExampleSpace/rootfile/"
+    04(1). The path you want to save the operation data and the results: 
+    04(2). path_OpR: example: "/data4/YuSiang/ExampleSpace/Ana/"
 
 ### 05. The path of the folder which put the analysis "program files" for this analysis:
     path_Mac: default: "./MacroTmp/"
