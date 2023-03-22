@@ -13,7 +13,7 @@ Q: How to use? <br><br>
     change the trigger for anylize, color palette, default fitting function parameter
       example: detector & scintillator size and numbers, runs time range.
 
-### 02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.
+### 02. Now, You can change the information in the "MainControl.C". Find the marker **@AdjustPath by** searching in the file.
 
 ### 03. Changing the path of floder which "input files" and want to do analysis for: <br>
     * Ori_path_Mac: raw(original) macros dir path example: "./Macro/"<br>
