@@ -11,7 +11,7 @@ Q: How to use? <br><br>
 
 01. Revise the analysis variable in the "AnaVariable.h". <br>
     * example: change the trigger for anylize, color palette, default fitting function parameter<br>
-      * detector/ scintillator size and numbers, runs time range.<br><br> 
+      * detector & scintillator size and numbers, runs time range.<br><br> 
 
 02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.<br><br> 
 
