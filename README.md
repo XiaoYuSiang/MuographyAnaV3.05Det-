@@ -1,6 +1,6 @@
 # !!!A new Update content(ver20230323)!!!:
   **Revise the issue regarding the inconvenient use of the 'BDINV[]' array in 'AnaVariable.h' by replacing its function with 'int BDCheck(int b)' from 'GobelFunctions.h'.**
-  * You can download the /Macros and cover the original /Macros on your computer. Then, you could neglect the array BDINV[].
+  * You can download the /Macros and cover the original /Macros on your computer. **Then, you could neglect the array BDINV[].**
 # Introduction of MuographyAnaV3.05Det-
 Public Muography Analysis Code for Detector V2.0, V3.00, V3.05.
 
