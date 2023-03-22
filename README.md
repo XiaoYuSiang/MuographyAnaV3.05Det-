@@ -1,4 +1,4 @@
-## A new Update content:
+# A new Update content:
     * Revise the issue regarding the inconvenient use of the 'BDINV[]' array in 'AnaVariable.h' by replacing its function with 'int BDCheck(int b)' from 'GobelFunctions.h'.
 # Introduction of MuographyAnaV3.05Det-
 Public Muography Analysis Code for Detector V2.0, V3.00, V3.05.
