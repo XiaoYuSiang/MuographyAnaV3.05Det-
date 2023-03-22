@@ -22,7 +22,6 @@ Q: How to use? <br><br>
 
 04. The path you want to save the root file of raw data (XXX_Mu.root), it can share with another runs data: <br>
     * path_Rot: example: "/data4/YuSiang/ExampleSpace/rootfile/"<br>
- 
     * The path you want to save the operation data and the results: <br>
     * path_OpR: example: "/data4/YuSiang/ExampleSpace/Ana/"<br>
 <br>
