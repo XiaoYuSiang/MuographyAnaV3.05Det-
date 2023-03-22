@@ -33,6 +33,7 @@ using namespace std;
 using namespace TMath;
 using namespace MuoAna_path_dir;
 using namespace MuographAnaVariable;
+using namespace MuographGobelFuns;
 
 
 
@@ -97,7 +98,7 @@ void PWidthPeakAna(const bool*OperMode){
     ifstream in(PWDDataName[ic]);
     for(int i0=0,ich=0,ibd=0;i0<NumCht*NumBDt;i0++){
       in>>ibd>>ich;
-      ibd = BDINV[ibd];
+      ibd = BDCheck(ibd);
       for(int ibin=0;ibin<binpw;ibin++){
         double pwtmp=0;
         in>>pwtmp;
@@ -113,10 +114,10 @@ void PWidthPeakAna(const bool*OperMode){
     double x=0,y=0,eyl=0,eyh=0;
     inEff>>ibd>>x>>y>>eyl>>eyh;
     ich = x/1;
-    EffTmp[0][BDINV[ibd]][ich] = y;
-    EffTmp[1][BDINV[ibd]][ich] = eyl;
-    EffTmp[2][BDINV[ibd]][ich] = eyh;
-    cout<<ibd<<"\t"<<ich<<"\t"<<EffTmp[0][BDINV[ibd]][ich]<<"\t"<<EffTmp[1][BDINV[ibd]][ich]<<"\t"<< EffTmp[2][BDINV[ibd]][ich]<<"\n";
+    EffTmp[0][BDCheck(ibd)][ich] = y;
+    EffTmp[1][BDCheck(ibd)][ich] = eyl;
+    EffTmp[2][BDCheck(ibd)][ich] = eyh;
+    cout<<ibd<<"\t"<<ich<<"\t"<<EffTmp[0][BDCheck(ibd)][ich]<<"\t"<<EffTmp[1][BDCheck(ibd)][ich]<<"\t"<< EffTmp[2][BDCheck(ibd)][ich]<<"\n";
   }
   
   

@@ -73,7 +73,6 @@ void SeqSkipAna() {
   }
 
     
-  // cout<<"BDINV[1,3,5,4]="<< BDINV[1]<<"  "<< BDINV[3]<<"  "<< BDINV[5]<<"  "<< BDINV[4]<<"\n";
   for (Long64_t ev = 0; ev < evs ; ++ev) {
 
     data.GetEntry(ev);
@@ -94,7 +93,7 @@ void SeqSkipAna() {
       if(tmp_skipNum != 1  && seqNow[board[iH]][channel[iH]]!=0 &&(tmp_skipNum>9 && seq[iH]!=0 )){
         hSkT[board[iH]-1]->Fill(unixtime,channel[iH],tmp_skipNum);
         NumSeqSK[board[iH]][channel[iH]] += tmp_skipNum;
-        // cout<<unixtime<<"  B:C:W  "<<board[iH]<<"  "<<channel[iH]<<" "<<pw[iH]<<"\tSeq0->Seq: "<<seqNow[BDINV[board[iH]]][channel[iH]]<<"\t->\t"<<seq[iH]<<"\t(Skip) "<<tmp_skipNum<<endl;
+        // cout<<unixtime<<"  B:C:W  "<<board[iH]<<"  "<<channel[iH]<<" "<<pw[iH]<<"\tSeq0->Seq: "<<seqNow[BDCheck(board[iH])][channel[iH]]<<"\t->\t"<<seq[iH]<<"\t(Skip) "<<tmp_skipNum<<endl;
         out<<unixtime<<"\t"<<board[iH]<<"\t"<<channel[iH]<<"\t"<<seqNow[board[iH]][channel[iH]]<<"\t"<<seq[iH]<<"\t"<<tmp_skipNum<<endl;
         
         //sleep(0.5);
@@ -126,7 +125,7 @@ void SeqSkipAna() {
 
   for(int i0=0;i0<NumBD;i0++){
     c1->cd(i0+1);
-    hSKN[i0] = new TH1F(Form("hSKN%02.f",i0*1.+1),Form("MTB%02.f",BDINV[i0+1]*1.),NumCh,0,NumCh);
+    hSKN[i0] = new TH1F(Form("hSKN%02.f",i0*1.+1),Form("MTB%02.f",BDCheck(i0+1)*1.),NumCh,0,NumCh);
     hSKN[i0]->SetLineColor(4);
     hSKN[i0]->GetXaxis()->SetTitle("Channel ID");
     hSKN[i0]->GetYaxis()->SetTitle("Missing Number");

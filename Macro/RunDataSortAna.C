@@ -311,8 +311,8 @@ void TakeChsName(
     if(iline!=-1){
       in>>input.Int;
       tmpBID = input.Int;
-      runData.BID[BDINV[tmpBID]] = tmpBID;
-      // cout<<"\n"<<tmpBID<<"\t"<<BDINV[tmpBID]<<"\t"<<BID[BDINV[tmpBID]];
+      runData.BID[BDCheck(tmpBID)] = tmpBID;
+      // cout<<"\n"<<tmpBID<<"\t"<<BDCheck(tmpBID)<<"\t"<<BID[BDCheck(tmpBID)];
     }
     else{
       in>>input.Cha;
@@ -327,7 +327,7 @@ void TakeChsName(
       else{
         in>>input.Cha;
         if(input.Cha[0]!='-')
-          sprintf(runData.ChNames[BDINV[tmpBID]][ich],input.Cha);
+          sprintf(runData.ChNames[BDCheck(tmpBID)][ich],input.Cha);
       }
     }
   }
@@ -371,7 +371,7 @@ void TakeChsFInf(
       if(iline!=-1){
         in>>input.Int;
         tmpBID = input.Int;
-        runData.BID[BDINV[tmpBID]] = tmpBID;
+        runData.BID[BDCheck(tmpBID)] = tmpBID;
         // cout<<tmpBID;
       }
       else{
@@ -387,9 +387,9 @@ void TakeChsFInf(
         else{
           in>>input.Flo;
           if(int(input.Flo+1)!=0)
-            // ChFInf[BDINV[tmpBID]][ich] = input.Flo;
-            if     (OPT=='T') runData.Threshold[BDINV[tmpBID]][ich] = input.Flo;
-            else if(OPT=='V') runData.Voltage[BDINV[tmpBID]][ich]   = input.Flo;
+            // ChFInf[BDCheck(tmpBID)][ich] = input.Flo;
+            if     (OPT=='T') runData.Threshold[BDCheck(tmpBID)][ich] = input.Flo;
+            else if(OPT=='V') runData.Voltage[BDCheck(tmpBID)][ich]   = input.Flo;
           // cout<<"\t"<<input.Flo;
         }
       }

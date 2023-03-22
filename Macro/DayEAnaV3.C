@@ -139,8 +139,8 @@ void DayEAnaV3(const int SPD = 24) {
     //XBins     = (t1-FirDaySec)/600.;
     // if(iev%10000==0) cout<<XBins<<endl;
     for(int iHit = 0; iHit<nHits ; iHit++){
-      htmp->Fill(t1,BDINV[board[iHit]]);
-      htmpc->Fill(t1,(BDINV[board[iHit]])*NumCh+channel[iHit]);
+      htmp->Fill(t1,BDCheck(board[iHit]));
+      htmpc->Fill(t1,(BDCheck(board[iHit]))*NumCh+channel[iHit]);
     }
     
   }
