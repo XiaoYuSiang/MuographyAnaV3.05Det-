@@ -6,8 +6,8 @@ Public Muography Analysis Code for Detector V2.0, V3.00, V3.05.<br>
 Q: How to use? <br><br> 
 
 00. Download the "MainControl.C" , "AnaVariable.h" , RenewMacros.h & "/Macro" onto the NAS.<br>
-  * Ps: If you wan use multiple cpu to analyze the different "run" data parallelly. <br>
-  * You can download the Run.C to same dir, and set the parameter like the MainControl.C.<br><br>
+    * Ps: If you wan use multiple cpu to analyze the different "run" data parallelly. <br>
+    * You can download the Run.C to same dir, and set the parameter like the MainControl.C.<br><br>
 
 01. Revise the analysis variable in the "AnaVariable.h". <br>
     * example: change the trigger for anylize, color palette, default fitting function parameter<br>
