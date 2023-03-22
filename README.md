@@ -13,12 +13,12 @@ Q: How to use? <br><br>
     change the trigger for anylize, color palette, default fitting function parameter
       example: detector & scintillator size and numbers, runs time range.
 
-### 02. Now, You can change the information in the "MainControl.C". Find the marker **@AdjustPath by** searching in the file.
+### 02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.
 
 ### 03. Changing the path of floder which "input files" and want to do analysis for: <br>
-    * Ori_path_Mac: raw(original) macros dir path example: "./Macro/"<br>
-    * path_Raw: raw datas (XXX_Mu.txt) example: "/data4/YuSiang/ExampleSpace/"<br>
-    * path_Hk : raw house keeping datas (XXX_Hk.txt) example: "/data4/YuSiang/ExampleSpace/HKData/"<br><br> 
+    03(1). Ori_path_Mac: raw(original) macros dir path example: "./Macro/"<br>
+    03(2). path_Raw: raw datas (XXX_Mu.txt) example: "/data4/YuSiang/ExampleSpace/"<br>
+    03(3). path_Hk : raw house keeping datas (XXX_Hk.txt) example: "/data4/YuSiang/ExampleSpace/HKData/"<br><br> 
 
 ### 04. The path you want to save the root file of raw data (XXX_Mu.root), it can share with another runs data: <br>
     * path_Rot: example: "/data4/YuSiang/ExampleSpace/rootfile/"<br>
