@@ -9,9 +9,9 @@ Q: How to use?
 <br>Ps: If you wan use multiple cpu to analyze the different "run" data parallelly. 
 <br>    * You can download the Run.C to same dir, and set the parameter like the MainControl.C.
 <br>
-<br>01. Revise the analysis variable in the "AnaVariable.h". 
+01. Revise the analysis variable in the "AnaVariable.h". 
 * example: change the trigger for anylize, color palette, default fitting function parameter
-<br>    * *          detector/ scintillator size and numbers, runs time range.
+* detector/ scintillator size and numbers, runs time range.
 <br>
 <br>02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.
 <br>
