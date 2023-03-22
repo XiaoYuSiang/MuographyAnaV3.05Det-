@@ -1,17 +1,17 @@
 # Introduction of MuographyAnaV3.05Det-
-Public Muography Analysis Code for Detector V2.0, V3.00, V3.05.
+<br>Public Muography Analysis Code for Detector V2.0, V3.00, V3.05.
 <br>
-This is the analysis program of Muography for Detector V2.0~ V3.05 made by Yu Siang Xiao.
+<br>This is the analysis program of Muography for Detector V2.0~ V3.05 made by Yu Siang Xiao.
 <br>
 Q: How to use? 
 <br>
-00. Download the "MainControl.C" , "AnaVariable.h" , RenewMacros.h & "/Macro" onto the NAS.
-    Ps: If you wan use multiple cpu to analyze the different "run" data parallelly. 
-        You can download the Run.C to same dir, and set the parameter like the MainControl.C.
+<br>00. Download the "MainControl.C" , "AnaVariable.h" , RenewMacros.h & "/Macro" onto the NAS.
+<br>    Ps: If you wan use multiple cpu to analyze the different "run" data parallelly. 
+<br>        You can download the Run.C to same dir, and set the parameter like the MainControl.C.
 <br>
-01. Revise the analysis variable in the "AnaVariable.h". 
-    example: change the trigger for anylize, color palette, default fitting function parameter
-             detector/ scintillator size and numbers, runs time range.
+<br>01. Revise the analysis variable in the "AnaVariable.h". 
+<br>    example: change the trigger for anylize, color palette, default fitting function parameter
+<br>             detector/ scintillator size and numbers, runs time range.
 <br>
 02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.
 <br>
