@@ -7,11 +7,11 @@ Q: How to use?
 <br>
 <br>00. Download the "MainControl.C" , "AnaVariable.h" , RenewMacros.h & "/Macro" onto the NAS.
 <br>Ps: If you wan use multiple cpu to analyze the different "run" data parallelly. 
-<br>'        'You can download the Run.C to same dir, and set the parameter like the MainControl.C.
+<br>    * You can download the Run.C to same dir, and set the parameter like the MainControl.C.
 <br>
 <br>01. Revise the analysis variable in the "AnaVariable.h". 
-<br>    example: change the trigger for anylize, color palette, default fitting function parameter
-<br>             detector/ scintillator size and numbers, runs time range.
+<br>    * example: change the trigger for anylize, color palette, default fitting function parameter
+<br>    * *          detector/ scintillator size and numbers, runs time range.
 <br>
 <br>02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.
 <br>
