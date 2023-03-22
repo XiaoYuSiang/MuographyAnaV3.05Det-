@@ -13,20 +13,20 @@ Q: How to use? <br>
     * example: change the trigger for anylize, color palette, default fitting function parameter<br>
       * detector/ scintillator size and numbers, runs time range.<br>
 <br>
-<br>02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.
+02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.<br>
 <br>
-<br>03. Changing the path of floder which "input files" and want to do analysis for: 
-<br>    03(0). Ori_path_Mac: raw(original) macros dir path example: "./Macro/"
-<br>    03(1). path_Raw: raw datas (XXX_Mu.txt) example: "/data4/YuSiang/ExampleSpace/"
-<br>    03(2). path_Hk : raw house keeping datas (XXX_Hk.txt) example: "/data4/YuSiang/ExampleSpace/HKData/"
+03. Changing the path of floder which "input files" and want to do analysis for: <br>
+    * 03(0). Ori_path_Mac: raw(original) macros dir path example: "./Macro/"<br>
+    * 03(1). path_Raw: raw datas (XXX_Mu.txt) example: "/data4/YuSiang/ExampleSpace/"<br>
+    * 03(2). path_Hk : raw house keeping datas (XXX_Hk.txt) example: "/data4/YuSiang/ExampleSpace/HKData/"<br>
 <br>
-<br>04. The path you want to save the root file of raw data (XXX_Mu.root), it can share with another runs data: 
-<br>    path_Rot: example: "/data4/YuSiang/ExampleSpace/rootfile/"
-<br> 
-<br>    The path you want to save the operation data and the results: 
-<br>    path_OpR: example: "/data4/YuSiang/ExampleSpace/Ana/"
+04. The path you want to save the root file of raw data (XXX_Mu.root), it can share with another runs data: <br>
+    path_Rot: example: "/data4/YuSiang/ExampleSpace/rootfile/"<br>
+ 
+    The path you want to save the operation data and the results: <br>
+    path_OpR: example: "/data4/YuSiang/ExampleSpace/Ana/"<br>
 <br>
-<br>05. The path of the folder which put the analysis "program files" for this analysis:
+<br>05. The path of the folder which put the analysis "program files" for this analysis:<br>
 <br>    path_Mac: default: "./MacroTmp/"
 <br>
 <br>06.Change the Data name want to be researched!! 
