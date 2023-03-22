@@ -16,9 +16,9 @@ Q: How to use? <br>
 02. Now, You can change the information in the "MainControl.C". Find the marker @AdjustPath by searching in the file.<br><br>
 
 03. Changing the path of floder which "input files" and want to do analysis for: <br>
-    * 03(0). Ori_path_Mac: raw(original) macros dir path example: "./Macro/"<br>
-    * 03(1). path_Raw: raw datas (XXX_Mu.txt) example: "/data4/YuSiang/ExampleSpace/"<br>
-    * 03(2). path_Hk : raw house keeping datas (XXX_Hk.txt) example: "/data4/YuSiang/ExampleSpace/HKData/"<br>
+    03(0). Ori_path_Mac: raw(original) macros dir path example: "./Macro/"<br>
+    03(1). path_Raw: raw datas (XXX_Mu.txt) example: "/data4/YuSiang/ExampleSpace/"<br>
+    03(2). path_Hk : raw house keeping datas (XXX_Hk.txt) example: "/data4/YuSiang/ExampleSpace/HKData/"<br>
 <br>
 04. The path you want to save the root file of raw data (XXX_Mu.root), it can share with another runs data: <br>
     path_Rot: example: "/data4/YuSiang/ExampleSpace/rootfile/"<br>
