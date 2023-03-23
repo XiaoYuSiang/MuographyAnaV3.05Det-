@@ -40,7 +40,7 @@ namespace MuographGobelFuns{
     } 
     return z;
   }
-  int BDCheck(const int b) return BDcheck(b);
+  int BDCheck(const int b){ return BDcheck(b);}
   int CHcheck(const int c){
     int z = -1;
     if(c>NumCh-1||c<0){
