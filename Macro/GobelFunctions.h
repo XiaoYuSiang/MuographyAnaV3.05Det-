@@ -20,6 +20,10 @@
 #include <TChain.h>
 #include <TObject.h>
 #include <TStopwatch.h>
+#include <TSystem.h>
+#ifndef FATAL
+#define FATAL(msg) do { fprintf(stderr, "FATAL: %s\n", msg); gSystem->Exit(1); } while (0)
+#endif
 using namespace MuographAnaVariable;
 namespace MuographGobelFuns{
   int BDcheck(const int b){
@@ -36,6 +40,7 @@ namespace MuographGobelFuns{
     } 
     return z;
   }
+  int BDCheck(const int b) return BDcheck(b);
   int CHcheck(const int c){
     int z = -1;
     if(c>NumCh-1||c<0){
@@ -390,6 +395,86 @@ namespace MuographGobelFuns{
     return length;
   }
   
+  void SetTransparentPadcd(TPad &P){
+    P.SetFillStyle(4000); //will be transparent
+    P.SetFrameFillStyle(4000);
+    P.SetGrid(1,1);
+    P.Draw();
+    P.cd();
+  }
+  void FindStartProduct(
+    const char *path_product, const char *version , 
+    int &iRunStart,  const char *TillfileForm = "ODetCh")
+  {
+    char tmpfile[250];
+    while(true){
+      sprintf(tmpfile,"%s%s%s_Till_Run%02.f.root",path_product,TillfileForm,version,iRunStart*1.);
+      cout<<"Checking: "<<tmpfile<<endl;
+      Long64_t SizeOfFile = FileSize(tmpfile,'q');
+      if(SizeOfFile<5120) break;
+      iRunStart++;
+    }
+  }
+
+
+
+  void FindAllTillFile(
+    const char *dataPath_RTill, const char *version,
+    int &iRunStart, int &iRunFinal,
+    const char *TillfileForm = "Setup_Till_Run")
+  {
+    const int TriggerOfRunINum = 50;
+    iRunStart = 0;
+    char tmpfile[250];
+    while(true){
+      sprintf(tmpfile,"%s%s%02.f.root",dataPath_RTill,TillfileForm,iRunStart*1.);
+      cout<<"Checking: "<<tmpfile<<endl;
+      Long64_t SizeOfFile = FileSize(tmpfile,'q');
+      if(SizeOfFile>5120) break;
+      iRunStart++;
+      if(iRunStart>TriggerOfRunINum){
+        cout<<"Error: iRunStart of run data files is too large!!!"<<endl;
+        cout<<"Identify this case to be \"No Run data files\"."<<endl;
+        cout<<"Stop the program, if case is really > TriggerOfRunINum,"<<endl;
+        cout<<"  please adjust the ODectImfAna.C::FindAllTillFile()::TriggerOfRunINum = ?."<<endl;
+        throw;
+      }
+    }
+    iRunFinal = iRunStart+1;
+    while(true){
+      sprintf(tmpfile,"%s%s%02.f.root",dataPath_RTill,TillfileForm,iRunFinal*1.);
+      cout<<"Checking: "<<tmpfile<<endl;
+      Long64_t SizeOfFile = FileSize(tmpfile,'q');
+      if(SizeOfFile<5120) break;
+      iRunFinal++;
+    }
+    
+
+    
+  }
+
+  void GetEffExtUc(const float eff, const float statistic, float &min, float &max, float &ucl, float &uch){
+    float StandErr = 1/sqrt(statistic);
+    min = eff-StandErr;
+    max = eff+StandErr;
+    if(min<0) min = 0;
+    if(max>1) max = 1;
+    ucl = eff-min;
+    uch = max-eff;
+  }
+  
+  double GetTotNegTime(const char *DirOperate, const Long64_t unixtimeini, const Long64_t unixtimefin){
+    double lossTime;
+    vector<Long64_t> VNegUTRangeStart, VNegUTRangeFinal;
+    GetNegHourRange(VNegUTRangeStart, VNegUTRangeFinal, DirOperate);
+    for(Long64_t iUT = unixtimeini; iUT<unixtimefin; iUT++){
+      if(InNegHourRange(iUT,VNegUTRangeStart,VNegUTRangeFinal)) lossTime+=1;
+    }
+    return lossTime;
+  }
+  
+
+
 
 };
 
