@@ -176,7 +176,7 @@ namespace MuographAnaVariable
   
   //V02.00
   /*Detector Information variable*/
-  /*
+  
   char detVer[10] = {"V2.00"};
   const int    NumBD = 4;
   const int    NumCh = 16;
@@ -188,12 +188,13 @@ namespace MuographAnaVariable
   const int    BD[4]    = {1,3,5,4};
   const int    BDINV[6] = {0,0,0,1,3,2};
   const int    BDPwWei[4] = {2,1,1,1};
+  const int    LayArr[NumBX][NumBY]={{1}};
   const double bx  = 50., by  = 50., bz  = 12.;
+  const double gbx =  0 , gby =  0., gbz = 500.;
   const double bx_2 = bx/2.;
   const double by_2 = by/2.;
   const double bz_2 = bz/2.;
-  const int    binpw = 90;// for 90 pwidth = 9ms
-  */
+  
   
   //V03.00
   /*Detector Information variable*/
@@ -214,13 +215,12 @@ namespace MuographAnaVariable
   const double bx_2 = bx/2.;
   const double by_2 = by/2.;
   const double bz_2 = bz/2.;
-  const int    binpw = 90;// for 90 pwidth = 9ms
   */
   
 
   //V03.05
   /*Detector Information variable*/
-
+  /*
   char detVer[10] = {"V3.05"};
   const int    NumBD = 16;
   const int    NumCh = 16;
@@ -238,9 +238,9 @@ namespace MuographAnaVariable
   const double bx_2 = bx/2.;
   const double by_2 = by/2.;
   const double bz_2 = bz/2.;
-  const int    binpw = 90;// for 90 pwidth = 9ms
-
+  */
   
+  const int    binpw = 90;// for 90 pwidth = 9ms
   
   /*Ana constant don't change!!!*/
   //the setting of Ev gap 
