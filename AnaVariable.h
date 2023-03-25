@@ -17,11 +17,15 @@ namespace MuographAnaVariable
   const double th2fbinwidth = 3600;
   Int_t bindays = 1;
   //timeZone of Taiwan is UTC+8
-  const int    timeZone     = +8 ;
+  const int    timeZone    = +8 ;
   
   //breaktime is the time detector sleep
   const Int_t  breaktime   = 120;//(s)
   const Int_t  SlicePerDay =   6;//(24hr/SlicePerDay for one bin)
+  const Int_t  TGapTHVPos  = 1800;//(s) time gap of THVPosAna shows 
+  
+    //Variable for the startRun index Ex: if experiment data start from Run01 SSR = 1
+  const Int_t  StartSearchRun = 4;
   
   //nHit Triggers from S -> L
   //nH of event in Trigger would be record
@@ -34,12 +38,12 @@ namespace MuographAnaVariable
   
   //R4VT Rate Over high Trigger
   //if rate > trigger, fix max to trigger
-  const Float_t TriggerRatOver = 1.4;//Hz
+  const Float_t TriggerRatOver = 2;
 
   //DayE Eff. Over Trigger 
   //if Eff > trigger, fix Eff = 100%
   const Float_t TriggerEffOver = 0.999;
-  
+    
   //DayE Eff. Trigger of Eff. for Hour Neglect Mode
   //if Eff < trigger, save the time range nformation
   const Float_t TriggerNegEffInHour = 0.9;
@@ -48,6 +52,30 @@ namespace MuographAnaVariable
   //if NHit > trigger, Neglect the events
   const int TriggerNHitOfEffB4 = 0;
   const int TriggerNHitOfEffB3 = 0;
+  
+  //Line fitting tracking for the hit number setting 
+  //if NHit not in trigger range (S,L), skip the events
+  const int TriggerTraNHitS = 4;
+  const int TriggerTraNHitL = 4;
+  
+  //Line fitting tracking for the fire layer number setting 
+  //if NHit smaller than trigger , skip the events
+  const int TriggerTrNLayer = 4;
+  
+  //Line fitting tracking for the sigma range setting on XZ, YZ
+  //if fitting error larger than trigger(size of quarter scintillator(mm))
+  //  on X or Y dim, skip the events
+  const float TriggerTrFitSigSizeX = 12.5*1.414;
+  const float TriggerTrFitSigSizeY = 12.5*1.414;
+  
+  //minimum of reasonable unixtime in program
+  //if UT < TriggerUTLeast, skip the data
+  const Float_t TriggerUTLeast = 1.6E+9;
+  
+  //minimum of channel efficiency in program
+  //if Eff < TriggerChanEff, skip to save the data
+  const Float_t TriggerChanEff = 0.9;
+  
   //Rate similarity on sunny day
   //select the sunny day simple
   const Int_t UT_SelectDay = 1643212800; //ex: 2022/01/27 UTC+8
@@ -61,20 +89,18 @@ namespace MuographAnaVariable
   
   int neglectHourRange[2] = {11,15};
   
+  //Direction vector table division on x and y
+  const int binNumFluxX = 281;//93;
+  const int binNumFluxY = 281;//93;
   
+  const bool NegLowSta = true;
   
+  // if Selection Event number of some Combination Lower than trigger, Neglect.
+  const Float_t TriggerNegLowSEComb = 15;
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  //Neglect the data which DxDz or DyDz < Trigger
+  const Float_t TriggerLessDxDz = -100;
+  const Float_t TriggerLessDyDz = -0.11;
   
   
   /*Art Option*/
@@ -110,15 +136,6 @@ namespace MuographAnaVariable
     TColor::GetColor("#6ECBA8"),
     1
   };
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
   
@@ -176,25 +193,34 @@ namespace MuographAnaVariable
   
   //V02.00
   /*Detector Information variable*/
-  
-  char detVer[10] = {"V2.00"};
-  const int    NumBD = 4;
-  const int    NumCh = 16;
-  const int    NumLY = 4;
-  const int    NumnX = 4, NumnY = 4, NumnZ = 4;
-  const int    NumBX = 1, NumBY = 1, NumBZ = NumLY;
-  const int    NumChLys = NumnX*NumBX*NumnY*NumBY;
+
+  char detVer[10] = {"V2.00"};  //detector version
+  //number of boards, nuber of channel per board, number of board layers
+  const int    NumBD =  5, NumCh = 16, NumLY = 4;
+  //number of channels on x-axis per board, ... on y-axis ..., , ... on z-axis ..., 
+  const int    NumnX =  4, NumnY =  4, NumnZ = 1;
+  //number of boards on x-axis per layer, ... on y-axis ..., , ... on z-axis ..., 
+  const int    NumBX =  1, NumBY =  1, NumBZ = NumLY;
+  //number of total channel
   const int    BinNumOnCha = NumBD*NumCh;
-  const int    BD[4]    = {1,3,5,4};
-  const int    BDINV[6] = {0,0,0,1,3,2};
-  const int    BDPwWei[4] = {2,1,1,1};
+  //number of total channel per layer
+  const int    NumChLys    = BinNumOnCha/NumLY;
+  //MTB ID of a board at position index(ix,iy,iz): BD[ix+NumBY*iy+NumBX*NumBY*iz]
+  const int    BD[NumBD]   = {1,3,5,4};
+  //pwidth scale factor of MTB board because the Magnification of DAQ at index x: BDPwWei[x]
+  const int    BDPwWei[NumBD] = {2,1,1,1};
+  //(MTB id)%NumLY at board position index(BiX,BiY): LayArr[BiX][BiY]
   const int    LayArr[NumBX][NumBY]={{1}};
+  //Mother board MTB ID
+  const int    MotherBoard = 1;
+  //Size of Scintillator on X=bx, Y=by, Z=bz dim. , unit: mm
   const double bx  = 50., by  = 50., bz  = 12.;
+  //gap size MTBs on X=bx, Y=by, Z=bz dim. , unit: mm
   const double gbx =  0 , gby =  0., gbz = 500.;
-  const double bx_2 = bx/2.;
-  const double by_2 = by/2.;
-  const double bz_2 = bz/2.;
-  
+  //half size of Scintillator on XYZ dim
+  const double bx_2 = bx/2., by_2 = by/2., bz_2 = bz/2.;
+  const int    binpw = 90;// for 90 pwidth = 9ms
+
   
   //V03.00
   /*Detector Information variable*/
@@ -204,52 +230,76 @@ namespace MuographAnaVariable
   const int    NumCh = 16;
   const int    NumLY = 4;
   const int    NumnX = 4, NumnY = 4, NumnZ = 4;
-  const int    NumBX = 2, NumBY = 2, NumBZ = NumLY;
-  const int    NumChLys = NumnX*NumBX*NumnY*NumBY;
   const int    BinNumOnCha = NumBD*NumCh;
   const int    BD[NumCh]   = {1,2,3,4,9,10,11,12,5,6,7,8,13,14,15,16};
-  const int    BDINV[NumCh+1] = {0,0,1,2,3,8,9,10,11,4,5,6,7,12,13,14,15};
   const int    BDPwWei[NumCh] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
   const double bx  = 50., by  = 50., bz  = 12.;
   const double gbx = 12 , gby = 12., gbz = 500.;
   const double bx_2 = bx/2.;
   const double by_2 = by/2.;
   const double bz_2 = bz/2.;
+  const int    binpw = 90;// for 90 pwidth = 9ms
   */
-  
-
   //V03.05
   /*Detector Information variable*/
-  /*
-  char detVer[10] = {"V3.05"};
+  
+/*   char detVer[10] = {"V3.05"};
   const int    NumBD = 16;
   const int    NumCh = 16;
   const int    NumLY = 4;
   const int    NumnX = 4, NumnY = 4, NumnZ = 4;
   const int    NumBX = 2, NumBY = 2, NumBZ = NumLY;
-  const int    NumChLys = NumnX*NumBX*NumnY*NumBY;
   const int    BinNumOnCha = NumBD*NumCh;
+  const int    NumChLys = NumnX*NumBX*NumnY*NumBY;
   const int    BD[NumCh]   = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-  const int    BDINV[NumCh+1] = {0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
   const int    BDPwWei[NumCh] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-  const int    LayArr [NumBX][NumBY] = {{3,1},{4,2}};
+  const int    LayArr[NumBX][NumBY]={{3,1},{4,2}};
+  const int    MotherBoard = 1;
   const double bx  = 50., by = 50., bz = 12.;
   const double gbx = 0  , gby = 0., gbz = 500.;
   const double bx_2 = bx/2.;
   const double by_2 = by/2.;
   const double bz_2 = bz/2.;
-  */
-  
   const int    binpw = 90;// for 90 pwidth = 9ms
+  
+ */
+  const int V200BTSpXYZ [3][6]= 
+  {
+    {165, 25,175,175, 25,100},
+    { 52, 50, 50,150,150,100},
+    {-25,-14,-14,-14,-14,-14} 
+  };
+  const int V305BTSpXYZ [2][3][6]= 
+  {
+    { { 35,175, 25, 25,175,100},
+      { 52, 50, 50,150,150,100},
+      { 37, 26, 26, 26, 26,-14} },
+    { {165, 25,175,175, 25,100},
+      { 52, 50, 50,150,150,100},
+      {-25,-14,-14,-14,-14,-14} }
+  };
+  
+  const float V200AngRang[2][5][2]={
+    {{0,0},{0,0},{-0.45,0.45},{-0.25,0.25},{-0.15,0.15}},
+    {{0,0},{0,0},{-0.45,0.45},{-0.25,0.25},{-0.15,0.15}}
+  };
+  const float V305AngRang[2][5][2]={
+    {{0,0},{0,0},{-0.8,0.8},{-0.6,0.6},{-0.3,0.3}},
+    {{0,0},{0,0},{-0.8,0.8},{-0.6,0.6},{-0.3,0.3}}
+  };
+  
+  const float V200AngDmM[3] = { 76,-0.15,0.15};
+  const float V305AngDmM[3] = {401,-0.80,0.80};
+  
   
   /*Ana constant don't change!!!*/
   //the setting of Ev gap 
-  const int eventGapTcnt[50]= {
+  const int eventGapTcnt[46]= {
     2,5,8,10,13,16,20,24,28,30,
     31,32,34,36,38,40,42,46,50,55,
     60,70,80,90,100,90,100,120,140,160,
     180,200,250,300,350,400,500,600,700,800,
-    1000,1200,1400,1600,1800,2000,2400,2800,3200,3500
+    1000,1200,1400,1600,1800,2000
   };
   /*Ana constant don't change!!!*/
   
@@ -271,6 +321,7 @@ namespace MuographAnaVariable
   const char   Sites[4][10]={   "S4_509",  "Shimen",   "S4_11F",    "Da_Xi"};
   const float  Latitudes[4]={ 24.839435,  24.823633,  24.971514,  24.971510};
   const float Longitudes[4]={121.271228, 121.286611, 121.191712, 121.192117};
+  //const float  Altitudes[4]={121.271228, 121.286611, 121.191712, 121.192117};
 };
 /*
 

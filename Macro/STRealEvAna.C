@@ -32,7 +32,10 @@ using namespace MuographGobelFuns;
 using namespace DataConst;
 
 void STRealEvAna(const int indexi=28){
-  // setTDRStyle();
+  cout<<"Please use the last new version STRealEvAnaV2"<<endl;
+}
+
+void STRealEvAnaV2(const int indexi=28){
   defstyle();
   gStyle->SetPadRightMargin(0.02);
   map<int, scintillator> MScints = LoadODectTable();
@@ -47,6 +50,7 @@ void STRealEvAna(const int indexi=28){
   
   ofstream out(Form("%sCheff%s_%s.txt",DirRes_ChEff,NoiseStr,TimeStr));
   ofstream out1(Form("%sCheff%s_%s.csv",DirRes_ChEff,NoiseStr,TimeStr));
+  ofstream out2(Form("%sCheffL%d%s_%s.csv",DirOperate,int(TriggerChanEff*100),NoiseStr,TimeStr));
   out<<"ch\t=\"1111\"\t=\"0111\"\t=\"1011\"\t=\"1101\"\t=\"1110\"\tEff.L0\tEff.L1\tEff.L2\tEff.L3"<<endl;
   
   char DirRes_EffDetail[180], cmdline[180];
@@ -145,7 +149,7 @@ void STRealEvAna(const int indexi=28){
       // throw;
       for(int iLy=0;iLy<NumLY;iLy++){
         H3_0123[iLy]->SetFillColor(ColorArr17[iLy]);
-        H3_0123[iLy]->SetLineColor(ColorArr17[iLy]);
+        H3_0123[iLy]->SetLineColor(ColorArr17[iLy+4]);
         H3_0123[iLy]->SetBarWidth((1./(NumLY+1))*0.9);
         H3_0123[iLy]->SetBarOffset((0.5/(NumLY+1))*1.1+(1./(NumLY+1))*iLy);
         H3_0123[iLy]->SetLineWidth(2);
@@ -164,10 +168,10 @@ void STRealEvAna(const int indexi=28){
 
         TGEFFErr[iLy] = new TGraphErrors(NumCh,x,y,ex,ey);
         TGEFFErr[iLy] ->Draw("esame");
-        TGEFFErr[iLy] ->SetLineColor(ColorArr17[iLy]);
+        TGEFFErr[iLy] ->SetLineColor(ColorArr17[iLy+4]);
         TGEFFErr[iLy] ->SetLineStyle(1);
         TGEFFErr[iLy] ->SetMarkerStyle(104);
-        TGEFFErr[iLy] ->SetMarkerColor(ColorArr17[iLy]);
+        TGEFFErr[iLy] ->SetMarkerColor(ColorArr17[iLy+4]);
 
       }
       
@@ -205,10 +209,12 @@ void STRealEvAna(const int indexi=28){
       H4_0123E4->Divide(H3_012XE);
 
       TH1F  *H0123E[NumLY]={H4_0123E1,H4_0123E3,H4_0123E5,H4_0123E4};
-
+      TH1F  *HS0123[NumLY]={H3_X123E,H3_0X23E,H3_01X3E,H3_012XE};
+      int Statistic[NumLY][NumCh]={0};
 
       for(int ichs=0;ichs<NumCh;ichs++){
-        out<<"ch"<<ichs<<"\t";
+        
+        out<<ibx<<"\t"<<iby<<"\t"<<"ch"<<ichs<<"\t";
         out<<H4_0123->GetBinContent(ichs+1)<<"\t";
         out<<H3_X123->GetBinContent(ichs+1)<<"\t";
         out<<H3_0X23->GetBinContent(ichs+1)<<"\t";
@@ -217,8 +223,10 @@ void STRealEvAna(const int indexi=28){
         out<<H4_0123E1->GetBinContent(ichs+1)<<"\t";
         out<<H4_0123E3->GetBinContent(ichs+1)<<"\t";
         out<<H4_0123E5->GetBinContent(ichs+1)<<"\t";
-        if(ichs==NumCh-1) out<<H4_0123E4->GetBinContent(ichs+1);
+        if(ichs==NumCh-1&&ibx==NumBX-1&&iby==NumBY-1) out<<H4_0123E4->GetBinContent(ichs+1);
         else out<<H4_0123E4->GetBinContent(ichs+1)<<endl;
+        for(int iLy=0;iLy<NumLY;iLy++) 
+          Statistic[iLy][ichs] = HS0123[iLy]->GetBinContent(ichs+1);
       }
 
 
@@ -233,38 +241,50 @@ void STRealEvAna(const int indexi=28){
       pwdVSddt1->Draw();
       
       //TGraphErrors *EFFErr[4]={};
+      float AVGEffOfLayer[4]={};
+      for(int iLy=0;iLy<NumLY;iLy++){
+        for(int ichs=0;ichs<NumCh;ichs++)
+          AVGEffOfLayer[iLy]+=H0123E[iLy]->GetBinContent(ichs+1);;
+        AVGEffOfLayer[iLy]/=NumCh;
+        cout<<"Mean Eff. Of Layer "<<iLy<<" : "<<AVGEffOfLayer[iLy]<<endl;
+      }
       for(int iLy=0;iLy<NumLY;iLy++){
         double  x[NumCh]={},   y[NumCh]={};
         double ex[NumCh]={}, eyl[NumCh]={}, eyh[NumCh]={};
         for(int ichs=0;ichs<NumCh;ichs++){
           x[ichs]  = ichs+(1./(NumLY+1))*(1+iLy);
           y[ichs]  = H0123E[iLy]->GetBinContent(ichs+1);
+          
           eyl[ichs]= H0123E[iLy]->GetBinError(ichs+1);
           eyh[ichs]= H0123E[iLy]->GetBinError(ichs+1);
           if      (y[ichs]-eyl[ichs]<=0) eyl[ichs]=y[ichs];
           else if(y[ichs]+eyh[ichs]>=1) eyh[ichs]=1-y[ichs];
           out1<<BD[iLy]<<"\t"<<x[ichs]<<"\t"<<y[ichs]<<"\t"<<eyl[ichs]<<"\t"<<eyh[ichs]<<"\n";
+          if(AVGEffOfLayer[iLy]>TriggerChanEff){
+            out2<<BD[iLy]<<"\t"<<ichs<<"\t"<<BCIDCovGID(BD[iLy],ichs)<<"\t"<<Statistic[iLy][ichs]<<"\t"<<y[ichs]<<"\t"<<eyl[ichs]<<"\t"<<eyh[ichs]<<"\n";
+            MScints[BCIDCovGID(BD[iLy],ichs)].Efficiency = y[ichs];
+            MScints[BCIDCovGID(BD[iLy],ichs)].EffSta     = Statistic[iLy][ichs];
+          }
+            
           // cout<<x[ichs]<<"  "<<H0123E[iLy]->GetBinContent(ichs+1)<<"  "<<ex[ichs]<<"  "<<H0123E[iLy]->GetBinError(ichs+1)<<"  "<<endl;
         }
         //cout<<H0123E[iLy]->GetBinContent(1);
         H0123E[iLy]->Draw("histbarSame");
         TGraphAsymmErrors *EFFErrAsy = new TGraphAsymmErrors(NumCh,x,y,ex,ex,eyl,eyh);
         EFFErrAsy->Draw("esame");
-        EFFErrAsy->SetLineColor(ColorArr17[iLy]);
+        EFFErrAsy->SetLineColor(ColorArr17[iLy+NumLY]);
         EFFErrAsy->SetLineStyle(1);
         EFFErrAsy->SetMarkerStyle(104);
         EFFErrAsy->SetMarkerColor(ColorArr17[iLy]);
         H0123E[iLy]->SetFillColor(ColorArr17[iLy]);
         H0123E[iLy]->SetBarWidth((1./(NumLY+1))*0.9);
         H0123E[iLy]->SetBarOffset((0.5/(NumLY+1))*1.1+(1./(NumLY+1))*iLy);
-        H0123E[iLy]->SetLineColor(ColorArr17[iLy]);
+        H0123E[iLy]->SetLineColor(ColorArr17[iLy+NumLY]);
       }
       hMod2->Draw("lsame");
 
       DrawPdfPng(cevent,Form("%sCheff%s_%sBiX%dBiY%d",DirRes_EffDetail,NoiseStr,TimeStr,ibx,iby));
 
-      out.close();
-      out1.close();
       
       cevent ->cd(2);
       cTMP->DrawClonePad();
@@ -279,6 +299,9 @@ void STRealEvAna(const int indexi=28){
       cevent->Close();
     }
   }
+  out.close();
+  out1.close();
+  out2.close();
   system(Form("cp %sCheff%s_%s.txt  %sCheff%s_%s.txt",DirRes_ChEff,NoiseStr,TimeStr,DirOperate,NoiseStr,TimeStr));
   system(Form("cp %sCheff%s_%s.csv  %sCheff%s_%s.csv",DirRes_ChEff,NoiseStr,TimeStr,DirOperate,NoiseStr,TimeStr));
   cout<<(Form("%sCheff%s_%s.csv/.txt has been freated",DirRes_ChEff,NoiseStr,TimeStr,DirOperate))<<endl;
@@ -287,5 +310,6 @@ void STRealEvAna(const int indexi=28){
   DrawPdfPng(cNUMSAll,Form("%sChNum%s_%s",DirRes_ChEff,NoiseStr,TimeStr));
   DrawPdfPng(cEVESAll,Form("%sChEff%s_%s",DirRes_ChEff,NoiseStr,TimeStr));
   
-
+  //@@ Add the Odet->Edet
 }
+

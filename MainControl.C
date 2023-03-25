@@ -1,3 +1,9 @@
+#ifndef FATAL
+#define FATAL(msg) do { fprintf(stderr, "FATAL: %s\n", msg); gSystem->Exit(1); } while (0)
+#endif
+#ifndef GET_BIT
+#define	GET_BIT(x, bit)	((x & (1 << bit)) >> bit)
+#endif
 using namespace std;
 //if the char variable is empty, then set the default;
 const string AOPT[32] = {
@@ -15,7 +21,6 @@ void MainControl(
   char *path_Mac    , char *name_Raw, char *name_Hk,
   const string runOPT = "nLrP")
 {
-
   /*The setting and define of variable are at MainControl.C: L233, void MainControl()*/
   cout<<"Enter Setting:"<<endl;
   cout<<"   Ori_path_Mac:  "<<Ori_path_Mac<<endl;
@@ -32,126 +37,132 @@ void MainControl(
   for (int i=0; AOPT[i]!="-" ;i++)
     if(int( runOPT.find(AOPT[i])) != -1) OPT |= 1UL << i;
   
-  cout<<OPT<<endl;
-  bool ReRunRunMode    = OPT>>0;
-
-  bool testMode        = OPT>>1;//pwidth ana. test mode
-  bool normalizeMode   = OPT>>2;
-  bool NegHiRatChMode  = OPT>>3;
-  bool lowstatisticMode= OPT>>4;
-  bool rootFileMode    = OPT>>5;  
-  bool SETightMode     = OPT>>6;
-  bool PointTextMode   = OPT>>7;
-  bool SkipBlockStop   = OPT>>8;//default skip the progress = true
+  bool ReRunRunMode    = GET_BIT(OPT,0);
+  bool testMode        = GET_BIT(OPT,1);//pwidth ana. test mode
+  bool normalizeMode   = GET_BIT(OPT,2);
+  bool NegHiRatChMode  = GET_BIT(OPT,3);
+  bool lowstatisticMode= GET_BIT(OPT,4);
+  bool rootFileMode    = GET_BIT(OPT,5);  
+  bool SETightMode     = GET_BIT(OPT,6);
+  bool PointTextMode   = GET_BIT(OPT,7);
+  bool SkipBlockStop   = GET_BIT(OPT,8);//default skip the progress = true
   
-  bool BlockEnv        = OPT>>9;//default skip the progress = true
-  bool BlockODetImf    = OPT>>10;//default skip the progress = true
-  bool BlockFindOriFile= OPT>>11;//default skip the progress = true
-  bool BlockConvertor  = OPT>>12;//default skip the progress = true
-  bool BlockFindRFile  = OPT>>13;//default skip the progress = true
-  bool BlockDSLAna     = OPT>>14;//default skip the progress = true
-  bool BlockDayEff     = OPT>>15;//default skip the progress = true
-  bool BlockEventGaps  = OPT>>16;//default skip the progress = true
-  bool BlockEzMuEID    = OPT>>17;//default skip the progress = true
-  bool BlockVTrack     = OPT>>18;//default skip the progress = true
-  bool BlockVTrackEff  = OPT>>19;//default skip the progress = true
-  bool BlockEzPWAna    = OPT>>20;//default skip the progress = true
-  bool BlockFitTrick   = OPT>>21;//default skip the progress = true
-  bool BlockFitTrickRes= OPT>>22;//default skip the progress = true
-  bool BlockFitPWAna   = OPT>>23;//default skip the progress = true
-  bool BlockFinalSelect= OPT>>24;//default skip the progress = true
-  bool BlockRateVTime  = OPT>>25;//default skip the progress = true
+  bool BlockEnv        = GET_BIT(OPT,9);//default skip the progress = true
+  bool BlockODetImf    = GET_BIT(OPT,10);//default skip the progress = true
+  bool BlockFindOriFile= GET_BIT(OPT,11);//default skip the progress = true
+  bool BlockConvertor  = GET_BIT(OPT,12);//default skip the progress = true
+  bool BlockFindRFile  = GET_BIT(OPT,13);//default skip the progress = true
+  bool BlockDSLAna     = GET_BIT(OPT,14);//default skip the progress = true
+  bool BlockDayEff     = GET_BIT(OPT,15);//default skip the progress = true
+  bool BlockEventGaps  = GET_BIT(OPT,16);//default skip the progress = true
+  bool BlockEzMuEID    = GET_BIT(OPT,17);//default skip the progress = true
+  bool BlockVTrack     = GET_BIT(OPT,18);//default skip the progress = true
+  bool BlockVTrackEff  = GET_BIT(OPT,19);//default skip the progress = true
+  bool BlockEzPWAna    = GET_BIT(OPT,20);//default skip the progress = true
+  bool BlockFitTrick   = GET_BIT(OPT,21);//default skip the progress = true
+  bool BlockFitTrickRes= GET_BIT(OPT,22);//default skip the progress = true
+  bool BlockFitPWAna   = GET_BIT(OPT,23);//default skip the progress = true
+  bool BlockFinalSelect= GET_BIT(OPT,24);//default skip the progress = true
+  bool BlockRateVTime  = GET_BIT(OPT,25);//default skip the progress = true
 
-  
   bool OperMode[7]={
     testMode,         normalizeMode,    NegHiRatChMode,
     lowstatisticMode, rootFileMode,     SETightMode,
     PointTextMode,
   };
   
-  bool SkipBlocks = true;
-  
-  if(BlockEnv){
-    /* P.01 */
-    /* Copy the AnaVariable.h and the macros into path_Mac and locate tmpdir*/
-    gROOT->LoadMacro("./RenewMacros.h");
-    RenewMacros(TString(path_Mac),TString(Ori_path_Mac));
-    /* const path of Macro compiling */
-    gSystem->SetBuildDir(TString(path_Mac)+"tmpdir", kTRUE);
-  
-    /* P.02 *///-Able-
-    /* Establish the Compile dir set */
-    gROOT->LoadMacro(Form("%sDataBaseLocate.C+",path_Mac));
-    DataBaseLocateV3( path_Raw, path_Hk, path_Run, path_Rot, path_OpR, path_Mac, name_Raw, name_Hk, '' );
-    cout<<"Path of Raw data: "<<path_Raw<<endl;
-    cout<<"Path of Root Dir: "<<path_OpR<<endl;
-  }
-  
-  if(ReRunRunMode){
-    /* P.03 *///-Able-
-    gROOT->LoadMacro(Form("%sRunDataSortAna.C+",path_Mac));
-    //RunDataSortAna();
-  }
-  
-  if(BlockODetImf){
-    /* P.04 *///-New-
-    /* Locate the data of detector */
-    gROOT->LoadMacro(Form("%sODectImfAna.C+",path_Mac));
-    //void ODectImfAna()
-    //ODectImfAna();
-    TillRunODInf();
-  }
+  bool SkipBlocks = false;
+    if(BlockEnv){
+      /* P.01 */
+      /* Copy the AnaVariable.h and the macros into path_Mac and locate tmpdir*/
+      gROOT->LoadMacro("./RenewMacros.h");
+      RenewMacros(TString(path_Mac),TString(Ori_path_Mac));
+      /* const path of Macro compiling */
+      gSystem->SetBuildDir(TString(path_Mac)+"tmpdir", kTRUE);
     
+      /* P.02 *///-Able-
+      /* Establish the Compile dir set */
+      gROOT->LoadMacro(Form("%sDataBaseLocate.C+",path_Mac));
+      DataBaseLocateV3( path_Raw, path_Hk, path_Run, path_Rot, path_OpR, path_Mac, name_Raw, name_Hk, '' );
+      cout<<"Path of Raw data: "<<path_Raw<<endl;
+      cout<<"Path of Root Dir: "<<path_OpR<<endl;
+    }
+    
+    if(ReRunRunMode){
+      /* P.03 *///-Able-
+      gROOT->LoadMacro(Form("%sRunDataSortAnaV2.C+",path_Mac));
+      RunDataSortAnaV2();
+    }
+
   if(!SkipBlocks){
-    
-    /* File search engine */
-    gROOT->LoadMacro(Form("%sDataNameAna.C+",path_Mac));
+    if(BlockODetImf){
+      /* P.04 *///-New-
+      /* Locate the data of detector */
+      gROOT->LoadMacro(Form("%sODectImfAna.C+",path_Mac));
+      //void ODectImfAna()
+      ODectImfAna();
+      TillRunODInf();
+      EffTillRunODInf("./EffTestV2_V3.txt");
+      
+      /* P.05 *///-New-
+      /* Locate the data of detector */
+      // gROOT->LoadMacro(Form("%sCombinationFac.C+",path_Mac));
+      //GetPosCode();
+      //OCombinationFac();
+      // CombinationFac();
+    }
     
     if(BlockFindOriFile){
-      /* P.05 */
+      /* P.06 */
       /* Find Raw .txt data Names and path */
+      gROOT->LoadMacro(Form("%sDataNameAna.C+",path_Mac));
       int txtfnum = DataNameAnaTxt_Mu();
       //int DataNameAnaTxt_Mu(const char OPT='P') 
       cout<<"Find Raw .txt data Number:  "<<txtfnum<<endl;
       
-      /* P.06 */
+      /* P.07 */
       /* Find HK .txt data Names and path */
-      // int Hktxtfnum = DataNameAnaTxt_Hk();
+      gROOT->LoadMacro(Form("%sDataNameAna.C+",path_Mac));
+      int Hktxtfnum = DataNameAnaTxt_Hk();
       //int DataNameAnaTxt_Mu(const char OPT='P') 
       // cout<<"Find Hk .txt data Number:  "<<Hktxtfnum<<endl;
+      
     }
-    
+        // throw;
     if(BlockConvertor){
-      /* P.07 *///-New-
+      /* P.08 *///-New-
       /* Convert File from raw .txt to be raw .root */
       gROOT->LoadMacro(Form("%sCaConvertor.C+",path_Mac));
       MuoCaConvertor();
     }
-    
+
     if(BlockFindRFile){
-      /* P.08 */
+      /* P.09 */
       /* Find Raw .root data Names and path */
+      gROOT->LoadMacro(Form("%sDataNameAna.C+",path_Mac));
       int rotfnum = DataNameAnaRoot_Mu('');
       //int DataNameAnaRoot_Mu(const char OPT='P') 
       cout<<"Find Raw .root data Number:  "<<rotfnum<<endl;
     }
-    
+  }
+  
+  if(!SkipBlocks){
     if(BlockDSLAna){
-      /* P.09 *///-Able-
+      /* P.10 *///-Able-
       /*Analize the Data for time start to end and save to head file*/
-      gROOT->LoadMacro(Form("%sDSLAnaV2.C+",path_Mac));
-      DSLAnaV2();
-    }
-    
-    if(BlockDayEff){
-      /* P.10 *///-New-
-      /* Data Collection Efficiency on every day */
-      gROOT->LoadMacro(Form("%sDayEAnaV3.C+",path_Mac));
-      DayEAnaV4();
+      gROOT->LoadMacro(Form("%sDSLAnaV3.C+",path_Mac));
+      DSLAnaV3();
     }
 
-    if(BlockEventGaps){
+    if(BlockDayEff){
       /* P.11 *///-New-
+      /* Data Collection Efficiency on every day */
+      gROOT->LoadMacro(Form("%sDayEAnaV4.C+",path_Mac));
+      DayEAnaV4();
+    }
+    
+    if(BlockEventGaps){
+      /* P.12 *///-New-
       /*Convert Raw_Mu.root to be Gap*.root by tcnt cut*/
       gROOT->LoadMacro(Form("%sEventAna.C+",path_Mac));
       //int Num_RawEVE = EventAna(33,34);
@@ -159,9 +170,10 @@ void MainControl(
       EventAna(33,34);
       EventGapAna();
     }
-    
+  
+
     if(BlockEzMuEID){
-      /* P.12 *///-New-
+      /* P.13 *///-New-
       /*Simpling ID of Mu and Ele to be Events*.root */
       gROOT->LoadMacro(Form("%sMuonElectronID.C+",path_Mac));
       MuoEleIDAna(OperMode, 33,34);//300
@@ -169,22 +181,25 @@ void MainControl(
     }
     
     if(BlockVTrack){
-      /* P.13 */
+      /* P.14 */
       /* Verticle Straight line Event Ana to be Track*.root */
       gROOT->LoadMacro(Form("%sVerticalTracksAna.C+",path_Mac));
       VerticalTracksAnaV2(OperMode,33,34);
       //VerticalTracksAna(c.int indexi=28, c.int indexf=29 )
     }
-    
+  
     if(BlockVTrackEff){
-      /* P.14 */
+      /* P.15 */
       /* Find real events in straight line Tracking Ana. */
       gROOT->LoadMacro(Form("%sSTRealEvAna.C+",path_Mac));
-      STRealEvAna(33);
+      STRealEvAnaV2(33);
     }
+  }
 
+  
+  if(!SkipBlocks){
     if(BlockEzPWAna){
-      /* P.15 *///-New-
+      /* P.16 *///-New-
       /* Pwidth analyze for function fitting and trigger ana. */
       gROOT->LoadMacro(Form("%sPwidthAna.C+",path_Mac));
       PwidthAnaV2(OperMode,33);
@@ -192,7 +207,7 @@ void MainControl(
     }
 
     if(!SkipBlockStop){
-      /* P.16 */
+      /* P.17 */
       /* Pwidth analyze for function fitting and trigger ana. */
       //gROOT->LoadMacro(Form("%sPWidthPeakAna.C+",path_Mac));
       //PWidthPeakAna(OperMode);
@@ -200,76 +215,85 @@ void MainControl(
     }
 
     if(BlockFitTrick){
-      /* P.17 *///-New--@@
+      /* P.18 *///-New--@@
       /* Straight line Tracking of Event to be ETracks*.txt */
       gROOT->LoadMacro(Form("%sTrackAna.C+",path_Mac));
       TrackAna(33,34);
+      FitTrackInfoAna(33);
       //void  FitTrackResAna(c.int indexi=28, c.int indexf=29 )
     }
-    
+  }
+
     if(BlockFitTrickRes){
-      /* P.18 *///-New--
+      /* P.19 *///-New--
       /* Straight line Tracking Result display*.txt */
       gROOT->LoadMacro(Form("%sFitTrackResAna.C+",path_Mac));
-      FitTrackResAna(33);
+      FitTrackResAnaV2(33,true);//@@
       //void  FitTrackResAna(const int indexGap=28)
     }
-    
+  if(!SkipBlocks){
     if(BlockFitPWAna){
-      /* P.19 *///-New-
+      /* P.20 *///-New-
       /* Pwidth analyze for function fitting and trigger ana. */
       gROOT->LoadMacro(Form("%sPwidthAna.C+",path_Mac));
       PwidthAnaV2P(OperMode,33);
     }
-    
+  }
     if(BlockFinalSelect){
-      /* P.20 */
+      /* P.21 */
       /* ana. of Select Event numbers per day and pwidth distribution */
       gROOT->LoadMacro(Form("%sSEAnaV2.C+",path_Mac));
       SEAnaV2(33);
     }
 
+  FATAL("wogf");
+  if(!SkipBlocks){
     if(BlockRateVTime){
-      /* P.21 *///-New-
+      /* P.22 *///-New-
       /* Rate ana for separate board and chID (easy to observe all) */
       gROOT->LoadMacro(Form("%sR4VTAna.C+",path_Mac));
       R4VTAna();
       
-      /* P.22 */
+      /* P.23 */
       /* Rate ana for general chID (easy to observe all) */
       gROOT->LoadMacro(Form("%sRVTAna.C+",path_Mac));
       RVTAna();
       
-      /* P.23 */
+      /* P.24 */
       /* Rate Vs Time cp of channel or board for different display way */
       //gROOT->LoadMacro(Form("%sRVTCAna.C+",path_Mac));
       //RVTCAna();
-    }
+    }  
   }
-  
-  
-  if(!SkipBlockStop){
-    /* P.24 */
-    /* Find HK data and record data to be .dat */
-    // gROOT->LoadMacro(Form("%sHKProAna.C+",path_Mac));
-    //HKProAna();
-    
     /* P.25 */
-    /* draw th2f colz for TVTime or HVTime and save average TVtime and HVTime*/
-    //gROOT->LoadMacro(Form("%sHKProAna.C+",path_Mac));
-    //HKAna();
-    
+    /* Find HK data and record data to be .dat */
+    gROOT->LoadMacro(Form("%sHKProAna.C+",path_Mac));
+    HKProAnaV3();
+
     /* P.26 */
-    /* Draw TVTime or HVTime by TGraph */
-    //gROOT->LoadMacro(Form("%sHKProAna.C+",path_Mac));
-    //HKTGAna();
+    /* draw th2f colz for TVTime or HVTime and save average TVtime and HVTime*/
+    gROOT->LoadMacro(Form("%sHKProAna.C+",path_Mac));
+    HKAnaV2();
     
     /* P.27 */
+    /* Draw TVTime or HVTime by TGraph */
+    gROOT->LoadMacro(Form("%sHKProAna.C+",path_Mac));
+    HKTGAnaV2();
+    /* P.28 */
+    /* Draw the relationship of Temperature/Humidity Vs Position Vs time pass*/
+    gROOT->LoadMacro(Form("%sHKPosAna.C+",path_Mac));
+    HKPosAna();
+  
+
+  // throw;
+  if(!SkipBlockStop){
+    
+    /* P.29 */
     /* Rate Vs house keeping data for Temperature or humidity */
     //gROOT->LoadMacro(Form("%sRVHKAna.C+",path_Mac));
     //RVHKAna(OperMode);
     
-    /* P.28 */
+    /* P.30 */
     /* Hit count/sequence skip ana. */
     //gROOT->LoadMacro(Form("%sSeqSkipAna.C+",path_Mac));
     //SeqSkipAna();
@@ -283,32 +307,34 @@ void MainControl(
 
 void MainControl()
 {
+  
   /* @AdjustPath */
   //path of original Macros, it is the Macro path your download from GitHub  
   char *Ori_path_Mac = "./Macro/";
   
   /* Adjustable Path Variable */
-  char *path_Raw = "/data4/YuSiang/TEST/";
+  char *path_Raw = "/data4/YuSiang/Shimen/";
 
-  //path of the raw data for muon (*_Mu.txt)
-  char *path_Hk  = "/data4/YuSiang/TEST/HKData/";
+  // path of the raw data for muon (*_Mu.txt)
+  char *path_Hk  = "/data4/YuSiang/Shimen/HKData/";
   
-  //path of the runs data for detector information (Setup_*.txt)
-  char *path_Run = "/data4/YuSiang/TEST/OdetData/";
+  // path of the runs data for detector information (Setup_*.txt)
+  char *path_Run = "/data4/YuSiang/Shimen/OdetData/";
   
-  //path of the raw data for House keeping (*_HK.txt)
-  char *path_Rot = "/data4/YuSiang/TEST/rootfile/";
+  // path of the raw data for House keeping (*_HK.txt)
+  char *path_Rot = "/data4/YuSiang/TEST2/rootfile/";
   
-  //path of the raw data for House keeping (*_HK.txt)
-  char *path_OpR = "/data4/YuSiang/TEST/Ana/";
+  // path of the raw data for House keeping (*_HK.txt)
+  char *path_OpR = "/data4/YuSiang/TEST2/ShimenAnaR04/";
     
-  //path of result and operation data
-  char *path_Mac = "./MacroTmp/";
-  //path of operation Macros, it is the Macro path your put in the case dir
+  // path of result and operation data
+  char *path_Mac = "/data4/YuSiang/TEST2/ShimenAnaR04/MacroTmp/";
+  // path of operation Macros, it is the Macro path your put in the case dir
   
   /* Data name want to search!! */
-  char *name_Raw = "*_Mu";
-  char *name_Hk  = "*_HK";
+  char *name_Raw = "*tunnel4*_*Mu*";
+  char *name_Hk  = "*tunnel4*_*HK*";
+
   /*Example:   
     1. A directory contain 3 file:
         Name1.txt & Name.txt & N.txt

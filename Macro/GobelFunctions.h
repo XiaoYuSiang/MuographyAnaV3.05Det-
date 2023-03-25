@@ -423,6 +423,7 @@ namespace MuographGobelFuns{
     int &iRunStart, int &iRunFinal,
     const char *TillfileForm = "Setup_Till_Run")
   {
+    cout<<"dataPath_RTill: "<<dataPath_RTill<<"\n version: "<<version<<"\t iRunStart&Final: "<<iRunStart<<"\t"<<iRunFinal<<endl;
     const int TriggerOfRunINum = 50;
     iRunStart = 0;
     char tmpfile[250];
@@ -448,9 +449,6 @@ namespace MuographGobelFuns{
       if(SizeOfFile<5120) break;
       iRunFinal++;
     }
-    
-
-    
   }
 
   void GetEffExtUc(const float eff, const float statistic, float &min, float &max, float &ucl, float &uch){
