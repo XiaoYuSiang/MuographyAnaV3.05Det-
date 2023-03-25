@@ -1,19 +1,16 @@
 # !!!Branch for V2.00Efftest version (ver20230325)!!!:
-  ### Located a new branch of code for the V2.00Efftest version.
-  ### Revise the problem for gbx/gby/gbz not found in the 'AnaVariable.h'.
-  ### Revise problem of searches the RunData files.
-  ### Disable some function which will not using in the eff. test.
-  ## Take the default setting for example:
-  ### You can find the operation situation of detector in the:
-       "/data4/YuSiang/TEST2/ShimenAnaR04/Result/DayEff/"
-  ### The operation situation of all channels:
-       "/data4/YuSiang/TEST2/ShimenAnaR04/Result/Loose_BoardGRtNor/"
+  **This is a new branch of code for the V2.00Efftest version. It addresses several issues, including the problem of gbx/gby/gbz not being found in the 'AnaVariable.h' file, as well as issues with searching the RunData files. Additionally, certain functions that are not needed for the efficiency test have been disabled.**
+  ## Here is an example of the default settings:
+       You can find the operation status
+  ### The operation status of all channels can be found in:
+       /data4/YuSiang/TEST2/ShimenAnaR04/Result/DayEff/
+       /data4/YuSiang/TEST2/ShimenAnaR04/Result/Loose_BoardGRtNor/
   ### The PWidth of all channels:
-       "/data4/YuSiang/TEST2/ShimenAnaR04/Result/Loose_BoardGPwNor/"
-  ### The efficiency result for text in:
-       "/data4/YuSiang/TEST2/ShimenAnaR04/OperateResule/Cheff_NT0NF0_TStr.txt"
-  ### The efficiency result for graph in:
-       "/data4/YuSiang/TEST2/ShimenAnaR04/OperateResule/"
+       /data4/YuSiang/TEST2/ShimenAnaR04/Result/Loose_BoardGPwNor/
+  ### The efficiency result for text can be found in:
+       /data4/YuSiang/TEST2/ShimenAnaR04/OperateResule/Cheff_NT0NF0_TStr.txt
+  ### The efficiency result for graph can be found in:
+       /data4/YuSiang/TEST2/ShimenAnaR04/OperateResule/
        
 # (ver20230323)!!!:
   **Revise the issue regarding the inconvenient use of the 'BDINV[]' array in 'AnaVariable.h' by replacing its function with 'int BDCheck(int b)' from 'GobelFunctions.h'.**
