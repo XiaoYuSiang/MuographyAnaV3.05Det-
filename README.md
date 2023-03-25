@@ -1,6 +1,7 @@
 # !!!Branch for V2.00Efftest version (ver20230325)!!!:
   **This is a new branch of code for the V2.00Efftest version. It addresses several issues, including the problem of gbx/gby/gbz not being found in the 'AnaVariable.h' file, as well as issues with searching the RunData files. Additionally, certain functions that are not needed for the efficiency test have been disabled.**
-  ## To analyze the efficiency, you will need to create a run-data file. Here is an example of how to create such a file:**
+  ## To analyze the efficiency, you will need to create a run-data file. Here is an example of how to create such a file under the :
+     **char *path_Run = "/data4/YuSiang/Shimen/OdetData/";
     /data4/YuSiang/Shimen/OdetData/Setup_Run04.txt
   ![image](https://user-images.githubusercontent.com/105832014/227718098-203a98da-a9d4-4790-926a-7aa467e620d9.png)
 
