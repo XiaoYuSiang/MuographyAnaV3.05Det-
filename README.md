@@ -1,5 +1,12 @@
 # !!!Branch for V2.00Efftest version (ver20230325)!!!:
   **This is a new branch of code for the V2.00Efftest version. It addresses several issues, including the problem of gbx/gby/gbz not being found in the 'AnaVariable.h' file, as well as issues with searching the RunData files. Additionally, certain functions that are not needed for the efficiency test have been disabled.**
+  ## To analyze the efficiency, you will need to create a run-data file. Here is an example of how to create such a file:**
+    /data4/YuSiang/Shimen/OdetData/Setup_Run04.txt
+    ![image](https://user-images.githubusercontent.com/105832014/227718098-203a98da-a9d4-4790-926a-7aa467e620d9.png)
+
+  ## You also need to set the setting in the 'AnaVariable.h' for the first run data in the dictionary:
+     const Int_t  StartSearchRun = 4;
+     ![image](https://user-images.githubusercontent.com/105832014/227718031-d976aeb9-6346-4333-b580-4e9e755202d8.png)
   ## Here is an example of the default settings:
   ### You can find the operation status
   ### The operation status of all channels can be found in:
