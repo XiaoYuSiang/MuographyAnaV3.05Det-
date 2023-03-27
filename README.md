@@ -1,4 +1,49 @@
-# !!!A new Update content(ver20230323)!!!:
+
+# !!Warning!!: the Maincontrol isn't work without some emvoriment(I guess CVMFS)
+### The solution is use **"chip02.phy.ncu.edu.tw"** and add the two line in your **".bashrc"**:
+    source /data4/cmkuo/root/bin/thisroot.sh
+    source /cvmfs/cms.cern.ch/cmsset_default.sh
+# !!! New branch EarlyVer_V3.05V2 (ver20230327) !!!
+### 01. Save the Setting file by JSON
+#### Modify the underlying logic of the main program parameter passing to store the control parameters of the main program in a JSON file, and read the JSON file when executing the main program.
+* As usual, you can edit the path and parameter settings in the **"MainControl()"** function at the bottom to perform analysis.
+* After editing the settings in the main program and executing it, a configuration file will be generated. You can save this configuration file or modify its contents for future use.
+    + PS: **"OutSettingTmp.JSON"** is the default file for generate in the program.
+* There are also some of the setting files that I used for analysis in the main dictionary like AdjustPath-*.JSON.
+* If you already have a JSON setting , then execute the program by main program **"MainControl(\*Settingfile)"**.
+* @graph 1
+### 02. Add the Setting of Monticello: MCMode, path_MC, name_MC
+* This new Setting means the code operation by **MCMode** or not.
+* **"path_MC"** is the path of MC source file.
+* **"name_MC"** is the name of MC source file.
+* **"path_Rot"** will be changed from where Raw_Mu.root is stored to where RAW_MC.root is stored under the MCMode.
+* If **"MCMMode"** is enabled, the program will not read the contents of path_Raw, path_Hk, name_Raw, and name_Hk, which must be set to empty values. Conversely, if MCMMode is disabled, the program will not read the contents of path_MC and name_MC.
+### 03. Split the header file AnaVariable.h into two parts.
+* **"AnaVariable.h"** mainly stores the analysis parameters.
+* **"./DetInforSet/DetSet\*.h"** is the detector model and mechanical structure parameter, and is related to the **"det_ver"**.
+* **"./DetInforSet/DetSet/DetSetUserSet.h"** is a file that provides users with the ability to customize the detector structure or module count during testing.
+    + PS: When using DetSetUserSet.h, the det_ver should be **"User"**.
+* After the operate RenewMacros.h, the AnaVariable.h and ./DetInforSet/DetSet\*.h will be will be merged into **./Macro/AnaVariable.h**.
+### 04. Fix some issues with fetching RunData files
+* **Warning**: all Run files in the **"path_Run/"** directory cannot have only Run0, otherwise it will cause errors.
+### 05. **DataNameAnaV2.C** 
++ add function MCNameAnaRoot_Mu to fetch MC files **"path_MC/name_MC"**.
+### 06. **DSLAnaV4.C** 
++ add the attributes for the MCMode
+### 07. **G4CaConvertorV2.C**
++ Use the script to generate files **"RAW_MC.root"** from **"path_MC/name_MC"**.
+### 08. **"EventAnaV2.C"** & **DayEAnaV4.C**
++ added logic for handling MC files. 
+### 09. **"SettingJSONIO.h"** 
++ Added IO header file for JSON parameter settings.
+### 10. **"EffTestV2_V3.txt"**
++ Full effciency fake data.
++ File for scintillator saturation efficiency (used for testing scintillator efficiency to avoid errors). The BID from 1-128
+### 11. **"./Macro/GA4x4_2.csv"**
++ Using the detector GA from V3.0 to fill in the missing parts of the detector GA for V2.0.
+### 12. **"GIDConvert.xlsx"**
++ If G4GID and the experimental setup GID do not match, to avoid the need to generate an additional set of MC file-based scintillator position configuration files, you can directly convert them through this spreadsheet. Let me know if you need help.
+# ver20230323:
   **Revise the issue regarding the inconvenient use of the 'BDINV[]' array in 'AnaVariable.h' by replacing its function with 'int BDCheck(int b)' from 'GobelFunctions.h'.**
   * You can download the /Macros and cover the original /Macros on your computer. **Then, you could neglect the array BDINV[].**
 # Introduction of MuographyAnaV3.05Det-
