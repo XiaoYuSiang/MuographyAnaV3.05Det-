@@ -25,10 +25,11 @@ public:
     if(!MCorNot)      SetDataDefault();
     else if(MCorNot)  SetMotCDefault();
   }
-  JSONFileIOSet(const char *JSONFiletmp, const bool MCorNot=false){
+  JSONFileIOSet(const char *JSONFiletmp, bool MCorNot=false){
     CheckJSONGood(JSONFiletmp);
     SetJSONName(JSONFiletmp);
-    JSONFileIOSet(MCorNot);
+    if(!MCorNot)      SetDataDefault();
+    else if(MCorNot)  SetMotCDefault();
     ImportJSON();
   }
   void CheckJSONGood(const char *JSONFiletmp){
@@ -110,8 +111,8 @@ private:
   void SetDataDefault(){
     MCMode    = false;
 
-    path_MC        = "NULL";
-    name_MC        = "NULL";
+    path_MC        = Form("NULL");
+    name_MC        = Form("NULL");
     
     ReRunRunMode    = true;  testMode        = false; normalizeMode   = true;
     NegHiRatChMode  = false; lowstatisticMode= true;  rootFileMode    = true;
@@ -129,11 +130,11 @@ private:
   void SetMotCDefault(){
     MCMode    = true;
 
-    path_Raw       = "NULL";
-    path_Hk        = "NULL";
-    path_Rot       = "NULL";
-    name_Raw       = "NULL";
-    name_Hk        = "NULL";
+    path_Raw       = Form("NULL");
+    path_Hk        = Form("NULL");
+    path_Rot       = Form("NULL");
+    name_Raw       = Form("NULL");
+    name_Hk        = Form("NULL");
     
     ReRunRunMode    = true;  testMode        = false; normalizeMode   = true;
     NegHiRatChMode  = false; lowstatisticMode= false; rootFileMode    = true;

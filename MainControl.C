@@ -15,7 +15,6 @@ const string DataDetVer[10] = {
 };
 
 void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13_20230309.json")
-// {
   JSONFileIOSet PMS(Settingfile);//PathModeSetting
 
   PMS.Show();
