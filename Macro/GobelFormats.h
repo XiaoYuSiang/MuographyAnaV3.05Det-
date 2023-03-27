@@ -18,9 +18,11 @@ namespace MuographGobelForm{//@@ADD read.h at IMF
     float pX,  pY,  pZ;
     float sX,  sY,  sZ;
     bool  face;//true = face outside, false = face inside
-    float Threshold;
-    float Voltage;
-    float PwWei;//true = face outside, false = face inside
+    float Threshold;//unit: mVolt
+    float Voltage;//unit: Volt
+    float PwWei;//related to the resistance
+    float Efficiency;//100% = 1.
+    float EffSta;//Num of Eff data for marge different experiment
     
     scintillator(const char names[]="default", double GID=0,double BID=0,double CID=0){
       SetName(names);
@@ -28,10 +30,13 @@ namespace MuographGobelForm{//@@ADD read.h at IMF
       SetIndex();
       SetBIndex();
       SetPosition();
+      face = true;//true = face outside, false = face inside
+      SetParameters();
+      EffSta = 0;
     }
     virtual ~scintillator(){}
     
-    void SetName(const char *names){
+    void SetName(const char names[]="default"){
       sprintf(name,names);
     }
     char *GetName(){
@@ -57,6 +62,71 @@ namespace MuographGobelForm{//@@ADD read.h at IMF
       pY = py;
       pZ = pz;
     }
+    void SetParameters(
+      const float Tr = 60, const float Vt = 29, 
+      const float PW = 1., const float Ef = 1.
+    ){
+      Threshold  = Tr;
+      Voltage    = Vt;
+      PwWei      = PW;
+      Efficiency = Ef;
+    }
+    void Clear(){
+      SetName();
+      SetID();
+      SetIndex();
+      SetBIndex();
+      SetPosition();
+      face = true;//true = face outside, false = face inside
+      SetParameters();
+      EffSta = 0;
+    }
+    
+    
+    void SetSciTreeBranch(TTree *tPos){
+      tPos->Branch("GeneralID"   ,&GeneralID    , "GeneralID/I" );
+      tPos->Branch("name"        ,&name         , "name/C"      );
+      tPos->Branch("boardID"     ,&boardID      , "boardID/I"   );
+      tPos->Branch("channelID"   ,&channelID    , "channelID/I" );
+      tPos->Branch("BiX"         ,&BiX          , "BiX/I"       );
+      tPos->Branch("BiY"         ,&BiY          , "BiY/I"       );
+      tPos->Branch("BiZ"         ,&BiZ          , "BiZ/I"       );
+      tPos->Branch("iX"          ,&iX           , "iX/I"        );
+      tPos->Branch("iY"          ,&iY           , "iY/I"        );
+      tPos->Branch("iZ"          ,&iZ           , "iZ/I"        );
+      tPos->Branch("pX"          ,&pX           , "pX/F"        );
+      tPos->Branch("pY"          ,&pY           , "pY/F"        );
+      tPos->Branch("pZ"          ,&pZ           , "pZ/F"        );
+      tPos->Branch("face"        ,&face         , "face/O"      );
+      tPos->Branch("Threshold"   ,&Threshold    , "Threshold/F" );
+      tPos->Branch("Voltage"     ,&Voltage      , "Voltage/F"   );
+      tPos->Branch("PwWei"       ,&PwWei        , "PwWei/F"     );
+      tPos->Branch("Efficiency"  ,&Efficiency   , "Efficiency/F");
+      tPos->Branch("EffSta"      ,&EffSta       , "EffSta/F"    );
+    }
+    void SetSciTreeBranchAddress(TTree *tPos,bool Beasy=true){ 
+      tPos->SetBranchAddress("GeneralID"   ,&GeneralID   ); 
+      if(Beasy) tPos->SetBranchAddress("name"        ,&name        );
+      tPos->SetBranchAddress("boardID"     ,&boardID     );
+      tPos->SetBranchAddress("channelID"   ,&channelID   );
+      tPos->SetBranchAddress("BiX"         ,&BiX         );
+      tPos->SetBranchAddress("BiY"         ,&BiY         );
+      tPos->SetBranchAddress("BiZ"         ,&BiZ         ); 
+      tPos->SetBranchAddress("iX"          ,&iX          );
+      tPos->SetBranchAddress("iY"          ,&iY          );
+      tPos->SetBranchAddress("iZ"          ,&iZ          );
+      tPos->SetBranchAddress("pX"          ,&pX          );
+      tPos->SetBranchAddress("pY"          ,&pY          ); 
+      tPos->SetBranchAddress("pZ"          ,&pZ          );
+      tPos->SetBranchAddress("face"        ,&face        );
+      if(Beasy){
+        tPos->SetBranchAddress("Threshold"   ,&Threshold   );
+        tPos->SetBranchAddress("Voltage"     ,&Voltage     );
+        tPos->SetBranchAddress("PwWei"       ,&PwWei       ); 
+        tPos->SetBranchAddress("Efficiency"  ,&Efficiency  );
+        tPos->SetBranchAddress("EffSta"      ,&EffSta      );
+      }
+    }
   private:
   protected:
     void Sci_CoutNotation(){
@@ -77,6 +147,109 @@ namespace MuographGobelForm{//@@ADD read.h at IMF
     void Sci_CsvPrint(ofstream &out){
       out<<GeneralID<<","<<boardID<<","<<channelID<<","<<iX<<","<<iY<<","<<iZ<<","<<pX<<","<<pY<<","<<pZ<<","<<face<<","<<PwWei<<endl;
     }
+  }; 
+  
+  
+  class tempSensor{
+  public:
+    int   GeneralID, boardID, TChID;
+    int   BiX, BiY, BiZ;
+    float pX,  pY,  pZ;
+    bool  face;//true = face outside, false = face inside
+    
+    tempSensor(){}
+    tempSensor& operator=(const tempSensor &TS) {
+      SetID(TS.GeneralID,TS.boardID,TS.TChID);
+      SetBIndex(TS.BiX,TS.BiY,TS.BiZ);
+      SetPosition(TS.pX,TS.pY,TS.pZ);
+      face = TS.face;
+      
+    };
+    
+    virtual ~tempSensor(){}
+    
+    void SetID(int GID=0, int BID=0, int CID=0){
+      GeneralID = GID;
+      boardID   = BID;
+      TChID     = CID;
+    }
+    void SetBIndex(int bix=0, int biy=0, int biz=0){
+      BiX = bix;
+      BiY = biy;
+      BiZ = biz;
+    }
+    
+    void SetID_Face_Ver(int TGID,int TBID,int TCID, bool Bface, const char *Ver= "V3.05"){
+      SetID(TGID,TBID,TCID);
+      face = Bface;
+      ID_MTBVerSetpXYZ(TCID,Bface,Ver);
+    }
+    void SetPosition(float fpx = 0,float fpy = 0,float fpz = 0){
+      pX = fpx;
+      pY = fpy;
+      pZ = fpz;
+    }
+    void MoveBPosition(float mpx = 0,float mpy = 0,float mpz = 0){
+      //cout<<pX<<"\t"<<pY<<"\t"<<pZ<<"\t";
+      pX += mpx;
+      pY += mpy;
+      pZ += mpz;
+      //cout<<pX<<"\t"<<pY<<"\t"<<pZ<<"\n";
+    }
+    
+    void SetTSTreeBranch(TTree *t){
+      t->Branch("GeneralID" , &GeneralID);
+      t->Branch("boardID"   , &boardID  );
+      t->Branch("TChID"     , &TChID    );
+      t->Branch("BiX"       , &BiX      );
+      t->Branch("BiY"       , &BiY      );
+      t->Branch("BiZ"       , &BiZ      );
+      t->Branch("pX"        , &pX       );
+      t->Branch("pY"        , &pY       );
+      t->Branch("pZ"        , &pZ       );
+      t->Branch("face"      , &face     );
+    }
+    void SetTSTreeBranchAddress(TTree *t){
+      t->SetBranchAddress("GeneralID" , &GeneralID);
+      t->SetBranchAddress("boardID"   , &boardID  );
+      t->SetBranchAddress("TChID"     , &TChID    );
+      t->SetBranchAddress("BiX"       , &BiX      );
+      t->SetBranchAddress("BiY"       , &BiY      );
+      t->SetBranchAddress("BiZ"       , &BiZ      );
+      t->SetBranchAddress("pX"        , &pX       );
+      t->SetBranchAddress("pY"        , &pY       );
+      t->SetBranchAddress("pZ"        , &pZ       );
+      t->SetBranchAddress("face"      , &face     );
+    }
+  private:
+    void ID_MTBVerSetpXYZ(int TCID, bool Bface, const char *Ver= "V03_05"){
+
+      if(strcmp(Ver,"V02_00")==0){
+        if((Bface!=1)||TCID<0||TCID>5){
+          cout<<"Error!!! Please Enter true TChID in tempSensor::SetVerMTB(int TChID, c.char *Ver)"<<endl;
+          cout<<"Now, TChID: "<<TCID<<endl;
+          throw;
+        }
+        pX = V200BTSpXYZ[0][TCID];
+        pY = V200BTSpXYZ[1][TCID];
+        pZ = V200BTSpXYZ[2][TCID];
+      }else if(strcmp(Ver,"V03_05")==0){
+        if((Bface!=0&&Bface!=1)||TCID<0||TCID>5){
+          cout<<"Error!!! Please Enter true TChID in tempSensor::SetVerMTB(int TChID, c.char *Ver)"<<endl;
+          cout<<"Now, TChID: "<<TCID<<endl;
+          throw;
+        }
+        pX = V305BTSpXYZ[Bface][0][TCID];
+        pY = V305BTSpXYZ[Bface][1][TCID];
+        pZ = V305BTSpXYZ[Bface][2][TCID];
+      }else{
+        cout<<"Error!!! Please Enter true Ver in tempSensor::SetVerMTB(int TChID, c.char *Ver)"<<endl;
+        throw;
+      }
+    }
+  protected:
+    
+    
   };
   
   
@@ -237,8 +410,8 @@ namespace MuographGobelForm{//@@ADD read.h at IMF
     int      EndDay  , EndY, EndM, EndD;
     float    DPhi;
     float    DTheta;
-    int      StartUT;
-    int      EndUT;
+    Long64_t StartUT;
+    Long64_t EndUT;
     
     RunData(){
       SetIni();
@@ -269,7 +442,210 @@ namespace MuographGobelForm{//@@ADD read.h at IMF
 
     
   };
+  
+  class HouseKeepingData{
+  public:
+    Long64_t  unixtime , dunixtime;
+    Long64_t  dtimeInt0, dtimeInt1;
+    int boardID;
+    int TempCen, TempFPG;
+    int Temps1, Temps2, Temps3, Temps4;
+    int Humidity, Pressure, Altitude;
+    int degX, degY, degZ;
+    int accX, accY, accZ;
+    int magX, magY, magZ;;
+    
+    HouseKeepingData(){
+      unixtime = -1; dunixtime = -1;
+      dtimeInt0 = -1; dtimeInt1 = -1;
+      boardID = -1;
+      TempCen = -1; TempFPG = -1;
+      Temps1 = -1; Temps2 = -1; Temps3 = -1; Temps4 = -1;
+      Humidity = -1; Pressure = -1; Altitude = -1;
+      degX = -1; degY = -1; degZ = -1;
+      accX = -1; accY = -1; accZ = -1;
+      magX = -1; magY = -1; magZ = -1;
+    };
+    
+    virtual ~HouseKeepingData(){};
 
+    void SetHKTreeBranch(TTree *t){
+      t->Branch("unixtime" , &unixtime );
+      t->Branch("dunixtime", &dunixtime);
+      t->Branch("dtimeInt0", &dtimeInt0);
+      t->Branch("dtimeInt1", &dtimeInt1);
+      t->Branch("boardID"  , &boardID  );
+      t->Branch("TempCen"  , &TempCen  );
+      t->Branch("TempFPG"  , &TempFPG  );
+      t->Branch("Temps1"   , &Temps1   );
+      t->Branch("Temps2"   , &Temps2   );
+      t->Branch("Temps3"   , &Temps3   );
+      t->Branch("Temps4"   , &Temps4   );
+      t->Branch("Humidity" , &Humidity );
+      t->Branch("Pressure" , &Pressure );
+      t->Branch("Altitude" , &Altitude );
+      t->Branch("degX"     , &degX     );
+      t->Branch("degY"     , &degY     );
+      t->Branch("degZ"     , &degZ     );
+      t->Branch("accX"     , &accX     );
+      t->Branch("accY"     , &accY     );
+      t->Branch("accZ"     , &accZ     );
+      t->Branch("magX"     , &magX     );
+      t->Branch("magY"     , &magY     );
+      t->Branch("magZ"     , &magZ     );
+    }
+    void SetHKTreeBranchAddress(TTree *t){
+      t->SetBranchAddress("unixtime" , &unixtime );
+      t->SetBranchAddress("dunixtime", &dunixtime);
+      t->SetBranchAddress("dtimeInt0", &dtimeInt0);
+      t->SetBranchAddress("dtimeInt1", &dtimeInt1);
+      t->SetBranchAddress("boardID"  , &boardID  );
+      t->SetBranchAddress("TempCen"  , &TempCen  );
+      t->SetBranchAddress("TempFPG"  , &TempFPG  );
+      t->SetBranchAddress("Temps1"   , &Temps1   );
+      t->SetBranchAddress("Temps2"   , &Temps2   );
+      t->SetBranchAddress("Temps3"   , &Temps3   );
+      t->SetBranchAddress("Temps4"   , &Temps4   );
+      t->SetBranchAddress("Humidity" , &Humidity );
+      t->SetBranchAddress("Pressure" , &Pressure );
+      t->SetBranchAddress("Altitude" , &Altitude );
+      t->SetBranchAddress("degX"     , &degX     );
+      t->SetBranchAddress("degY"     , &degY     );
+      t->SetBranchAddress("degZ"     , &degZ     );
+      t->SetBranchAddress("accX"     , &accX     );
+      t->SetBranchAddress("accY"     , &accY     );
+      t->SetBranchAddress("accZ"     , &accZ     );
+      t->SetBranchAddress("magX"     , &magX     );
+      t->SetBranchAddress("magY"     , &magY     );
+      t->SetBranchAddress("magZ"     , &magZ     );
+    }
+    
+    void HK_Tem_TxtOuput(ofstream &out){
+      out<<boardID<<"\t"<<unixtime<<"\t"<<dunixtime<<"\t"<<TempCen<<"\t"<<TempFPG<<"\t"<<Temps1<<"\t"<<Temps2<<"\t"<<Temps3<<"\t"<<Temps4<<endl;
+    }
+    void HK_Deg_TxtOuput(ofstream &out){
+      out<<boardID<<"\t"<<unixtime<<"\t"<<dunixtime<<"\t"<<degX<<"\t"<<degY<<"\t"<<degZ<<endl;
+    }
+    void HK_Acc_TxtOuput(ofstream &out){
+      out<<boardID<<"\t"<<unixtime<<"\t"<<dunixtime<<"\t"<<accX<<"\t"<<accY<<"\t"<<accZ<<endl;
+    }
+    void HK_Mag_TxtOuput(ofstream &out){
+      out<<boardID<<"\t"<<unixtime<<"\t"<<dunixtime<<"\t"<<magX<<"\t"<<magY<<"\t"<<magZ<<endl;
+    }
+    void HK_Hum_TxtOuput(ofstream &out){
+      out<<boardID<<"\t"<<unixtime<<"\t"<<dunixtime<<"\t"<<Humidity<<endl;
+    }
+    void HK_Pre_TxtOuput(ofstream &out){
+      out<<boardID<<"\t"<<unixtime<<"\t"<<dunixtime<<"\t"<<Pressure<<endl;
+    }
+    void HK_Alt_TxtOuput(ofstream &out){
+      out<<boardID<<"\t"<<unixtime<<"\t"<<dunixtime<<"\t"<<Altitude<<endl;
+    }
+    
+  };
+  
+  class EffciencyData{
+  public:
+    int GeneralID, boardID, ChannelID;
+    int statistic;
+    float effiency, uncertiantyless, uncertiantyhigh;
+    bool alive;
+    EffciencyData(){
+      alive     = false;
+      boardID   = -1;
+      GeneralID = -1;
+      ChannelID = -1;
+      statistic = -1;
+      effiency  = -1;
+      uncertiantyless = -1;
+      uncertiantyhigh = -1;
+    }
+    EffciencyData(ifstream &in){
+      if(in>>boardID>>ChannelID>>GeneralID>>effiency&&
+        in>>statistic>>uncertiantyless>>uncertiantyhigh)
+        alive = true;
+    }
+    void Show(){
+      cout<<boardID<<"\t"<<ChannelID<<"\t"<<GeneralID<<"\t";
+      cout<<effiency<<"\t"<<statistic<<"\t"<<uncertiantyless<<"\t"<<uncertiantyhigh<<endl;
+    }
+    void Clear(){
+      alive     = false;
+      boardID   = -1;
+      GeneralID = -1;
+      ChannelID = -1;
+      statistic = -1;
+      effiency  = -1;
+      uncertiantyless = -1;
+      uncertiantyhigh = -1;
+    }
+  };
+  
+  class GeometricAreaData{
+  public:
+    string poscode;
+    float Vux, Vuy, Vuz;
+    float Vwx, Vwy, Vwz;
+    float DXZ, DYZ;
+    float AreaFactor;
+    int   NumbFactor;
+    int   SymFactor;
+    bool  Empty;
+    
+    GeometricAreaData(){
+      SetPosCode();
+      SetUnixVector();
+      SetWeiVector();
+      SetDirectDXYZ();
+      SetAreaFactor();
+      SetNumberFactor();
+      SetSymmitryFactor();
+      Empty = true;
+    };
+    
+    virtual ~GeometricAreaData(){};
 
+    
+
+    void SetPosCode(const char *pscod="0,0_0,0_0,0"){
+      poscode = pscod;//sprintf(poscode,"%s",);
+    }
+    void SetUnixVector(const float vx = 0, const float  vy = 0, const float  vz = 1){
+      Vux= vx; Vuy= vy; Vuz= vz;
+    }
+    void SetWeiVector(const float vx = 0, const float  vy = 0, const float  vz = 1){
+      Vwx= vx; Vwy= vy; Vwz= vz;
+    }
+    void SetDirectDXYZ(const float dxz = 0, const float  dyz = 0){ 
+      DXZ = dxz; DYZ = dyz;
+    }
+    void SetAreaFactor(const float AF = 0.025623723){
+      AreaFactor = AF;
+    }
+    void SetNumberFactor(const float NF = 64){
+      NumbFactor = NF;
+    }
+    void SetSymmitryFactor(const float SF = 1){
+      SymFactor = SF;
+    }
+    
+    
+    void ShowTitle(){
+      cout<<"poscode"<<
+      Form("\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 
+        "Vux", "Vuy", "Vuz", "Vwx", "Vwy", "Vwz", "DXZ", "DYZ",
+        "AreaFactor", "NumbFactor", "SymFactor");
+    }
+    void Show(){
+      cout<<poscode<<
+      Form("\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%d\t%d\n", 
+        Vux, Vuy, Vuz, Vwx, Vwy, Vwz, DXZ, DYZ,
+        AreaFactor, NumbFactor, SymFactor);
+    }
+    
+    
+  };
+  
+  
 };
 void GobelFormats(){}

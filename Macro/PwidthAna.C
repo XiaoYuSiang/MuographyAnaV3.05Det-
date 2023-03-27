@@ -55,23 +55,23 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
   bool SETightMode     =true;  SETightMode      = OperMode[5];
   vector<string> vRootFiles = RawRootList(DirOperate);
   // for(int i=0;i<100;i++) cout<<vRootFiles[i]<<endl;
-  cout<<58<<endl;
+
   vector<Long64_t> VNUTRS, VNUTRF;//Vector of Neglect Unixtime Range Start to Final
-  GetNegHourRange(VNUTRS,VNUTRF, DirOperate);cout<<60<<endl;
+  GetNegHourRange(VNUTRS,VNUTRF, DirOperate);
   string Tmp_SGTR = UTNotInNegHourRange(VNUTRS,VNUTRF);//Tmp_StrGoodTimeRange
-  char SGTR[Tmp_SGTR.length()+1]; cout<<62<<endl;
+  char SGTR[Tmp_SGTR.length()+1];
   for(int i=0;i<int(Tmp_SGTR.length()+1);i++) SGTR[i]=Tmp_SGTR[i];
-  cout<<64<<endl;
+
   int binrt = 0;
   int Starttime = unixtimei, Endtime = unixtimef;
   char TestMarker[15]={};
-  cout<<68<<endl;
+  
   if (testMode){
     sprintf(TestMarker,"TST_");
     // NumBD = 1;
     // NumCh = 1;
   }
-  cout<<74<<endl;
+  
   if(SETightMode==false&&testMode) sprintf(TestMarker,"TST_Loose_");
   else if(SETightMode==false) sprintf(TestMarker,"Loose_");
   
@@ -87,7 +87,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
   cout<<"opening....."<<SelectRfile->GetName()<<endl;
   
   
-  cout<<90<<endl;
+  
 
   char DirResultGPw[150]={""}, DirResultGRt[150]={""}, DirResultBDD[170]={""};
   //save path graph of Pwidth Rate
@@ -98,7 +98,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
   if (system(Form("mkdir -p %s",DirResultGRt))!=0) system(Form("mkdir -p %s",DirResultGRt));
   sprintf(DirResultBDD,"%sBoardDetail/",DirResultGPw);  
   if (system(Form("mkdir -p %s",DirResultBDD))!=0) system(Form("mkdir -p %s",DirResultBDD));
-  cout<<101<<endl;
+  
   TStopwatch optime;
   optime.Start();
   binrt = (Endtime-Starttime)*1.0/th2fbinwidth;
@@ -114,7 +114,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
     t->Add(infilename[i]);
     ////cout<<infilename[i]<<endl;
   }
-  cout<<117<<endl;
+  
   
   
   gStyle->SetLineScalePS(0.3);
