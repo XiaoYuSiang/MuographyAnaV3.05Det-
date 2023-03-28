@@ -198,7 +198,7 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
       /* P.19 *///-New--
       /* Straight line Tracking Result display*.txt */
       gROOT->LoadMacro(Form("%sFitTrackResAna.C+",PMS.path_Mac));
-      FitTrackResAnaV2(33,true);//@@
+      FitTrackResAnaV2(33,PMS.RotateSciMode);
       //void  FitTrackResAna(const int indexGap=28)
     }
   if(!SkipBlocks){
@@ -664,6 +664,9 @@ void MainControl()
       
     PathModeSetting.PointTextMode   = true;
       //default: true ; //draw the data point of HK VS Rate to be text(save time).
+      
+    PathModeSetting.RotateSciMode   = false;
+      //Rotate the scintillator array buy 270 degree, default is false
     
     PathModeSetting.SkipBlockStop   = true;
       //default: true ; //Skip the program can't use now.

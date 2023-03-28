@@ -10,7 +10,7 @@ public:
   
   bool ReRunRunMode    , testMode        , normalizeMode   ;
   bool NegHiRatChMode  , lowstatisticMode, rootFileMode    ;
-  bool SETightMode     , PointTextMode   ;
+  bool SETightMode     , PointTextMode   , RotateSciMode   ;
   
   bool SkipBlockStop   ;
   
@@ -73,6 +73,7 @@ public:
     SaveAttrJSON(JSONFileName,"rootFileMode"     ,rootFileMode     );
     SaveAttrJSON(JSONFileName,"SETightMode"      ,SETightMode      );
     SaveAttrJSON(JSONFileName,"PointTextMode"    ,PointTextMode    );
+    SaveAttrJSON(JSONFileName,"RotateSciMode"    ,RotateSciMode    );
     SaveBLinJSON(JSONFileName);
     SaveAttrJSON(JSONFileName,"comment3"         ,"------------BlockModes------------"    );
     SaveAttrJSON(JSONFileName,"SkipBlockStop"    ,SkipBlockStop    );
@@ -116,7 +117,7 @@ private:
     
     ReRunRunMode    = true;  testMode        = false; normalizeMode   = true;
     NegHiRatChMode  = false; lowstatisticMode= true;  rootFileMode    = true;
-    SETightMode     = false; PointTextMode   = true;
+    SETightMode     = false; PointTextMode   = true;  RotateSciMode   = false;
 
     SkipBlockStop   = true; 
     
@@ -138,7 +139,7 @@ private:
     
     ReRunRunMode    = true;  testMode        = false; normalizeMode   = true;
     NegHiRatChMode  = false; lowstatisticMode= false; rootFileMode    = true;
-    SETightMode     = true;  PointTextMode   = false;
+    SETightMode     = true;  PointTextMode   = false; RotateSciMode   = false;
 
     SkipBlockStop   = true; 
     
@@ -177,6 +178,7 @@ private:
     rootFileMode    = FindJSONAttrB( JSONFileName, "rootFileMode"     ,'W');
     SETightMode     = FindJSONAttrB( JSONFileName, "SETightMode"      ,'W');
     PointTextMode   = FindJSONAttrB( JSONFileName, "PointTextMode"    ,'W');
+    RotateSciMode   = FindJSONAttrB( JSONFileName, "RotateSciMode"    ,'W');
 
     SkipBlockStop   = FindJSONAttrB( JSONFileName, "SkipBlockStop"    ,'W');
 
