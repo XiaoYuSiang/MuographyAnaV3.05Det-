@@ -185,7 +185,7 @@ map<int, scintillator> LoadEDectTable(const char* EffFile , const char QMode='q'
   }
 
 void LoadPosCodeTable(map<int, GeometricAreaData> &MapGAD){
-  ifstream in("./GA8x8_2.csv");
+  ifstream in(Form("%sGA8x8_2.csv",DirMacros));
   string Tmp_str;
   getline(in, Tmp_str);
   GeometricAreaData GAD; // cout<<55<<"  "<<MapGAD.size()<<endl;
@@ -205,7 +205,7 @@ void LoadPosCodeTable(map<int, GeometricAreaData> &MapGAD){
   //cout<<67<<"  "<<MapGAD.size()<<endl;
 }
 void LoadPosCodeTable(map<string, GeometricAreaData> &MapGAD){
-  ifstream in("./GA8x8_2.csv");
+  ifstream in(Form("%sGA8x8_2.csv",DirMacros));
   string Tmp_str;
   getline(in, Tmp_str);
   GeometricAreaData GAD;
