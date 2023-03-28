@@ -17,11 +17,12 @@
 ![image](https://user-images.githubusercontent.com/105832014/228159366-d4324312-6225-44a5-9859-843449a203f2.png)
 
 ### 02. Add the Setting of Monticello: MCMode, path_MC, name_MC
+* If **"MCMMode"** is enabled, the program will not read the contents of path_Raw, path_Hk, name_Raw, and name_Hk, which must be set to empty values. Conversely, if MCMMode is disabled, the program will not read the contents of path_MC and name_MC.
 * This new Setting means the code operation by **MCMode** or not.
 * **"path_MC"** is the path of MC source file.
 * **"name_MC"** is the name of MC source file.
 * **"path_Rot"** will be changed from where Raw_Mu.root is stored to where RAW_MC.root is stored under the MCMode.
-* If **"MCMMode"** is enabled, the program will not read the contents of path_Raw, path_Hk, name_Raw, and name_Hk, which must be set to empty values. Conversely, if MCMMode is disabled, the program will not read the contents of path_MC and name_MC.
+
 ### 03. Split the header file AnaVariable.h into two parts.
 * **"AnaVariable.h"** mainly stores the analysis parameters.
 * **"./DetInforSet/DetSet\*.h"** is the detector model and mechanical structure parameter, and is related to the **"det_ver"**.
