@@ -3,7 +3,11 @@
 ### The solution is use **"chip02.phy.ncu.edu.tw"** and add the two line in your **".bashrc"**:
     source /data4/cmkuo/root/bin/thisroot.sh
     source /cvmfs/cms.cern.ch/cmsset_default.sh
-# !!! New branch EarlyVer_V3.05V2 (ver20230327) !!!
+# !!! Solve GA include problem and add a RotateSciMode setting in JSON!!!
+    **"./LoadODectTable.h"** Change the setting to find out the GA file, you can cover the old one.
+    Add a bool **RotateSciMode** for the rotate scintillator array mode, and default is false.
+    
+# New branch EarlyVer_V3.05V2 (ver20230327) 
 ### 01. Save the Setting file by JSON
 #### Modify the underlying logic of the main program parameter passing to store the control parameters of the main program in a JSON file, and read the JSON file when executing the main program.
 * As usual, you can edit the path and parameter settings in the **"MainControl()"** function at the bottom to perform analysis.
