@@ -11,8 +11,10 @@
     + PS: **"OutSettingTmp.JSON"** is the default file for generate in the program.
 * There are also some of the setting files that I used for analysis in the main dictionary like AdjustPath-*.JSON.
 * If you already have a JSON setting , then execute the program by main program **"MainControl(\*Settingfile)"**.
-* ![image](https://user-images.githubusercontent.com/105832014/228153946-3d48e246-edff-425f-94e7-695b188dd281.png)
-* ![image](https://user-images.githubusercontent.com/105832014/228159366-d4324312-6225-44a5-9859-843449a203f2.png)
+* The Graph of What setting in the MainControl and save to JSON file.
+    * ![image](https://user-images.githubusercontent.com/105832014/228153946-3d48e246-edff-425f-94e7-695b188dd281.png)
+* The progress for what MainControl.C works
+    * ![image](https://user-images.githubusercontent.com/105832014/228159366-d4324312-6225-44a5-9859-843449a203f2.png)
 
 ### 02. Add the Setting of Monticello: MCMode, path_MC, name_MC
 * This new Setting means the code operation by **MCMode** or not.
