@@ -4,8 +4,8 @@
     source /data4/cmkuo/root/bin/thisroot.sh
     source /cvmfs/cms.cern.ch/cmsset_default.sh
 # !!! Solve GA include problem and add a RotateSciMode setting in JSON!!!
-    **"./LoadODectTable.h"** Change the setting to find out the GA file, you can cover the old one.
-    Add a bool **RotateSciMode** for the rotate scintillator array mode, and default is false.
+### 01. **"./LoadODectTable.h"** Change the setting to find out the GA file, you can cover the old one.
+### 02. Add a bool **RotateSciMode** for the rotate scintillator array mode, and default is false.
     
 # New branch EarlyVer_V3.05V2 (ver20230327) 
 ### 01. Save the Setting file by JSON
