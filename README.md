@@ -11,7 +11,7 @@
     + PS: **"OutSettingTmp.JSON"** is the default file for generate in the program.
 * There are also some of the setting files that I used for analysis in the main dictionary like AdjustPath-*.JSON.
 * If you already have a JSON setting , then execute the program by main program **"MainControl(\*Settingfile)"**.
-* @graph 1
+* ![image](https://user-images.githubusercontent.com/105832014/228151512-5c855b6c-4923-43fa-838d-907b6511bc3b.png)
 ### 02. Add the Setting of Monticello: MCMode, path_MC, name_MC
 * This new Setting means the code operation by **MCMode** or not.
 * **"path_MC"** is the path of MC source file.
