@@ -3,7 +3,7 @@
 ### The solution is use **"chip02.phy.ncu.edu.tw"** and add the two line in your **".bashrc"**:
     source /data4/cmkuo/root/bin/thisroot.sh
     source /cvmfs/cms.cern.ch/cmsset_default.sh
-# !!! Solve GA include problem and add a RotateSciMode!!!
+# !!! Solve GA include problem & add RotateSciMode!!!(ver20230328) 
 * **"/Macro/LoadODectTable.h"** Change the setting to find out the GA file, you can cover the old one.
 * Add a bool **RotateSciMode** for the rotate scintillator array mode in setting, and default is false.
     
