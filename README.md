@@ -23,56 +23,58 @@
 
 ### 00. Check process environment.
 
-* Check if your computer can work on CVMFS and ROOT environment.
+* Check if your computer can work on **CVMFS** and **ROOT** environment.
 * See the imformation top of the article.
 
 ### 01. Download the program
 
 * You can save the program on the github by .zip or use url commend... onto your computer
 * The following graph shows which one is essential files.
-  * PS: The following graph shows: Red word is how to download, blue word is you **must** download.
-
+  * PS: The following graph shows: <font color=red>**Red**</font> drawing is <font color=red>**how to download**</font>, and <font color=0DA2E4>**blue**</font> is you <font color=0DA2E4>**must download**</font>.
 ![1680086237791](image/README/1680086237791.png)
 
 <!--    Ps: If you wan use multiple cpu to analyze the different "run" data parallelly.
     You can download the Run.C to same dir, and set the parameter like the MainControl.C.-->
 
 ### 02. Revise the analysis variable setting in the **"AnaVariable.h"**.
-
-* Generally, it's not often to change the trigger for anylize, default fitting function parameter.
+* Generally, it's <b>not often to change</b> the trigger for anylize, and default fitting function parameter.
 * In Geant4 MC analisys:
   * Set the channel id in G4 MC data to be the real detector general channel id(gid).
   * The setting is save in the array: **int G4GIDToGID[X][Y]**. X is the index of generation of detector version. Y is the G4GID, G4GIDToGID[X][Y] is the real detector GID for the same place channel.
 * Same art style for color palette...
 
 ### 03. Decide the way to process MainControl in **MainControl.C**.
-
-* **MainControl(JSON file name)**:
+* <font color=red>**MainControl(JSON file name)**</font>:
   * **Load** the operation setting in the JSON setting file to process the program.
-* **MainControl()**:
+* <font color=85E61E>**MainControl()**</font>:
   * **Create** JSON file to save the operation setting and call to process the program.
-  * After create the JSON file, **call**  MainControl(JSON file name) to operate.
+  * After create the JSON file, **call**  <font color=red>MainControl(JSON file name)</font> to operate.
+* Easy process:
+![1680171477723](image/README/1680171477723.png)
 * After editing the settings in the main program and executing it, a configuration file will be generated. You can save this configuration file or modify its contents for future use.
   + PS: **"OutSettingTmp.json"** is the default file for generate in the program.
-    + You can also revise default name: ***JSONtmp** = ReCreateJSON("**New_JSON_Name.json**");
+    + You can also revise default name: <font color=10B0FF>***JSONtmp** = ReCreateJSON("**New_JSON_Name.json**")</font>;
 
 ## First time to use the program, you could change the setting in MainControl().
 
 * The fast way is ctrl+f to find the marker @AdjustPath to dajust.
-
+* Graph for adjust JSON Setting file name and where is the <font color=85E61E>**@AdjustPath**</font>
+![1680172092432](image/README/1680172092432.png)
 ### 04. Set the boolean MCMode
-
+    bool MCMode    = true;
 * If you use the MC data, the MCMode turn to be true.
 * The default value is false for experimental data.
 
 ### 05. Set operation and macros path in "MainControl.C".
-
+    PathModeSetting.path_Lib = "./Macro/";
+    PathModeSetting.path_Mac = "/data4/YuSiang/TEST/MontAna/MacroTmp/";
+    PathModeSetting.path_OpR = "/data4/YuSiang/TEST/MontAna/";
 * **"path_Lib"**: Path of original Macros, the /Macro path you download from github on you computer.
 * **"path_Mac"**: Path of operation Macros, the individual macro dictionary path for this study.
 * **"path_OpR"**: Path of output data (result & operation data)
 
 ### 06. Check and set the detctor version and setting:
-
+    PathModeSetting.det_ver  = "V3.05";
 * **"det_ver"** : Detector version of search the detector imformattion file in /DetInforSet/.
 * The setting of det_ver related to how program choose the detector imformation.
 * Please enter the setting to be:
@@ -86,13 +88,21 @@
     * Then, edit the file content in the **"/DetInforSet/DetSetUserSet.h"**.
 
 ### 07. Set the path and data Run data information:
-
+    PathModeSetting.path_Run = "/data4/YuSiang/TEST/OdetData/";
 * **"path_Run"** : Path of the runs data for detector information (Setup_*.txt).
 * Format of Setup_*.txt should be like the example files: **"/data4/YuSiang/TEST/OdetData/Setup_\*.txt"**
 * **Warning**: all Run files in the **"path_Run/"** directory cannot have only contain **Setup_\*Run0\*.txt**, otherwise it will cause errors.
 
-## !MCMode(Exp. data) see 08a. , MCMode(MC data) see 08b.
-
+## For set !MCMode(use Exp. data) see 08a. , amd set MCMode(use MC data) see 08b.
+    if(PathModeSetting.MCMode){
+      PathModeSetting.path_MC  = "/data4/AndyLu/to_cw/";
+      PathModeSetting.name_MC  = "4_4_4_starightbeam_merge.root";
+    }else{
+      PathModeSetting.path_Raw = "/data4/YuSiang/DAXIFIX/RawMu/";
+      PathModeSetting.path_Hk  = "/data4/YuSiang/DAXIFIX/RawHK/";
+      PathModeSetting.name_Raw = "*Run1[0,1]*_*Mu*";
+      PathModeSetting.name_Hk  = "*Run1[0,1]*_*HK*";
+    }
 ### 08a. Set the path name of G4 MC data file
 
 * **"path_MC"** : **"Path"** of the G4 MC data for muon
@@ -118,7 +128,7 @@
 * See more: **"Regular Expression"**, ex: https://www.guru99.com/linux-regular-expressions.html
 
 ### 09. Set The path to save the RAW.root data
-
+    PathModeSetting.path_Rot = "/data4/YuSiang/TEST/MontAna/rootfile/";
 * **path_Rot**: default: "./MacroTmp/"
 * The RAW.root contain two case because MCMode:
   * **Exp. data**: Raw_Mu.txt -----CaConvertor.C-----> Raw_Mu.root
@@ -137,29 +147,30 @@
 
 ### 11. Set if you want to skip some block of program:
   * If you want to skip some program for save time, just try it.
-###
-    bool BlockXXXX  : default: true ;
-        true : Enable the code in the BlockXXXX.
-        false: Disable the code in the BlockXXXX.
-    block not suggest to skip:
-        BlockEnv: update the macros and set the enveroment for analysis.
-        ... more information to be add...
-    block need to operation at 1st time in some study:
-        BlockEnv, BlockODetImf, BlockFindOriFile, BlockConvertor, BlockFindRFile
-        BlockDSLAna, BlockDayEff, BlockEventGaps, BlockFitTrick, BlockFitTrickRes
-    bool SkipBlockStop : Some macro not use now, or have something not update.
-        Skip the programs in the range for: if(SkipBlock==false){}
-        false: Enable all of the programs except the "DSLAna.h"
-    08(1).bool ReDSLAna   : default: true ;
-        rerun the DSLAna.h to save DSLData.h when you change anything in "AnaVariable.h" or change the select data.
+  * bool BlockXXXX  : default: true ;
+    * true : Enable the code in the BlockXXXX.
+    * false: Disable the code in the BlockXXXX.
+  * block **not suggest** to skip:
+    * BlockEnv: update the macros and set the enveroment for analysis.
+    * ... more information to be add...
+  * block **should operate** at 1st time in some study:
+##
+    BlockEnv, BlockODetImf, BlockFindOriFile, BlockConvertor, BlockFindRFile
+    BlockDSLAna, BlockDayEff, BlockEventGaps, BlockFitTrick, BlockFitTrickRes
+  * bool SkipBlockStop : Some macro not use now, or have something not update.
+    * Skip the programs in the range for: if(SkipBlock==false){}
+    * false: Enable all of the programs except the "DSLAna.h"
 
 ### 12. Select the program want to be skip
-  *  If the setting BlockXXXX adjusting is not flexible for you:
-  *  Choose to use **"bool SkipBlock : default: false;"** in the code of MainControl("JSON file name"){}
-  *  Set: SkipBlock = true; 
-  *  Now, it'll skip all the code in the if(!SkipBlock){ } 
-  * <font color=red> Warning!</font>: use the SkipBlock could happend something unpredictable problem.
 
+  *  If the setting BlockXXXX adjusting is not flexible for you:
+  *  Choose to use <font color=red>**"bool SkipBlock</font> : default: false;"** in the code of MainControl("JSON file name"){}
+  *  Set: <font color=red>SkipBlock</font> = true; 
+  *  Now, it'll skip all the code in the <font color=10B0FF>if(!SkipBlock){ }  </font>
+  * <font color=red> Warning!</font>: The priority of setting: SkipBlock > JSON setting > default setting
+  * <font color=red> Warning!</font>: Thus, use the SkipBlock could happend something unpredictable problem.
+  * The example for the <font color=10B0FF>if(!SkipBlock){ } </font> and where is the <font color=red>bool SkipBlocks!</font>.
+![1680172764947](image/README/1680172764947.png)
 ### 13. Run the Program
 * Check the enveroment contain CVMFS/ROOT again
 * Go into the /Program_path/ is the dictionary you put the program on computer.

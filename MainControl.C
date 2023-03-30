@@ -278,11 +278,12 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
 
 void MainControl()
 {
-
+  //Name of save the setting JSON file
   const char *JSONtmp = ReCreateJSON("./OutSettingTmp.json");
   //default: false; //The data is MC or not
-  /* Adjustable Path Variable */
   bool MCMode    = true;
+  /* @AdjustPath */
+  /* Adjustable Path Variable */
   JSONFileIOSet PathModeSetting(MCMode);
   //path of original Macros, it is the Macro path your download from GitHub  
   PathModeSetting.path_Lib = "./Macro/";
@@ -296,7 +297,6 @@ void MainControl()
   // path of the runs data for detector information (Setup_*.txt)
   PathModeSetting.path_Run = "/data4/YuSiang/TEST/OdetData/";
   
-  /* @AdjustPath */
   if(PathModeSetting.MCMode){
     // path of the MC data for muon (*.root)
     PathModeSetting.path_MC  = "/data4/AndyLu/to_cw/";
