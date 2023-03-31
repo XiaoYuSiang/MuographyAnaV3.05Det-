@@ -420,7 +420,8 @@ void TillRunODInf(){
   char version[8] = {};
   DetVerCheck(version,detVer);
   cout<<"Now, detector Ver is:  "<<version<<endl;
-  
+    // int iRunStart = StartSearchRun, iRunFinal = iRunStart;
+
   int iRunStart = 0, iRunFinal = 0;
   FindAllTillFile(DirRunTillfile, version, iRunStart, iRunFinal,"Setup_Till_Run");
   FindStartProduct(DirIMFdat, version,iRunStart,"ODetCh");
