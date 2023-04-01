@@ -6,15 +6,13 @@
   //number of channels on x-axis per board, ... on y-axis ..., , ... on z-axis ..., 
   const int    NumnX =  4, NumnY =  4, NumnZ = 1;
   //number of boards on x-axis per layer, ... on y-axis ..., , ... on z-axis ..., 
-  const int    NumBX =  1, NumBY =  1, NumBZ = NumLY;
+  const int    NumBX =  1, NumBY =  1, NumBZ = 1;
   //number of total channel
   const int    BinNumOnCha = NumBD*NumCh;
   //number of total channel per layer
   const int    NumChLys    = BinNumOnCha/NumLY;
   //MTB ID of a board at position index(ix,iy,iz): BD[ix+NumBY*iy+NumBX*NumBY*iz]
   const int    BD[NumBD]   = {1,3,5,4};
-  //board index of MTB ID is X: BD[X]
-  const int    BDINV[NumBD+2] = {0,0,0,1,3,2};
   //pwidth scale factor of MTB board because the Magnification of DAQ at index x: BDPwWei[x]
   const int    BDPwWei[NumBD] = {2,1,1,1};
   //(MTB id)%NumLY at board position index(BiX,BiY): LayArr[BiX][BiY]
