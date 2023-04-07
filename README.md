@@ -11,8 +11,15 @@
     source /data4/cmkuo/root/bin/thisroot.sh
     source /cvmfs/cms.cern.ch/cmsset_default.sh
 
+# <font color=ff0000>!!!Combine branch!!!</font> (ver20230407)
+## I combine the branch and make <font color=ff0000>**earlyVer_V3.05v2.0**</font>  to be the main  branch<font color=ff0000> **main_V3.05Ver_V2.1_general**</font>.
+## Rename the branch:
+    new main         -> main_V3.05Ver_V2.1_general
+    earlyVer_V3.05v2 -> V3.05_V2.0_EarlyVer
+    main_V3.05       -> V3.05_V1.0_DataAna
+    V2.00EffTestVer  -> V3.05_V1.0_forDV2.00EffTest
 
-# Introduction of MuographyAnaV3.05Det-verV2(ver 20230329)
+# Introduction of MuographyAnaV3.05Det- main_V3.05Ver_V2.1_general(ver 20230407)
 
 ## This is the Public Muography Analysis program for:
 
@@ -184,7 +191,8 @@
 
 Thank you for your use.
 
-# <font color=ff0000>!!!Bug repair!!!</font> (ver20230407)
+
+# <font color=ff7777>!!!Bug repair!!!</font> (ver20230407)
 ### Change the way to display the JSON file:
 * Ps: Read JSONFile to display->display the imformation in the class. 
 ###
@@ -197,7 +205,7 @@ Thank you for your use.
     DSLAnaV3()->DSLAnaV4()
 ### Repair the problem in PwodthAna for DrawPdfPng("*.png or *.pdf")
 
-# GA include problem & add RotateSciMode!!!(ver20230328)
+# GA include problem & add RotateSciModever20230328)
 
 * **"/Macro/LoadODectTable.h"** Change the setting to find out the GA file, you can cover the old one.
 * Add a bool **RotateSciMode** for the rotate scintillator array mode in setting, and default is false.
