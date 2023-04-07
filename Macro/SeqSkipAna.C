@@ -93,7 +93,7 @@ void SeqSkipAna() {
       if(tmp_skipNum != 1  && seqNow[board[iH]][channel[iH]]!=0 &&(tmp_skipNum>9 && seq[iH]!=0 )){
         hSkT[board[iH]-1]->Fill(unixtime,channel[iH],tmp_skipNum);
         NumSeqSK[board[iH]][channel[iH]] += tmp_skipNum;
-        // cout<<unixtime<<"  B:C:W  "<<board[iH]<<"  "<<channel[iH]<<" "<<pw[iH]<<"\tSeq0->Seq: "<<seqNow[BDCheck(board[iH])][channel[iH]]<<"\t->\t"<<seq[iH]<<"\t(Skip) "<<tmp_skipNum<<endl;
+
         out<<unixtime<<"\t"<<board[iH]<<"\t"<<channel[iH]<<"\t"<<seqNow[board[iH]][channel[iH]]<<"\t"<<seq[iH]<<"\t"<<tmp_skipNum<<endl;
         
         //sleep(0.5);

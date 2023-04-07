@@ -1,0 +1,52 @@
+{
+  "comment1":	"------------PathSetting-----------",
+  "path_Lib":	"./Macro/",
+  "path_Mac":	"/data4/YuSiang/DAXIRTEST/AnaR14_RevertTest/MacroTmp/",
+  "path_OpR":	"/data4/YuSiang/DAXIRTEST/AnaR14_RevertTest/",
+
+  "det_ver":	"V3.05",
+  "path_Run":	"/data4/YuSiang/DaXi/OdetData/",
+
+  "path_MC":	"NULL",
+  "name_MC":	"NULL",
+
+  "path_Raw":	"/data4/YuSiang/DAXIRTEST/RawMu/",
+  "path_Hk":	"/data4/YuSiang/DAXIRTEST/RawHK/",
+  "path_Rot":	"/data4/YuSiang/DAXIRTEST/rootfile/",
+  "name_Raw":	"*Run14*_*Mu*",
+  "name_Hk":	"*Run14*_*HK*",
+
+  "comment2":	"-----------AnalizeModes-----------",
+  "MCMode":	"false",
+
+  "ReRunRunMode":	"true",
+  "testMode":	"false",
+  "normalizeMode":	"true",
+  "NegHiRatChMode":	"false",
+  "lowstatisticMode":	"true",
+  "rootFileMode":	"true",
+  "SETightMode":	"false",
+  "PointTextMode":	"true",
+  "RotateSciMode":	"false",
+
+  "comment3":	"------------BlockModes------------",
+  "SkipBlockStop":	"true",
+
+  "BlockEnv":	"true",
+  "BlockODetImf":	"true",
+  "BlockFindOriFile":	"true",
+  "BlockConvertor":	"true",
+  "BlockFindRFile":	"true",
+  "BlockDSLAna":	"true",
+  "BlockDayEff":	"true",
+  "BlockEventGaps":	"true",
+  "BlockEzMuEID":	"true",
+  "BlockVTrack":	"true",
+  "BlockVTrackEff":	"true",
+  "BlockEzPWAna":	"true",
+  "BlockFitTrick":	"true",
+  "BlockFitTrickRes":	"true",
+  "BlockFitPWAna":	"true",
+  "BlockFinalSelect":	"true",
+  "BlockRateVTime":	"true",
+}

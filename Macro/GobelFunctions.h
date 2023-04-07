@@ -26,6 +26,8 @@
 #endif
 using namespace MuographAnaVariable;
 namespace MuographGobelFuns{
+  const Double_t TcntOneSec  = 2.56E+9;
+  
   int BDcheck(const int b){
     int z = -1;
     for(int i=0;i<NumBD;i++){
@@ -423,6 +425,7 @@ namespace MuographGobelFuns{
     int &iRunStart, int &iRunFinal,
     const char *TillfileForm = "Setup_Till_Run")
   {
+    cout<<"dataPath_RTill: "<<dataPath_RTill<<"\n version: "<<version<<"\t iRunStart&Final: "<<iRunStart<<"\t"<<iRunFinal<<endl;
     const int TriggerOfRunINum = 50;
     iRunStart = 0;
     char tmpfile[250];
@@ -448,9 +451,6 @@ namespace MuographGobelFuns{
       if(SizeOfFile<5120) break;
       iRunFinal++;
     }
-    
-
-    
   }
 
   void GetEffExtUc(const float eff, const float statistic, float &min, float &max, float &ucl, float &uch){

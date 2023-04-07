@@ -6,6 +6,9 @@
 #include <TMath.h>
 #include <TH1F.h>
 #include <TH1.h>
+#include <TH3F.h>
+#include <TGraph2D.h>
+#include <TPolyLine3D.h>
 #include <TCanvas.h>
 #include <TGraphErrors.h>
 
@@ -17,7 +20,7 @@ using namespace Structure;
 using namespace ROOT::Math;
 
 
-const bool LineFit3D_C_TestMode_only = 1; //@@ LineFit3D_C_TestMode_only
+const bool LineFit3D_C_TestMode_only = 0; //@@ LineFit3D_C_TestMode_only
 
 // define the parametric line equation
 double line( double *x, const double *p ) {
@@ -27,6 +30,7 @@ double Hline( double *x, const double *p ) {
   return x[0]*0. + p[1] ;
 }
 
+
 class line3D{
 public:
   double rzz,rzx,rzy;
@@ -34,7 +38,7 @@ public:
   double erzz,erzx,erzy;
   double edzz,edzx,edzy;
   double chi2zx,chi2zy;
-  int NDFzx,NDFzy;
+  int    NDFzx,NDFzy;
   double Sigzx,Sigzy;
   char   Nrzx[15];
   char   Nrzy[15];
@@ -98,10 +102,10 @@ public:
   }
   
   void fit3D(){
-    if(abs(rzx)<1.E-3) flzx = new TF1("flzx",Hline,-5,155,2);
-    else          flzx = new TF1("flzx",line,-5,155,2);
-    if(abs(rzy)<1.E-3) flzy = new TF1("flzy",Hline,-5,155,2);
-    else          flzy = new TF1("flzy",line,-5,155,2);
+    if(abs(rzx)<1.E-3) flzx = new TF1("flzx",Hline,-60,1560,2);
+    else               flzx = new TF1("flzx",line,-60,1560,2);
+    if(abs(rzy)<1.E-3) flzy = new TF1("flzy",Hline,-60,1560,2);
+    else               flzy = new TF1("flzy",line,-60,1560,2);
     SetFitInitial();
     lzx->Fit(flzx,"NQ");
     lzy->Fit(flzy,"NQ");
@@ -157,35 +161,82 @@ public:
   }
   
   
-  void RunGraph(){
-    TH1F *BGXZ = new TH1F("BGXZ",Form("%s at X-Z plane",name),85,-5,155);
+  void RunGraph(const char* OutGName = "/home/yusiang/MuographyAna/Result/Test/FitL3D.pdf"){
+    TH2F *BGXZ = new TH2F("BGXZ",Form("%s at X-Z plane",name),135,-63,1557,10,-50,450);
     // BGXZ->GetXaxis()->SetRangeUser(-5,155);
-    BGXZ->GetYaxis()->SetRangeUser(-5,25);
-    BGXZ->SetLineColor(0);
+    BGXZ->GetXaxis()->SetRangeUser(-60,1560);
+    BGXZ->GetYaxis()->SetRangeUser(0,400);
+    BGXZ->GetXaxis()->SetNdivisions(4);
+    BGXZ->GetYaxis()->SetNdivisions(408);
+    BGXZ->SetLineColor(12);
+    BGXZ->SetFillColor(12);
     BGXZ->SetMarkerColor(0);
+    BGXZ->GetZaxis()->SetRangeUser(0,1);
     BGXZ->SetStats(0);
-    BGXZ->GetXaxis()->SetTitle("position Z(cm)");
-    TH1F *BGYZ = (TH1F*) BGXZ->Clone();
+    BGXZ->GetXaxis()->SetTitle("position Z(mm)");
+    BGXZ->GetXaxis()->SetTitleOffset(1.5);
+    TH2F *BGYZ = (TH2F*) BGXZ->Clone();
     BGYZ->SetName("BGYZ");
-    BGXZ->GetYaxis()->SetTitle("position X(cm)");
-    BGYZ->GetYaxis()->SetTitle("position Y(cm)");
+    BGXZ->GetYaxis()->SetTitle("position X(mm)");
+    BGYZ->GetYaxis()->SetTitle("position Y(mm)");
     BGYZ->SetTitle(Form("%s at Y-Z plane",name));
+    
+    TH3F *hSolid = new TH3F("hSolid","3D-Show",135,-63,1557,20,-465,35,20,-35,465);
+    hSolid->SetStats(0);
+    hSolid->GetXaxis()->SetTitle("position Z(mm)");
+    hSolid->GetYaxis()->SetTitle("position X(mm)");
+    hSolid->GetZaxis()->SetTitle("position Y(mm)");
+    hSolid->GetXaxis()->SetRangeUser(-60,1560);
+    hSolid->GetYaxis()->SetRangeUser(-400,0);
+    hSolid->GetZaxis()->SetRangeUser(0,400);
+    hSolid->GetXaxis()->SetNdivisions(4);
+    hSolid->GetYaxis()->SetNdivisions(416);
+    hSolid->GetZaxis()->SetNdivisions(416);
+    hSolid->GetXaxis()->SetTitleOffset(1.5);
+    hSolid->GetYaxis()->SetTitleOffset(1.5);
+    hSolid->GetZaxis()->SetTitleOffset(1.6);
+    hSolid->GetYaxis()->SetLabelOffset(-.01);
+    
+    TPolyLine3D l3dext(2);
+    l3dext.SetLineColor(kRed);
+
+    //hSolid->GetYaxis()->SetLabelSize(0.0);
+    
+    TGraph2D * TG3d = new TGraph2D();
+    TG3d->SetMarkerStyle(4);
+    TG3d->SetLineColor(2);
+    // for(int i=0;i<5;i++) hSolid->Fill(10,10+15,i*100+15);
+    for(int ip=0;ip<npoint;ip++){
+      Double_t tmppx, tmppy, tmppz;
+      lzx->GetPoint(ip, tmppz, tmppx);
+      lzy->GetPoint(ip, tmppz, tmppy);
+      BGXZ->Fill(tmppz,tmppx);
+      BGYZ->Fill(tmppz,tmppy);
+      hSolid->Fill(tmppz,-tmppy,tmppx);
+      TG3d->SetPoint(ip,tmppz,-tmppy,tmppx);
+    }
+    
     double xge[100],yge[100],zge[100],exge[100],eyge[100],ezge[100];
     for(int i=0;i<100;i++){
-      zge [i] = -5+170./100.*i;
+      zge [i] = -50+1700./100.*i;
       if(rzx==0) xge [i] = dzx;
       else xge [i] = rzx*(zge [i]-dzx);
       if(rzy==0) yge [i] = dzy;
       else yge [i] = rzy*(zge [i]-dzy);
-      exge[i] = Sigzx*2;
-      eyge[i] = Sigzy*2;
-      ezge[i] = 170./100.;
+      exge[i] = Sigzx;
+      eyge[i] = Sigzy;
+      ezge[i] = 1700./100.;
     }
+    
+    l3dext.SetPoint(0,zge[0],-yge[0],xge[0]);
+    l3dext.SetPoint(1,zge[99],-yge[99],xge[99]);
+    
+    
     TGraphErrors *TFTGErrzx= new TGraphErrors(100,zge,xge,ezge,exge);
     TGraphErrors *TFTGErrzy= new TGraphErrors(100,zge,yge,ezge,eyge);
     // TH1F *BGYZ = new TH1F("BGYZ",Form("%s at Y-Z plane",name),4,0,20);
-    TCanvas *c1 = new TCanvas("C1","C1",1080,0,600,400);
-    c1->Divide(1,2);
+    TCanvas *c1 = new TCanvas("c1","c1",1080,0,900,900);
+    c1->Divide(1,3);
     TLegend *L1 = new TLegend(.91,.1,1.,.9);
     setLegendDefault(L1,1);
     L1->AddEntry(lzx  ,"Fire Range" ,"f");   
@@ -199,25 +250,36 @@ public:
     SetDrawTGETF1OPT(TFTGErrzy);
     
     c1->cd(1);
-    BGXZ ->Draw("p");
+    c1->cd(1)->SetGrid(0,1);
+    BGXZ ->Draw("box");
     lzx  ->Draw("pE2same");
     flzx ->Draw("lsame");
     TFTGErrzx->Draw("E2same");
     L1->Draw("same");
+    
     c1->cd(2);
-    BGYZ ->Draw("p");
+    c1->cd(2)->SetGrid(0,1);
+    BGYZ ->Draw("box");
     lzy  ->Draw("pE2same");
     flzy ->Draw("lsame");
     TFTGErrzy->Draw("E2same");
     L1->Draw("same");
     
-    c1->Print(Form("%s/FitL3D.pdf","/home/yusiang/MuographyAna/Result/Test"));
-    if(LineFit3D_C_TestMode_only==false){
+    c1->cd(3);
+    hSolid->Draw("boxRX");
+    TG3d->Draw("P0same");
+    l3dext.Draw("lsame");
+    
+    c1->cd(3)->SetPhi(5);
+    c1->cd(3)->SetTheta(30);
+    
+    c1->Print(OutGName);
+    if(!LineFit3D_C_TestMode_only){
       c1->Close();
-      delete BGXZ;
-      delete BGYZ;
-      delete TFTGErrzx;
-      delete TFTGErrzy;
+      delete BGXZ, BGYZ;
+      delete TFTGErrzx, TFTGErrzy;
+      delete hSolid, TG3d;
+      //delete l3dext;
       delete c1;
       delete L1;
     }

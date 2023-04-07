@@ -85,11 +85,11 @@ void DayEAna() {
 }
 //channel vs rate combine
 void DayEAnaV1(){ DayEAna();}
-//channel vs rate combine
 void DayEAnaV2(){ DayEAna();}
 
+void DayEAnaV3(){ DayEAna();}
 
-void DayEAnaV3(const int SPD = 24) {
+void DayEAnaV4(const int SPD = 24) {
   defstyle();
   //Printf("Files found: %i", (int) files.size());
   vector<string> vRootFiles = RawRootList(DirOperate);
@@ -119,11 +119,12 @@ void DayEAnaV3(const int SPD = 24) {
   //data hist create
   TH2F *htmp  = new TH2F("htmp","",nd10min,FirDaySec,FinDaySec,NumBD,0,NumBD);//10min
   TH2F *htmpc = new TH2F("htmpc","",nd10min,FirDaySec,FinDaySec,NumBD*NumCh,0,NumBD*NumCh);//10min
+  TH2F *hModRT = Mod_DateLabel("hModRT","",NumBD*NumCh,0, NumBD*NumCh,"Readout channel(GID)","Data collection Rate(Hz)");
   TH2F *hModBT = Mod_DateLabel("hModBT","",NumBD      ,0, NumBD      ,"Readout board"  ,"Data collection efficiency");
   TH2F *hModCT = Mod_DateLabel("hModCT","",NumBD*NumCh,0, NumBD*NumCh,"Readout channel","Data collection efficiency");
   TH2F *hBT  = new TH2F("hBT","",ndayChip,FirDaySec,FinDaySec,NumBD      ,0,NumBD      );//10min 
   TH2F *hCT  = new TH2F("hCT","",ndayChip,FirDaySec,FinDaySec,NumBD*NumCh,0,NumBD*NumCh);//10min
-  TH2F *hRT  = new TH2F("hRT","",ndayChip,FirDaySec,FinDaySec,NumBD*NumCh,0,NumBD*NumCh);//10min
+  TH2F *hRT  = new TH2F("hRT","",nd10min,FirDaySec,FinDaySec,NumBD*NumCh,0,NumBD*NumCh);//10min
   //TH2F *hBT  = new TH2F("hBT","",Dayf-Dayi+4,Dayi-1,Dayf+3,4,0,4);//10min
   int t1=0;
   int oiev=0, iev=0, XBins=0;
@@ -157,8 +158,8 @@ void DayEAnaV3(const int SPD = 24) {
       if (htmp->GetBinContent(iBin+1,1+ibd)!=0) hBT->Fill(t1,ibd,1/BinNum10mPerBin);
       for(int ic = 0; ic<NumCh;ic++){
         if (htmpc->GetBinContent(iBin+1,1+ic+ibd*NumCh)!=0)  hCT->Fill(t1,ic+ibd*NumCh,1/BinNum10mPerBin);
-        hRT->SetBinContent(iBin+1,1+ic+ibd*NumCh, htmpc->GetBinContent(iBin+1,1+ic+ibd*NumCh)/10./60.);
-      }
+        hRT->SetBinContent(iBin+1,1+ic+ibd*NumCh, htmpc->GetBinContent(iBin+1,1+ic+ibd*NumCh)/600.);
+      }//@@ 161
     }
   }
   // throw;
@@ -203,15 +204,22 @@ void DayEAnaV3(const int SPD = 24) {
           
         }
       }
+      cout<<"Finished creat: "<< Form("%sDayEffProblemRange.dat",DirOperate)<<endl;
       outPR.close();
     }
   }
   TCanvas *c0 = new TCanvas("c0","c0",1920,1080);
   c0->cd();
   htmpc->Draw("colz");
-  htmpc->GetZaxis()->SetRangeUser(0,2);
+  // htmpc->GetZaxis()->SetRangeUser(0,10);
   c0->Print(Form("%shtmpc%scom.png",DirRes_DayEff,TimeStr));
   c0->Print(Form("%shtmpc%scom.pdf",DirRes_DayEff,TimeStr));
+  
+  
+  hRT->GetZaxis()->SetTitle(hModRT->GetZaxis()->GetTitle());
+  hModRT->Draw("colz");
+  hRT->Draw("colzsame");
+  DrawPdfPng(c0,Form("%stest_hrt_SPD%02.f_%scom",DirRes_DayEff,SPD*1.,TimeStr));
   
   SetStyleDatEff();
   TCanvas *c1 = new TCanvas("c1","c1",1920,1080);
@@ -350,6 +358,8 @@ void DayEAnaV3(const int SPD = 24) {
   }
   DrawPdfPng(c3,Form("%sDayEffChanncolz_SPD%02.f_%scom",DirRes_DayEff,SPD*1.,TimeStr));
   
+  
+  
   out.close();
   htmp->Delete();
   htmpc->Delete();
@@ -366,7 +376,7 @@ void DayEAnaV3(const int SPD = 24) {
   delete TPZL;
 }
 
-void DayEAnaV4(){
-  DayEAnaV3(); //Execute SPD = 24
-  DayEAnaV3(SlicePerDay); //Execute SPD = SlicePerDay
+void DayEAnaV5(){
+  DayEAnaV4(); //Execute SPD = 24
+  DayEAnaV4(SlicePerDay); //Execute SPD = SlicePerDay
 } 

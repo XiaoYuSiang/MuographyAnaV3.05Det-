@@ -139,13 +139,15 @@ void DataBaseLocateV3(
   locatedDirbyPath(DirRes_RatVCh);
   locatedDirbyPath(DirRes_RatVSun);
   
-  char DirRes_HKVRat[170],DirRes_SeqSkip[170],DirRes_TcntGap[170];
+  char DirRes_HKVRat[170],DirRes_SeqSkip[170],DirRes_TcntGap[170],DirRes_FluxCal[170];
   sprintf(DirRes_HKVRat  ,"%sHuoseKeepDatVsRate/",DirResult);
   sprintf(DirRes_SeqSkip ,"%sSequanceSkip/"      ,DirResult);
   sprintf(DirRes_TcntGap ,"%sTcntGap/"           ,DirResult);
+  sprintf(DirRes_FluxCal ,"%sFluxCalculate/"     ,DirResult);
   locatedDirbyPath(DirRes_HKVRat);
   locatedDirbyPath(DirRes_SeqSkip);
   locatedDirbyPath(DirRes_TcntGap);
+  locatedDirbyPath(DirRes_FluxCal);
   
   
   
@@ -221,6 +223,7 @@ void DataBaseLocateV3(
   outHfile<<Form("  const char %-16.16s[180] = \"%s\";","DirRes_HKVRat" ,DirRes_HKVRat )<<endl;
   outHfile<<Form("  const char %-16.16s[180] = \"%s\";","DirRes_SeqSkip",DirRes_SeqSkip )<<endl;
   outHfile<<Form("  const char %-16.16s[180] = \"%s\";","DirRes_TcntGap",DirRes_TcntGap )<<endl;
+  outHfile<<Form("  const char %-16.16s[180] = \"%s\";","DirRes_FluxCal",DirRes_FluxCal )<<endl;
   outHfile<<"  /*  Name marker of raw datas  */"<<endl;
   outHfile<<Form("  const char %-16.16s[50] = \"%s\";","name_Raw_txt"   ,name_Raw_txt  )<<endl;
   outHfile<<Form("  const char %-16.16s[50] = \"%s\";","name_Raw_root"  ,name_Raw_root )<<endl;
@@ -273,6 +276,7 @@ void DataBaseLocateV3(
     cout<<Form("  c.char*    %-16.16s = \"%s","DirRes_HKVRat" ,DirRes_HKVRat )<<endl;
     cout<<Form("  c.char*    %-16.16s = \"%s","DirRes_SeqSkip",DirRes_SeqSkip)<<endl;
     cout<<Form("  c.char*    %-16.16s = \"%s","DirRes_TcntGap",DirRes_TcntGap)<<endl;
+    cout<<Form("  c.char*    %-16.16s = \"%s","DirRes_FluxCal",DirRes_FluxCal)<<endl;
     cout<<"  /*  Name marker of raw datas  */"<<endl;
     cout<<Form("  c.char*    %-16.16s = \"%s","name_Raw_txt"  ,name_Raw_txt  )<<endl;
     cout<<Form("  c.char*    %-16.16s = \"%s","name_Raw_root" ,name_Raw_root )<<endl;
