@@ -807,8 +807,8 @@ void PwidthAnaV2P(const bool*OperMode, const int itcntgap=28) {
     hNTS[ily]->GetZaxis()->SetRangeUser(minCon[1],maxCon[1]);
     hNTS[ily]->Draw("ColzTEXT");
     
-    DrawPdfPng(cNES,Form("%sHitNumEasySelectL%d.pdf",DirResultLYD,ily));
-    DrawPdfPng(cNTS,Form("%sHitNumTrackSelectL%d.pdf",DirResultLYD,ily));
+    DrawPdfPng(cNES,Form("%sHitNumEasySelectL%d",DirResultLYD,ily));
+    DrawPdfPng(cNTS,Form("%sHitNumTrackSelectL%d",DirResultLYD,ily));
     PDFCanPage(pdfNES,cNES,Form("Layer: %d ( iZ = %d )",NumLY-1-ily,NumLY-1-ily),1+ily,NumLY);
     PDFCanPage(pdfNTS,cNTS,Form("Layer: %d ( iZ = %d )",NumLY-1-ily,NumLY-1-ily),1+ily,NumLY);
     cNESA->cd(ily+1);
@@ -825,7 +825,7 @@ void PwidthAnaV2P(const bool*OperMode, const int itcntgap=28) {
   cNESA->DrawClonePad();
   cALL->cd(2);
   cNTSA->DrawClonePad();
-  DrawPdfPng(cALL,Form("%sHitNumAllSelect.png",DirResultGPw));
+  DrawPdfPng(cALL,Form("%sHitNumAllSelect",DirResultGPw));
   
   
   

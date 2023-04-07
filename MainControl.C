@@ -77,14 +77,14 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
     if(PMS.BlockFindOriFile){
       /* P.06 */
       /* Find Raw .txt data Names and path */
-      gROOT->LoadMacro(Form("%sDataNameAna.C+",PMS.path_Mac));
+      gROOT->LoadMacro(Form("%sDataNameAnaV2.C+",PMS.path_Mac));
       int txtfnum = DataNameAnaTxt_Mu();
       //int DataNameAnaTxt_Mu(const char OPT='P') 
       cout<<"Find Raw .txt data Number:  "<<txtfnum<<endl;
       
       /* P.07 */
       /* Find HK .txt data Names and path */
-      gROOT->LoadMacro(Form("%sDataNameAna.C+",PMS.path_Mac));
+      gROOT->LoadMacro(Form("%sDataNameAnaV2.C+",PMS.path_Mac));
       int Hktxtfnum = DataNameAnaTxt_Hk();
       //int DataNameAnaTxt_Mu(const char OPT='P') 
       // cout<<"Find Hk .txt data Number:  "<<Hktxtfnum<<endl;
@@ -109,7 +109,7 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
     if(PMS.BlockFindRFile){
       /* P.09 */
       /* Find Raw .root data Names and path */
-      gROOT->LoadMacro(Form("%sDataNameAna.C+",PMS.path_Mac));
+      gROOT->LoadMacro(Form("%sDataNameAnaV2.C+",PMS.path_Mac));
       int rotfnum;
       if(PMS.MCMode) rotfnum = MCNameAnaRoot_Mu(PMS.name_MC, '');
       else rotfnum = DataNameAnaRoot_Mu('');
@@ -121,7 +121,7 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
       /* P.10 *///-Able-
       /*Analize the Data for time start to end and save to head file*/
       gROOT->LoadMacro(Form("%sDSLAnaV4.C+",PMS.path_Mac));
-      DSLAnaV3(PMS.MCMode);
+      DSLAnaV4(PMS.MCMode);
     }
 
     if(PMS.BlockDayEff){

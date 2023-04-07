@@ -98,15 +98,65 @@ public:
       
     EndWriteJSON(JSONFileName);
     cout<<"Enter Setting:"<<endl;
-    ShowJSONFile(JSONFileName);  
+    Show();  
     cout<<"Save setting to be "<<JSONFileName<<endl;
   }
   void ExportJSON(const char *JSONFiletmp){
     SetJSONName(JSONFiletmp);
     ExportJSON();
   }
+
   void Show(){
-    ShowJSONFile(JSONFileName);
+    cout<<"comment1\t"         <<"------------PathSetting-----------"    <<endl;
+    cout<<"path_Lib\t"         <<path_Lib         <<endl;
+    cout<<"path_Mac\t"         <<path_Mac         <<endl;
+    cout<<"path_OpR\t"         <<path_OpR         <<endl;
+    cout<<endl;
+    cout<<"det_ver\t"          <<det_ver          <<endl;
+    cout<<"path_Run\t"         <<path_Run         <<endl;
+    cout<<endl;
+    cout<<"path_MC\t"          <<path_MC          <<endl;
+    cout<<"name_MC\t"          <<name_MC          <<endl;
+    cout<<endl;
+    cout<<"path_Raw\t"         <<path_Raw         <<endl;
+    cout<<"path_Hk\t"          <<path_Hk          <<endl;
+    cout<<"path_Rot\t"         <<path_Rot         <<endl;
+    cout<<"name_Raw\t"         <<name_Raw         <<endl;
+    cout<<"name_Hk\t"          <<name_Hk          <<endl;
+    cout<<endl;  
+    cout<<"comment2\t"         <<"-----------AnalizeModes-----------"    <<endl;
+    cout<<"MCMode\t"           <<MCMode           <<endl;
+    cout<<endl;
+    cout<<"ReRunRunMode\t"     <<ReRunRunMode     <<endl;
+    cout<<"testMode\t"         <<testMode         <<endl;
+    cout<<"normalizeMode\t"    <<normalizeMode    <<endl;
+    cout<<"NegHiRatChMode\t"   <<NegHiRatChMode   <<endl;
+    cout<<"lowstatisticMode\t" <<lowstatisticMode <<endl;
+    cout<<"rootFileMode\t"     <<rootFileMode     <<endl;
+    cout<<"SETightMode\t"      <<SETightMode      <<endl;
+    cout<<"PointTextMode\t"    <<PointTextMode    <<endl;
+    cout<<"RotateSciMode\t"    <<RotateSciMode    <<endl;
+    cout<<endl;
+    cout<<"comment3\t"         <<"------------BlockModes------------"    <<endl;
+    cout<<"SkipBlockStop\t"    <<SkipBlockStop    <<endl;
+    cout<<endl;
+    cout<<"BlockEnv\t"         <<BlockEnv         <<endl;
+    cout<<"BlockODetImf\t"     <<BlockODetImf     <<endl;
+    cout<<"BlockFindOriFile\t" <<BlockFindOriFile <<endl;
+    cout<<"BlockConvertor\t"   <<BlockConvertor   <<endl;
+    cout<<"BlockFindRFile\t"   <<BlockFindRFile   <<endl;
+    cout<<"BlockDSLAna\t"      <<BlockDSLAna      <<endl;
+    cout<<"BlockDayEff\t"      <<BlockDayEff      <<endl;
+    cout<<"BlockEventGaps\t"   <<BlockEventGaps   <<endl;
+    cout<<"BlockEzMuEID\t"     <<BlockEzMuEID     <<endl;
+    cout<<"BlockVTrack\t"      <<BlockVTrack      <<endl;
+    cout<<"BlockVTrackEff\t"   <<BlockVTrackEff   <<endl;
+    cout<<"BlockEzPWAna\t"     <<BlockEzPWAna     <<endl;
+    cout<<"BlockFitTrick\t"    <<BlockFitTrick    <<endl;
+    cout<<"BlockFitTrickRes\t" <<BlockFitTrickRes <<endl;
+    cout<<"BlockFitPWAna\t"    <<BlockFitPWAna    <<endl;
+    cout<<"BlockFinalSelect\t" <<BlockFinalSelect <<endl;
+    cout<<"BlockRateVTime\t"   <<BlockRateVTime   <<endl;
   }
 private:
   void SetDataDefault(){
@@ -168,7 +218,7 @@ private:
     name_Raw       = FindJSONAttrS( JSONFileName, "name_Raw"          ,'W');
     name_Hk        = FindJSONAttrS( JSONFileName, "name_Hk"           ,'W');
     
-    MCMode          = FindJSONAttrS( JSONFileName, "MCMode"           ,'W');
+    MCMode          = FindJSONAttrB( JSONFileName, "MCMode"           ,'W');
     
     ReRunRunMode    = FindJSONAttrB( JSONFileName, "ReRunRunMode"     ,'W');
     testMode        = FindJSONAttrB( JSONFileName, "testMode"         ,'W');
