@@ -184,6 +184,18 @@
 
 Thank you for your use.
 
+# <font color=ff0000>!!!Bug repair!!!</font> (ver20230407)
+### Change the way to display the JSON file:
+* Ps: Read JSONFile to display->display the imformation in the class. 
+###
+    SettingJSONIO.h: ShowJSONFile(JSONFileName)->Show()
+### Repair the bug for read MCMode as char string.
+    MCMode = FindJSONAttrS( JSONFileName, MCMode",'W');
+    ->MCMode = FindJSONAttrB( JSONFileName, MCMode",'W');
+### Repair the include version problem in MainControl.C
+    LoadMacro(DataNameAna.C+)->LoadMacro(DataNameAnaV2.C+)
+    DSLAnaV3()->DSLAnaV4()
+### Repair the problem in PwodthAna for DrawPdfPng("*.png or *.pdf")
 
 # GA include problem & add RotateSciMode!!!(ver20230328)
 
