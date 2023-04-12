@@ -1,5 +1,49 @@
 # Analysis Problem fix for setup in S4-509 Eff (ver20230413)!!!:
-## 1. 
+## 1. AnaVariable.h
+* Problem: wrong NumBD cause the wrong display of graphs.
+##
+      const int    NumBD =  5 
+    ->const int    NumBD =  4
+* Revise: only the NumBD problem.
+## 2. EventAna.C
+* Problem: if BD[x]>NumBD get too large id for hBoard and out of histrogram. 
++ It's cause the program couldn't calculate the nH/nHk normally.
+##
+      VnH[iLay] +=hBoard->GetBinContent(BD[iLay*NPartCut+iPartCut]);
+    ->VnH[iLay] +=hBoard->GetBinContent(BDCheck(BD[iLay*NPartCut+iPartCut])+1);
+* Revise: Using the BDCheck(BD[x]) to general the code for future to use.
+## 3. ODectImfAna.C
+* Problem 1. NumnZ mistake.
+* Problem 2. Run data read problem.
+##
+      biz = BDcheck(bid)/NumnZ;
+    ->biz = BDcheck(bid)/NumLY;
++ Use NumLy to replace the NumnZ, because the NumnZ means Num of scintillator on z-axis for each layer.
+##
+      int iRunStart = StartSearchRun, iRunFinal = iRunStart;
+    ->int iRunStart = 0, iRunFinal = 0;
++ I don't know how to explain.
++ You can make it's work when the "run data" in the **char \*path_Run** start from Run0-RunA.
++ I'll fix the problem next time.
+## 4. PwidthAna.C
++ Problem 1: can't show pwidth vs channels graph.
+##
+    TH range and bin num: 
+      NumBD*NumCh,0,NumBD*NumCh
+    ->CavBID,staBID,endBID
++ Revise: Add the code to find out the start and last channel GID to apply in the histrogram.
++ Problem 2: if BD[x]>NumBD get too large id for hBoard and out of histrogram. 
+##
+      int Tmp_CHGID = (BD[ibd]-1)*16+ich;
+    ->int Tmp_CHGID = (BDcheck(BD[ibd]))*NumCh+ich;
+* Revise: Using the BDCheck(BD[x]) to general the code for future to use.
+## 5. RunDataSortAnaV2.C
+    You can make it's work when the "run data" in the char *path_Run start from Run0-RunA.
+## 6. MainControl.C
+* Update the getBit function.
+* Key in the path/name you can work the analysis knoew.
+* <font color:red>**Warning** char *path_Run don't need to change know.</font>
+
 
 # Branch for V2.00Efftest version (ver20230325):
   **This is a new branch of code for the V2.00Efftest version. It addresses several issues, including the problem of gbx/gby/gbz not being found in the 'AnaVariable.h' file, as well as issues with searching the RunData files. Additionally, certain functions that are not needed for the efficiency test have been disabled.**
