@@ -48,6 +48,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
   defstyle();
   
   bool testMode        =true;  testMode         = OperMode[0];
+  // cout<<"testMode"<<"\t"<<testMode<<endl; throw;
   bool normalizeMode   =true;  normalizeMode    = OperMode[1];
   bool NegHiRatChMode  =true;  NegHiRatChMode   = OperMode[2];
   bool lowstatisticMode=false; lowstatisticMode = OperMode[3];
@@ -136,12 +137,20 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
   TH1F *hPw[NumBD*NumCh]={},*hPwSE[NumBD*NumCh]={};
   TH1F *hRt[NumBD*NumCh]={};
   // TF1  *fPw[64]={},*fPwSE[64]={};
-
-  TH2F *hchPw   = new TH2F("hchPw","hchPw",binpw,0,binpw,NumBD*NumCh,0,NumBD*NumCh);//ch64, pw: 0~180//@@
-
-  TH2F *hchPwSE = new TH2F("hchPwSE","hchPwSE",binpw,0,binpw,NumBD*NumCh,0,NumBD*NumCh);//ch64, pw: 0~180
+  int staBID = 128*NumCh, endBID = NumBD*NumCh;
+  for(int iBD=0; iBD<NumBD; iBD++){
+    int gidtmp = (BD[iBD]-1)*NumCh;
+    cout<<iBD<<"\t"<<BD[iBD]<<"\t"<<gidtmp <<endl;
+    if(gidtmp<staBID) staBID = gidtmp;
+    if(gidtmp>endBID) endBID = gidtmp+NumCh;
+  }
+  int CavBID = endBID-staBID;
+  cout<<staBID<<"\t"<<endBID<<"\t"<<CavBID<<endl; //throw;
+  TH2F *hchPw   = new TH2F("hchPw","hchPw",binpw,0,binpw,CavBID,staBID,endBID);//ch64, pw: 0~180//@@
+  hchPw->GetYaxis()->SetRangeUser(staBID-1,endBID+1);
+  TH2F *hchPwSE = new TH2F("hchPwSE","hchPwSE",binpw,0,binpw,CavBID,staBID,endBID);//ch64, pw: 0~180
   TH2F *hchPwDS[2] = {hchPw,hchPwSE};//ch64, pw: 0~180
-  TH2F *hchRt = new TH2F("hchRt","hchRt",binrt,Starttime,Endtime,NumBD*NumCh,0,NumBD*NumCh);//ch64, pw: 0~180
+  TH2F *hchRt = new TH2F("hchRt","hchRt",binrt,Starttime,Endtime,CavBID,staBID,endBID);//ch64, pw: 0~180
   cpwch->SetPhi(-30);
   cpwch->SetTheta(70);
   cpwchSE->SetPhi(-30);
@@ -156,7 +165,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
     else tR->Draw("(channel+(board-1)*16):pwidth/pwidthScaleFactor>>hchPwSE",Form("IDtight>=4&&%s",SGTR),"colz");
     cpwch->cd();
 
-    t->Draw("(channel+(board-1)*16):pwidth>>hchPw",Form("%s",SGTR),"colz");//PS: no pwidthScaleFactor in *mu.root
+    t->Draw(Form("(channel+(board-1)*16):pwidth>>hchPw"),Form("%s",SGTR),"colz");//PS: no pwidthScaleFactor in *mu.root
     
     //cpwch->Update();
     char devoteCondition[40]={};
@@ -168,7 +177,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
         for(int ibd=0;ibd<NumBD;ibd++){
           for(int ich=0;ich<NumCh;ich++){
 
-            int Tmp_CHGID = (BD[ibd]-1)*16+ich;
+            int Tmp_CHGID = (BDcheck(BD[ibd]))*NumCh+ich;
             // cout<<"Doing the normalization: ChGID: " <<Tmp_CHGID<<endl;
             double ChIntegralNum  = hchPwDS[i]->Integral(-1,-1,Tmp_CHGID+1,Tmp_CHGID+1);
             outPwData<<BD[ibd]<<"\t"<<ich<<"\t"<<int(ChIntegralNum);
@@ -328,11 +337,12 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
       hRt[ich+ibd*NumCh]  = new TH1F(hrtname,hrtname,binrt,Starttime,Endtime);
 
       for(int ibinpw=1; ibinpw<binpw+1;ibinpw++){
-        float TmpPwV0= hchPwDS[0]->GetBinContent(ibinpw,(BD[ibd]-1)*NumCh+ich+1),
-              TmpPwV1= hchPwDS[1]->GetBinContent(ibinpw,(BD[ibd]-1)*NumCh+ich+1);
+        float TmpPwV0= hchPwDS[0]->GetBinContent(ibinpw,BDcheck(BD[ibd])*NumCh+ich+1),
+              TmpPwV1= hchPwDS[1]->GetBinContent(ibinpw,BDcheck(BD[ibd])*NumCh+ich+1);
+        // cout<<BD[ibd]<<"\t"<<ich<<"\t"<<ibinpw<<"\t"<<BDcheck(BD[ibd])*NumCh+ich+1<<"\t"<<TmpPwV0<<"\t"<<TmpPwV1<<endl;
         hPw[ich+ibd*NumCh]->SetBinContent(ibinpw,TmpPwV0);
         hPwSE[ich+ibd*NumCh]->SetBinContent(ibinpw,TmpPwV1);
-      }
+      } //throw;
       /*
             for(int ibinrt=1; ibinrt<binrt+1;ibinrt++){
         RtValue[1] = 1.0*(hchRt->GetBinContent(ibinrt,(BD[ibd]-1)*NumCh+ich+1));
@@ -381,7 +391,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
       RtValue[0] = 1.0*(hchRt->GetBinContent(1,(BD[ibd]-1)*NumCh+ich+1));
       for(int ibinrt=1; ibinrt<binrt+1;ibinrt++){
         RtValue[1] = 1.0*(hchRt->GetBinContent(ibinrt,(BD[ibd]-1)*NumCh+ich+1));
-        hRt[ich+ibd*NumCh]->SetBinContent(ibinrt,RtValue[1]);
+        hRt[ich+ibd*NumCh]->SetBinContent(ibinrt,RtValue[1]);//@ clone write way
         double RtRate = (RtValue[1]/RtValue[0]);
         if(ibinrt>20){
           if     ( RtRate<1.E+8&&RtRate>1.165) outRt<<BD[ibd]<<"\t"<<ich<<"\t"<<ibinrt<<"\t"<<RtValue[1]/RtValue[0]<<endl;

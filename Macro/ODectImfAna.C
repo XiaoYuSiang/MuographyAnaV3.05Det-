@@ -298,7 +298,7 @@ void ODectImfAna(char Opt='q') {
         
         bix = abs(bid%2-1);
         biy = 1-((bid-1)/2)%2;
-        biz = BDcheck(bid)/NumnZ;
+        biz = BDcheck(bid)/NumLY;
         
         ix = ich/4 + bix*4;
         iy = ich%4 + biy*4;
@@ -351,7 +351,7 @@ void ODectImfAna(char Opt='q') {
       bid = BD[ibd]; 
       bix = abs(bid%2-1);
       biy = 1-((bid-1)/2)%2;
-      biz = BDcheck(bid)/NumnZ;
+      biz = BDcheck(bid)/NumLY;
       if   (bid%4<2) Scints.face = true;
       else           Scints.face = false;
       for(int ich=0;ich<NumCh;ich++){
@@ -421,7 +421,9 @@ void TillRunODInf(){
   DetVerCheck(version,detVer);
   cout<<"Now, detector Ver is:  "<<version<<endl;
   
-  int iRunStart = StartSearchRun, iRunFinal = iRunStart;
+    // int iRunStart = StartSearchRun, iRunFinal = iRunStart;
+
+  int iRunStart = 0, iRunFinal = 0;
   FindAllTillFile(DirRunTillfile, version, iRunStart, iRunFinal,"Setup_Till_Run");
   FindStartProduct(DirIMFdat, version,iRunStart,"ODetCh");
   char infileName[150];

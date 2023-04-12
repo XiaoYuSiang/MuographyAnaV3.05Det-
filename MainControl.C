@@ -37,6 +37,9 @@ void MainControl(
   for (int i=0; AOPT[i]!="-" ;i++)
     if(int( runOPT.find(AOPT[i])) != -1) OPT |= 1UL << i;
   
+  cout<<OPT<<endl;
+  bool ReRunRunMode    = OPT>>0;
+
   bool ReRunRunMode    = GET_BIT(OPT,0);
   bool testMode        = GET_BIT(OPT,1);//pwidth ana. test mode
   bool normalizeMode   = GET_BIT(OPT,2);
@@ -64,7 +67,7 @@ void MainControl(
   bool BlockFitPWAna   = GET_BIT(OPT,23);//default skip the progress = true
   bool BlockFinalSelect= GET_BIT(OPT,24);//default skip the progress = true
   bool BlockRateVTime  = GET_BIT(OPT,25);//default skip the progress = true
-
+  
   bool OperMode[7]={
     testMode,         normalizeMode,    NegHiRatChMode,
     lowstatisticMode, rootFileMode,     SETightMode,
@@ -88,13 +91,13 @@ void MainControl(
       cout<<"Path of Root Dir: "<<path_OpR<<endl;
     }
     
+  if(!SkipBlocks){
     if(ReRunRunMode){
       /* P.03 *///-Able-
       gROOT->LoadMacro(Form("%sRunDataSortAnaV2.C+",path_Mac));
       RunDataSortAnaV2();
     }
 
-  if(!SkipBlocks){
     if(BlockODetImf){
       /* P.04 *///-New-
       /* Locate the data of detector */
@@ -144,9 +147,7 @@ void MainControl(
       //int DataNameAnaRoot_Mu(const char OPT='P') 
       cout<<"Find Raw .root data Number:  "<<rotfnum<<endl;
     }
-  }
   
-  if(!SkipBlocks){
     if(BlockDSLAna){
       /* P.10 *///-Able-
       /*Analize the Data for time start to end and save to head file*/
@@ -195,9 +196,10 @@ void MainControl(
       STRealEvAnaV2(33);
     }
   }
+  if(!SkipBlocks){
+  }
 
   
-  if(!SkipBlocks){
     if(BlockEzPWAna){
       /* P.16 *///-New-
       /* Pwidth analyze for function fitting and trigger ana. */
@@ -205,7 +207,7 @@ void MainControl(
       PwidthAnaV2(OperMode,33);
       //PWidthPeakAna(c.bool*OperMode)
     }
-
+FATAL("iiuonufi");
     if(!SkipBlockStop){
       /* P.17 */
       /* Pwidth analyze for function fitting and trigger ana. */
@@ -222,6 +224,7 @@ void MainControl(
       FitTrackInfoAna(33);
       //void  FitTrackResAna(c.int indexi=28, c.int indexf=29 )
     }
+  if(!SkipBlocks){
   }
 
     if(BlockFitTrickRes){
@@ -231,13 +234,13 @@ void MainControl(
       FitTrackResAnaV2(33,true);//@@
       //void  FitTrackResAna(const int indexGap=28)
     }
-  if(!SkipBlocks){
     if(BlockFitPWAna){
       /* P.20 *///-New-
       /* Pwidth analyze for function fitting and trigger ana. */
       gROOT->LoadMacro(Form("%sPwidthAna.C+",path_Mac));
       PwidthAnaV2P(OperMode,33);
     }
+  if(!SkipBlocks){
   }
     if(BlockFinalSelect){
       /* P.21 */
@@ -313,27 +316,27 @@ void MainControl()
   char *Ori_path_Mac = "./Macro/";
   
   /* Adjustable Path Variable */
-  char *path_Raw = "/data4/YuSiang/Shimen/";
+  char *path_Raw = "/data4/vivian/CheckThresholeMTB17-20/RawData/";
 
-  // path of the raw data for muon (*_Mu.txt)
-  char *path_Hk  = "/data4/YuSiang/Shimen/HKData/";
+  //path of the raw data for muon (*_Mu.txt)
+  char *path_Hk  = "/data4/vivian/CheckThresholeMTB17-20/HKData/";
   
-  // path of the runs data for detector information (Setup_*.txt)
-  char *path_Run = "/data4/YuSiang/Shimen/OdetData/";
+  //path of the runs data for detector information (Setup_*.txt)
+  char *path_Run = "/data4/YuSiang/MTBThresholeCheck/OdetData/";
   
-  // path of the raw data for House keeping (*_HK.txt)
-  char *path_Rot = "/data4/YuSiang/TEST2/rootfile/";
+  //path of the raw data for House keeping (*_HK.txt)
+  char *path_Rot = "/data4/vivian/CheckThresholeMTB17-20/rootfile/";
   
-  // path of the raw data for House keeping (*_HK.txt)
-  char *path_OpR = "/data4/YuSiang/TEST2/ShimenAnaR04/";
+  //path of the raw data for House keeping (*_HK.txt)
+  char *path_OpR = "/data4/YuSiang/MTBThresholeCheck/AnaR1/";
     
-  // path of result and operation data
-  char *path_Mac = "/data4/YuSiang/TEST2/ShimenAnaR04/MacroTmp/";
-  // path of operation Macros, it is the Macro path your put in the case dir
+  //path of result and operation data
+  char *path_Mac = "/data4/YuSiang/MTBThresholeCheck/AnaR1/MacroTmp/";
+  //path of operation Macros, it is the Macro path your put in the case dir
   
   /* Data name want to search!! */
-  char *name_Raw = "*tunnel4*_*Mu*";
-  char *name_Hk  = "*tunnel4*_*HK*";
+  char *name_Raw = "*_Mu";
+  char *name_Hk  = "*_HK";
 
   /*Example:   
     1. A directory contain 3 file:

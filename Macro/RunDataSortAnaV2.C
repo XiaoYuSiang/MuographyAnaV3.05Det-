@@ -617,6 +617,10 @@ void RunFileNumCheck( int &iRunStart, int &iRunFinal ){
       iRunFinal--;
       break;
     } 
+    if(iRunStart>50) {
+      cout<<"Not find 1st RunFile.in "<<DirRunData<<endl;
+      throw;
+    }
   }
   for( iRunFinal = iRunStart ; true ; iRunFinal++){
     char tmpfile[250];
@@ -664,11 +668,6 @@ int TillFileCheck(const char *dataPath, const int iRunStart, const int iRunFinal
       cout<<"Not the Final till_run, Npass= "<<Npass<<endl;
     }
   }
-  char tmpfile[250];
-  sprintf(tmpfile,"%sSetup_Till_Run%02.f.root",dataPath,lastTillFileIndex*1.);
-  Long64_t SizeOfFile = FileSize(tmpfile,'Q');
-  if(SizeOfFile<10) return -1;
-  return lastTillFileIndex;
 }
 
 void RunDataSortAna(){
@@ -708,7 +707,7 @@ void RunDataSortAnaV2(){
       SaveRunData(outfileName, runData,i*1.);
     }
   }else if(lastTillFileIndex!=iRunFinal){
-    if(lastTillFileIndex!=StartSearchRun){
+    if(lastTillFileIndex!=iRunStart){
       sprintf(infileName,"%sSetup_Till_Run%02.f.txt",DirRunTillfile,lastTillFileIndex*1.);
       ReadRunData(infileName, runData,'q');
     }
@@ -732,6 +731,6 @@ void RunDataSortAnaV2(){
       runData.OutRunData(outCsv,(char*)"Csv");
       SaveRunData(outfileName, runData,i*1.);
     }
-  }else cout<<"Finish the sort of run data files"<<endl;
-  
+  }
+  else cout<<"Finish the sort of run data files"<<endl;
 }

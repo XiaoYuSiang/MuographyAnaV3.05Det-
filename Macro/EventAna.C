@@ -174,10 +174,11 @@ void EventAna(const int indexi=28, const int indexf=29, const int unixtimeini = 
           int VnH[NumLY] = {0,0,0,0};
           for(int iPartCut = 0 ; iPartCut < NPartCut ; iPartCut++){
             for(int iLay = 0 ; iLay < NumLY ; iLay++){
-              VnH[iLay] +=hBoard->GetBinContent(BD[iLay*NPartCut+iPartCut]);//total number for hit in a frame/event
+              VnH[iLay] +=hBoard->GetBinContent(BDCheck(BD[iLay*NPartCut+iPartCut])+1);//total number for hit in a frame/event
+              // cout<<BDCheck(BD[iLay*NPartCut+iPartCut])<<"\t";
               //if(EvIndex==9) cout<<"VnH["<<iLay<<"]+=hB->GetBC(BD["<<iLay*NPartCut+iPartCut<<"])="<<hBoard->GetBinContent(BD[iLay*NPartCut+iPartCut])<<endl;;
             }
-          }
+          }//cout<<endl;
           nH0     = VnH[0];
           nH1     = VnH[1];
           nH2     = VnH[2];
