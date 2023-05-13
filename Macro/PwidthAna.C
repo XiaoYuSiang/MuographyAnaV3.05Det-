@@ -177,17 +177,17 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
         for(int ibd=0;ibd<NumBD;ibd++){
           for(int ich=0;ich<NumCh;ich++){
 
-            int Tmp_CHGID = (BDcheck(BD[ibd]))*NumCh+ich;
+            int Tmp_CHGID = hchPwDS[0]->FindBin((BD[ibd]-1)*NumCh+ich);
             // cout<<"Doing the normalization: ChGID: " <<Tmp_CHGID<<endl;
-            double ChIntegralNum  = hchPwDS[i]->Integral(-1,-1,Tmp_CHGID+1,Tmp_CHGID+1);
+            double ChIntegralNum  = hchPwDS[i]->Integral(-1,-1,Tmp_CHGID,Tmp_CHGID);
             outPwData<<BD[ibd]<<"\t"<<ich<<"\t"<<int(ChIntegralNum);
 
             for(int ibinpw=0;ibinpw<binpw;ibinpw++){
-              double ChOriginNum =hchPwDS[i]->Integral(ibinpw+1,ibinpw+1,Tmp_CHGID+1,Tmp_CHGID+1);
+              double ChOriginNum =hchPwDS[i]->Integral(ibinpw+1,ibinpw+1,Tmp_CHGID,Tmp_CHGID);
               double interData = 0;
               if(ChOriginNum==0) interData=0;
               else interData = ChOriginNum/ChIntegralNum;
-              hchPwDS[i]->SetBinContent(ibinpw+1,Tmp_CHGID+1,interData);
+              hchPwDS[i]->SetBinContent(ibinpw+1,Tmp_CHGID,interData);
               outPwData<<"\t"<<interData;
               // cout<<ibinpw<<"    "<<Tmp_CHGID+1<<"    "<<ChOriginNum/ChIntegralNum<<endl;
               // cout<<ibinpw<<"    "<<Tmp_CHGID+1<<"    "<<hchPw->GetBinContent(2*ibinpw+2,Tmp_CHGID+1+1)<<endl;
@@ -337,8 +337,10 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
       hRt[ich+ibd*NumCh]  = new TH1F(hrtname,hrtname,binrt,Starttime,Endtime);
 
       for(int ibinpw=1; ibinpw<binpw+1;ibinpw++){
-        float TmpPwV0= hchPwDS[0]->GetBinContent(ibinpw,BDcheck(BD[ibd])*NumCh+ich+1),
-              TmpPwV1= hchPwDS[1]->GetBinContent(ibinpw,BDcheck(BD[ibd])*NumCh+ich+1);
+        // float TmpPwV0= hchPwDS[0]->GetBinContent(ibinpw,BDcheck(BD[ibd])*NumCh+ich+1),
+        //       TmpPwV1= hchPwDS[1]->GetBinContent(ibinpw,BDcheck(BD[ibd])*NumCh+ich+1);
+        float TmpPwV0= hchPwDS[0]->GetBinContent(ibinpw,hchPwDS[0]->GetYaxis()->FindBin((BD[ibd]-1)*NumCh+ich)),
+              TmpPwV1= hchPwDS[1]->GetBinContent(ibinpw,hchPwDS[1]->GetYaxis()->FindBin((BD[ibd]-1)*NumCh+ich));
         // cout<<BD[ibd]<<"\t"<<ich<<"\t"<<ibinpw<<"\t"<<BDcheck(BD[ibd])*NumCh+ich+1<<"\t"<<TmpPwV0<<"\t"<<TmpPwV1<<endl;
         hPw[ich+ibd*NumCh]->SetBinContent(ibinpw,TmpPwV0);
         hPwSE[ich+ibd*NumCh]->SetBinContent(ibinpw,TmpPwV1);
