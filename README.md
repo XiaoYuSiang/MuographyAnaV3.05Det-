@@ -1,10 +1,10 @@
 # Analysis Problem fix for setup in S4-509 Eff 
-# !!!Warning ver20230413!!!
+# !!!Warning ver20230515!!!
 ## pwidthAna.C
 + Problem: sequence of board id display on graph is wrong!.
 ##
       int Tmp_CHGID = (BDcheck(BD[ibd]))*NumCh+ich;
-    ->int Tmp_CHGID = hchPwDS[x]->FindBin((BD[ibd]-1)*NumCh+ich);
+    ->int Tmp_CHGID = hchPwDS[x]->GetYaxis()->FindBin((BD[ibd]-1)*NumCh+ich);
 * Revise: Using the BDCheck(BD[x]) to general the code for future to use.
 # (ver20230413)!!!:
 ## 1. AnaVariable.h
