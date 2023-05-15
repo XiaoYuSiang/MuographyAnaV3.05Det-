@@ -177,7 +177,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
         for(int ibd=0;ibd<NumBD;ibd++){
           for(int ich=0;ich<NumCh;ich++){
 
-            int Tmp_CHGID = hchPwDS[0]->FindBin((BD[ibd]-1)*NumCh+ich);
+            int Tmp_CHGID = hchPwDS[i]->GetYaxis()->FindBin((BD[ibd]-1)*NumCh+ich);
             // cout<<"Doing the normalization: ChGID: " <<Tmp_CHGID<<endl;
             double ChIntegralNum  = hchPwDS[i]->Integral(-1,-1,Tmp_CHGID,Tmp_CHGID);
             outPwData<<BD[ibd]<<"\t"<<ich<<"\t"<<int(ChIntegralNum);
