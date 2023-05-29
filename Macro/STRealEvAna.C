@@ -289,10 +289,13 @@ void STRealEvAnaV2(const int indexi=28){
       cevent ->cd(2);
       cTMP->DrawClonePad();
       
-      cEVESAll->cd(1+ibx+2-NumBX*iby);
+      cNUMSAll->cd(1);
       cTMP    ->DrawClonePad();
       
-      cEVEFAll->cd(1+ibx+2-NumBX*iby);
+      cEVESAll->cd(1);
+      cTMP    ->DrawClonePad();
+      
+      cEVEFAll->cd(1);
       cevent->DrawClonePad();
       
       cTMP->Close();
