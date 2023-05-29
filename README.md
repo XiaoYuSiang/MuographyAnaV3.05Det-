@@ -1,12 +1,17 @@
 # Analysis Problem fix for setup in S4-509 Eff 
-# !!!Warning ver20230515!!!
+# !!!Warning ver20230529!!!
+## STRealEvAna.C
++ Problem: NumBx !=2 & NumBy !=2 make the result drawing canvas bug, which make the result don't display.
+* Revise: In the V2.0 det. setup just revise canvas->cd(1)
+
+# ver 20230515
 ## pwidthAna.C
 + Problem: sequence of board id display on graph is wrong!.
 ##
       int Tmp_CHGID = (BDcheck(BD[ibd]))*NumCh+ich;
     ->int Tmp_CHGID = hchPwDS[x]->GetYaxis()->FindBin((BD[ibd]-1)*NumCh+ich);
 * Revise: Using the BDCheck(BD[x]) to general the code for future to use.
-# (ver20230413)!!!:
+# ver20230413:
 ## 1. AnaVariable.h
 * Problem: wrong NumBD cause the wrong display of graphs.
 ##
