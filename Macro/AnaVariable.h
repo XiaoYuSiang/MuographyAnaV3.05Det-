@@ -93,13 +93,14 @@ namespace MuographAnaVariable
   const int binNumFluxY = 281;//93;
   
   const bool NegLowSta = true;
+  const bool GammaCut  = false; // if pwidth ==0 neglect this hit in EventAna.C
   
   // if Selection Event number of some Combination Lower than trigger, Neglect.
-  const Float_t TriggerNegLowSEComb = 15;
+  const Float_t TriggerNegLowSEComb = 0;//15;
   
   //Neglect the data which DxDz or DyDz < Trigger
   const Float_t TriggerLessDxDz = -100;
-  const Float_t TriggerLessDyDz = -0.11;
+  const Float_t TriggerLessDyDz = -0.11;//0.11;
   
   //Not recreate the GapT file when size > TriggerEventAnaSkip% of the predict size
   
@@ -299,7 +300,8 @@ namespace MuographAnaVariable
   const Double_t G4eventGap    = 140;
     //suppose pwidth(100s) = EdeptoPWit*Edep(GeV)
   
-  
+  /*MTB System const*/
+  const Int_t    MTBSysMaxBID  = 256;
 
   //V03.05
   /*Detector Information variable*/
@@ -309,15 +311,13 @@ namespace MuographAnaVariable
   //number of channel on x-axis per board, ... on y-axis ..., , ... on z-axis ..., 
   const int    NumnX =  4, NumnY =  4, NumnZ = 1;
   //number of boards on x-axis per layer, ... on y-axis ..., , ... on z-axis ..., 
-  const int    NumBX =  2, NumBY =  2, NumBZ = NumLY;
+  const int    NumBX =  2, NumBY =  2, NumBZ = 1;
   //number of total channel
   const int    BinNumOnCha = NumBD*NumCh;
   //number of total channel per layer
   const int    NumChLys    = BinNumOnCha/NumLY;
   //MTB ID of a board at position index(ix,iy,iz): BD[ix+NumBY*iy+NumBX*NumBY*iz]
   const int    BD[NumBD]   = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-  //board index of MTB ID is X: BD[X]
-  const int    BDINV[NumBD+1] = {0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
   //pwidth scale factor of MTB board because the Magnification of DAQ at index x: BDPwWei[x]
   const int    BDPwWei[NumBD] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
   //(MTB id)%NumLY at board position index(BiX,BiY): LayArr[BiX][BiY]

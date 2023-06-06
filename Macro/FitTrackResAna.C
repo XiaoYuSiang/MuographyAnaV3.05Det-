@@ -240,7 +240,7 @@ void FitTrackResAna(
     for(int ixbin=1; ixbin<=binNFX; ixbin++){
       for(int iybin=1; iybin<=binNFY; iybin++){
         float value = (TDDD->GetBinContent(ixbin,iybin));
-        if(value < TriggerNegLowSEComb&&NegLowSta) TDDD->SetBinContent(ixbin,iybin,0);
+        if(!MCMode) if(value < TriggerNegLowSEComb&&NegLowSta) TDDD->SetBinContent(ixbin,iybin,0);
       }
     }
     TDDD->Draw("colz");
@@ -253,7 +253,7 @@ void FitTrackResAna(
     for(int ixbin=1; ixbin<=binNFX; ixbin++){
       for(int iybin=1; iybin<=binNFY; iybin++){
         float value = (TDDDNorEff->GetBinContent(ixbin,iybin));
-        if(value<TriggerNegLowSEComb&&NegLowSta) value = 0;
+        if(!MCMode) if(value<TriggerNegLowSEComb&&NegLowSta) value = 0;
         TDDDNorEff->SetBinContent(ixbin,iybin,value);
       }
     }
@@ -335,7 +335,7 @@ void FitTrackResAna(
     for(int ixbin=1; ixbin<=binNFX; ixbin++){
       for(int iybin=1; iybin<=binNFY; iybin++){
         float value = (TDDDP->GetBinContent(ixbin,iybin));
-        if(value < TriggerNegLowSEComb&&NegLowSta) TDDDP->SetBinContent(ixbin,iybin,0);
+        if(!MCMode) if(value < TriggerNegLowSEComb&&NegLowSta) TDDDP->SetBinContent(ixbin,iybin,0);
       }
     }
     txtDefault(0., 0.28, Form("Statistic: %.0f",TDDDP->Integral(-1,-1,-1,-1)), 0.03, 0, C, 1);
@@ -349,7 +349,7 @@ void FitTrackResAna(
     for(int ixbin=1; ixbin<=binNFX; ixbin++){
       for(int iybin=1; iybin<=binNFY; iybin++){
         float value = (TDDDPNorEff->GetBinContent(ixbin,iybin));
-        if(value < TriggerNegLowSEComb&&NegLowSta) TDDDPNorEff->SetBinContent(ixbin,iybin,0);
+        if(!MCMode) if(value < TriggerNegLowSEComb&&NegLowSta) TDDDPNorEff->SetBinContent(ixbin,iybin,0);
       }
     }
     txtDefault(0., 0.28, Form("Statistic: %.0f",TDDDPNorEff->Integral(-1,-1,-1,-1)), 0.03, 0, C, 1);

@@ -62,7 +62,7 @@ void TrackAna(const int indexi=28, const int indexf=29, const bool testMode=fals
     TreeReader data(Form("%sGapT%s",DirOperate,RFNStr));
         
     TFile *rotfile = new TFile(Form("%sETracksGT%s", DirOperate, RFNStr),"RECREATE");
-    cout<<Form("%sETracksGT%s", DirOperate, RFNStr)<<" is opened"<<endl;
+    cout<<Form("%sETracksGT%s", DirOperate, RFNStr)<<" is \"RECREATE\""<<endl;
 
     //Data Variable
     //new Tree unit and tree unit
@@ -171,6 +171,7 @@ void TrackAna(const int indexi=28, const int indexf=29, const bool testMode=fals
     //Fill the data
     
     for(int ir = 0; ir < totalRunNum ; ir ++){
+      cout<<"Run: "<<ir<<"\t/\t"<<totalRunNum<<endl;
       if(RunID[ir] == -1) continue;
       
       RunData      runDatatmp;
@@ -190,12 +191,13 @@ void TrackAna(const int indexi=28, const int indexf=29, const bool testMode=fals
               <<Form("   %d",unixtime_)
               <<Form("   %d",rnum)<<flush;
         
-
-        if(unixtime_<runDatatmp.StartUT) continue;
-        if(unixtime_>runDatatmp.EndUT){
-          lastev = ev;
-          break;
-        } 
+        if(!MCMode){
+          if(unixtime_<runDatatmp.StartUT) continue;
+          if(unixtime_>runDatatmp.EndUT){
+            lastev = ev;
+            break;
+          } 
+        }
         nH        = data.GetInt("nH");
         if(nH<TriggerTraNHitS) continue;
         if(nH>TriggerTraNHitL) continue;
@@ -340,7 +342,7 @@ void TrackAna(const int indexi=28, const int indexf=29, const bool testMode=fals
       } cout<<"\rFinish Tracking of Events"<<endl;
       cout<<"Number of track in run "<<ir<<" :  "<<rnum<<endl;
     }
-
+    cout<<"Finish the tracking of Date!!"<<endl;
     rotfile->Write();
     
     

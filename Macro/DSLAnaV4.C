@@ -122,9 +122,10 @@ void DSLAnaV4(const bool MCMode = false) {
     tR->SetBranchAddress("StartUT" ,&StartUT);
     tR->SetBranchAddress("EndUT"   ,&EndUT  );
     tR->GetEntry(0);
-    // cout<<unixtimei<<"\t"<<unixtimef<<endl;
-    // cout<<RID<<"\t"<<StartUT<<"\t"<<EndUT<<endl;
-    if(StartUT>=unixtimef) RunID[irun] = -1;
+    cout<<"RunID:StUT:EdUT:\t"<<RID<<"\t"<<StartUT<<"\t"<<EndUT<<endl;
+    cout<<"RunID:UTi:UTf:\t"<<RID<<"\t"<<unixtimei<<"\t"<<unixtimef<<endl;
+    cout<<"bool 1st&2nd: "<<bool(StartUT>=unixtimef)<<"\t"<<bool(EndUT  <=unixtimei)<<endl;
+    if(StartUT>unixtimef) RunID[irun] = -1;
     else if(EndUT  <=unixtimei) RunID[irun] = -1;
     else RunID[irun] = RID;
     delete tR;

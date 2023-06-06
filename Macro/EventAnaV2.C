@@ -51,7 +51,8 @@ void EventAnaV2(const int indexi=28, const int indexf=29, const int unixtimeini 
   ofstream out(Form("%sEvNumForGap.dat",DirOperate), ofstream::out | ofstream::app );
   ofstream out1(Form("%sEvDisplay.dat",DirOperate));
   ofstream outEvP(Form("%sEvProblem.dat",DirOperate));
-  
+  outEvP<<"#unixtime_\tbid\tcid\tpcnt\tcnt"<<endl;
+
   Int_t Index =0;
   //Data Variable
   for(int i0=indexi;i0<indexf;i0++){
@@ -68,6 +69,7 @@ void EventAnaV2(const int indexi=28, const int indexf=29, const int unixtimeini 
     
     cout<<Form("Root file not find, and save: %s",rtfN)<<endl;
     TFile *rotfile = new TFile(rtfN,"RECREATE");//@@ by DSL
+    cout<<Form("Root Save: %s",rtfN)<<endl;
     Int_t      EvIndex=0;
     Int_t      frame_;
     Long64_t   unixtime_;
@@ -116,10 +118,11 @@ void EventAnaV2(const int indexi=28, const int indexf=29, const int unixtimeini 
     tree->Branch("tSecond",&tSecond);
     // tree->Branch("pcnt",&pcnt);
     tree->Branch("nH",&nH);
-    tree->Branch("nH0",&nH0);
-    tree->Branch("nH1",&nH1);
-    tree->Branch("nH2",&nH2);
-    tree->Branch("nH3",&nH3);
+    for(int i=0; i<NumLY; i++) tree->Branch(Form("nH%d",i),&(nHk[i]));
+    // tree->Branch("nH0",&nH0);
+    // tree->Branch("nH1",&nH1);
+    // tree->Branch("nH2",&nH2);
+    // tree->Branch("nH3",&nH3);
     
     tree->Branch("nLayers",&nLayers);
     tree->Branch("channel",&channel);
@@ -168,12 +171,13 @@ void EventAnaV2(const int indexi=28, const int indexf=29, const int unixtimeini 
       pcnt_    = data.GetPtrInt("pcnt");
       tcnt_    = data.GetPtrLong64("tcnt");
       
-      if (dtime0 == 0){
-        dtime0 = dtimeInt_[0];
-      }
+  
+      if (dtime0 == 0) dtime0 = dtimeInt_[0];
+  
 
       for( int i=0 ; i<nHits; i++){
        // if (fabs(dtime0-dtime_[i])>eventGap[i0]){
+        if(GammaCut) if(pwidth_[i]==0) continue;
         dtcnt.push_back(abs(dtimeInt_[i]-dtime0));
         // cout<<eventGap[i0]<<"\t"<<dtime0<<"\t"<<dtimeInt_[i]<<endl;
         // if(tcnt_[i] >= 1015784000&&tcnt_[i] <= 1015784010) cout<<"\n"<<"Tri out if"<<tcnt_[i]<<"\t"<<board_[i]<<"\t"<<channel_[i]<<"\t"<<pwidth_[i]<<endl;
@@ -192,7 +196,7 @@ void EventAnaV2(const int indexi=28, const int indexf=29, const int unixtimeini 
           int VnH[NumLY] = {0,0,0,0};
           for(int iPartCut = 0 ; iPartCut < NPartCut ; iPartCut++){
             for(int iLay = 0 ; iLay < NumLY ; iLay++){
-              VnH[iLay] +=hBoard->GetBinContent(BD[iLay*NPartCut+iPartCut]);//total number for hit in a frame/event
+              VnH[iLay] +=hBoard->GetBinContent(BDCheck(BD[iLay*NPartCut+iPartCut])+1);//total number for hit in a frame/event
               //if(EvIndex==9) cout<<"VnH["<<iLay<<"]+=hB->GetBC(BD["<<iLay*NPartCut+iPartCut<<"])="<<hBoard->GetBinContent(BD[iLay*NPartCut+iPartCut])<<endl;;
             }
           }

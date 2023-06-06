@@ -617,6 +617,10 @@ void RunFileNumCheck( int &iRunStart, int &iRunFinal ){
       iRunFinal--;
       break;
     } 
+    if(iRunStart>50) {
+      cout<<"Not find 1st RunFile.in "<<DirRunData<<endl;
+      throw;
+    }
   }
   for( iRunFinal = iRunStart ; true ; iRunFinal++){
     char tmpfile[250];

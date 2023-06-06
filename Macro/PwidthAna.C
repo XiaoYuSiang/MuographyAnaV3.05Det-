@@ -136,12 +136,20 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
   TH1F *hPw[NumBD*NumCh]={},*hPwSE[NumBD*NumCh]={};
   TH1F *hRt[NumBD*NumCh]={};
   // TF1  *fPw[64]={},*fPwSE[64]={};
-
-  TH2F *hchPw   = new TH2F("hchPw","hchPw",binpw,0,binpw,NumBD*NumCh,0,NumBD*NumCh);//ch64, pw: 0~180//@@
-
-  TH2F *hchPwSE = new TH2F("hchPwSE","hchPwSE",binpw,0,binpw,NumBD*NumCh,0,NumBD*NumCh);//ch64, pw: 0~180
+  int staBID = MTBSysMaxBID*NumCh, endBID = NumBD*NumCh;/*@@@*/
+  for(int iBD=0; iBD<NumBD; iBD++){
+    int gidtmp = (BD[iBD]-1)*NumCh;
+    // cout<<iBD<<"\t"<<BD[iBD]<<"\t"<<gidtmp <<endl;
+    if(gidtmp<staBID) staBID = gidtmp;
+    if(gidtmp>endBID) endBID = gidtmp+NumCh;
+  }
+  int CapBID = endBID-staBID;
+  cout<<"Start:End:Capacity of BID\t"<<staBID<<"\t"<<endBID<<"\t"<<CapBID<<endl; //throw;
+  TH2F *hchPw   = new TH2F("hchPw","hchPw",binpw,0,binpw,CapBID,staBID,endBID);//ch64, pw: 0~180//@@
+  hchPw->GetYaxis()->SetRangeUser(staBID-1,endBID+1);
+  TH2F *hchPwSE = new TH2F("hchPwSE","hchPwSE",binpw,0,binpw,CapBID,staBID,endBID);//ch64, pw: 0~180
   TH2F *hchPwDS[2] = {hchPw,hchPwSE};//ch64, pw: 0~180
-  TH2F *hchRt = new TH2F("hchRt","hchRt",binrt,Starttime,Endtime,NumBD*NumCh,0,NumBD*NumCh);//ch64, pw: 0~180
+  TH2F *hchRt = new TH2F("hchRt","hchRt",binrt,Starttime,Endtime,CapBID,staBID,endBID);//ch64, pw: 0~180
   cpwch->SetPhi(-30);
   cpwch->SetTheta(70);
   cpwchSE->SetPhi(-30);
@@ -168,7 +176,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
         for(int ibd=0;ibd<NumBD;ibd++){
           for(int ich=0;ich<NumCh;ich++){
 
-            int Tmp_CHGID = (BD[ibd]-1)*16+ich;
+            int Tmp_CHGID = (BDcheck(BD[ibd]))*NumCh+ich;
             // cout<<"Doing the normalization: ChGID: " <<Tmp_CHGID<<endl;
             double ChIntegralNum  = hchPwDS[i]->Integral(-1,-1,Tmp_CHGID+1,Tmp_CHGID+1);
             outPwData<<BD[ibd]<<"\t"<<ich<<"\t"<<int(ChIntegralNum);
@@ -328,8 +336,9 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
       hRt[ich+ibd*NumCh]  = new TH1F(hrtname,hrtname,binrt,Starttime,Endtime);
 
       for(int ibinpw=1; ibinpw<binpw+1;ibinpw++){
-        float TmpPwV0= hchPwDS[0]->GetBinContent(ibinpw,(BD[ibd]-1)*NumCh+ich+1),
-              TmpPwV1= hchPwDS[1]->GetBinContent(ibinpw,(BD[ibd]-1)*NumCh+ich+1);
+        float TmpPwV0= hchPwDS[0]->GetBinContent(ibinpw,BDcheck(BD[ibd])*NumCh+ich+1),
+              TmpPwV1= hchPwDS[1]->GetBinContent(ibinpw,BDcheck(BD[ibd])*NumCh+ich+1);
+        // cout<<BD[ibd]<<"\t"<<ich<<"\t"<<ibinpw<<"\t"<<BDcheck(BD[ibd])*NumCh+ich+1<<"\t"<<TmpPwV0<<"\t"<<TmpPwV1<<endl;
         hPw[ich+ibd*NumCh]->SetBinContent(ibinpw,TmpPwV0);
         hPwSE[ich+ibd*NumCh]->SetBinContent(ibinpw,TmpPwV1);
       }
@@ -381,7 +390,7 @@ void PwidthAnaV2(const bool*OperMode, const int itcntgap=28) {
       RtValue[0] = 1.0*(hchRt->GetBinContent(1,(BD[ibd]-1)*NumCh+ich+1));
       for(int ibinrt=1; ibinrt<binrt+1;ibinrt++){
         RtValue[1] = 1.0*(hchRt->GetBinContent(ibinrt,(BD[ibd]-1)*NumCh+ich+1));
-        hRt[ich+ibd*NumCh]->SetBinContent(ibinrt,RtValue[1]);
+        hRt[ich+ibd*NumCh]->SetBinContent(ibinrt,RtValue[1]);//@ clone write way
         double RtRate = (RtValue[1]/RtValue[0]);
         if(ibinrt>20){
           if     ( RtRate<1.E+8&&RtRate>1.165) outRt<<BD[ibd]<<"\t"<<ich<<"\t"<<ibinrt<<"\t"<<RtValue[1]/RtValue[0]<<endl;
@@ -807,8 +816,8 @@ void PwidthAnaV2P(const bool*OperMode, const int itcntgap=28) {
     hNTS[ily]->GetZaxis()->SetRangeUser(minCon[1],maxCon[1]);
     hNTS[ily]->Draw("ColzTEXT");
     
-    DrawPdfPng(cNES,Form("%sHitNumEasySelectL%d",DirResultLYD,ily));
-    DrawPdfPng(cNTS,Form("%sHitNumTrackSelectL%d",DirResultLYD,ily));
+    DrawPdfPng(cNES,Form("%sHitNumEasySelectL%d.pdf",DirResultLYD,ily));
+    DrawPdfPng(cNTS,Form("%sHitNumTrackSelectL%d.pdf",DirResultLYD,ily));
     PDFCanPage(pdfNES,cNES,Form("Layer: %d ( iZ = %d )",NumLY-1-ily,NumLY-1-ily),1+ily,NumLY);
     PDFCanPage(pdfNTS,cNTS,Form("Layer: %d ( iZ = %d )",NumLY-1-ily,NumLY-1-ily),1+ily,NumLY);
     cNESA->cd(ily+1);
@@ -817,8 +826,8 @@ void PwidthAnaV2P(const bool*OperMode, const int itcntgap=28) {
     cNTS->DrawClonePad();
     
   }
-  cNESA->Print(Form("%sHitNumEasySelect.png",DirResultGPw));
-  cNTSA->Print(Form("%sHitNumTrackSelect.png",DirResultGPw));
+  cNESA->Print(Form("%sHitNumEasySelect",DirResultGPw));
+  cNTSA->Print(Form("%sHitNumTrackSelect",DirResultGPw));
   TCanvas *cALL = new TCanvas("cALL","",2160*NumLY,2160*2);
   cALL->Divide(1,2);
   cALL->cd(1);
@@ -826,7 +835,7 @@ void PwidthAnaV2P(const bool*OperMode, const int itcntgap=28) {
   cALL->cd(2);
   cNTSA->DrawClonePad();
   DrawPdfPng(cALL,Form("%sHitNumAllSelect",DirResultGPw));
-  
+
   
   
   optime.Stop();
