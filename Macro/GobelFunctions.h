@@ -64,8 +64,11 @@ namespace MuographGobelFuns{
     return TmpBID*NumCh+CID;
   }
   
+  int BDOfGID(int GID){
+    return BD[int(GID/NumCh)];
+  }
   int BIDOfGID(int GID){
-    return BDcheck(GID/NumCh);
+    return BDcheck(BD[GID/NumCh]);
   }
   int CIDOfGID(int GID){
     return GID%NumCh;
@@ -393,7 +396,7 @@ namespace MuographGobelFuns{
     fin.seekg(0, ios::end);
     Long64_t length = fin.tellg();
     fin.close();
-    if(OPT!='Q'&&OPT!='q') cout << length << " bytes." << endl;
+    if(OPT!='Q'&&OPT!='q') cout << length << " Bytes." << endl;
     return length;
   }
   
@@ -473,7 +476,13 @@ namespace MuographGobelFuns{
     return lossTime;
   }
   
-
+  
+  // const char cmdline_leftbrace [5] = "\\\(";
+  // const char cmdline_rightbrace[5] = "\\\)";
+  // const char cmdline_Andend    [5] = " &\n";
+  // char *cmdline_AddComent(const char *content){
+    // return Form("")
+  // }
 
 
 };
