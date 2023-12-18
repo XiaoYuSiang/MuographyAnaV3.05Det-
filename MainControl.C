@@ -11,14 +11,16 @@ const string AOPT[32] = {
   "BFTr","BFTR","BFPW","BFSE","BRVT","-",
 };
 const string DataDetVer[10] = {
-  "V2.00","V3.00","V3.05","User","-"
+  "V2.00","V3.00","V3.05","V3.06","User","-"
 };
+// const string DefaultJSONFile = "/home/yusiang/TestV5/JSONSettingExample/AdjustPath-DAXI0011-R33-34H.json";
+const string DefaultJSONFile = "./JSONEg/gdml_ele_E5.0E+09P0110M11110.json";
 
-void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13_20230309.json")
+void MainControl(char *Settingfile = DefaultJSONFile.data()){
   JSONFileIOSet PMS(Settingfile);//PathModeSetting
 
   PMS.Show();
-  
+  // throw;
   bool OperMode[7]={
     PMS.testMode,         PMS.normalizeMode,    PMS.NegHiRatChMode,
     PMS.lowstatisticMode, PMS.rootFileMode,     PMS.SETightMode,
@@ -26,10 +28,14 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
   };
   
   string vertmp = PMS.det_ver;
+  string PBCode = PMS.PBCode;
   cout<<"Find vertmp is: "<<vertmp<<endl;
+  cout<<"Find PBCode is: "<<PMS.PBCode<<endl;
   
+  string SavePassRatePath = "./PassingRate.txt";
+
   /**/
-  bool SkipBlocks = false;
+  bool SkipBlocks = 0;
     if(PMS.BlockEnv){
       /* P.01 */
       /* Copy the AnaVariable.h and the macros into path_Mac and locate tmpdir*/
@@ -37,7 +43,7 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
       cout<<"vertmp.data(),TString(path_Mac),TString(path_Lib)"<<endl;
       cout<<vertmp.data()<<" "<<TString(PMS.path_Mac)<<" "<<TString(PMS.path_Lib)<<endl;
       // throw;
-      RenewMacrosV2(vertmp.data(),TString(PMS.path_Mac),TString(PMS.path_Lib));
+      RenewMacrosV3(vertmp.data(),PBCode,TString(PMS.path_Mac),TString(PMS.path_Lib));
       /* const path of Macro compiling */
       gSystem->SetBuildDir(TString(PMS.path_Mac)+"tmpdir", kTRUE);
     
@@ -68,7 +74,7 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
       
       /* P.05 *///-New-
       /* Locate the data of detector */
-      gROOT->LoadMacro(Form("%sCombinationFac.C+",PMS.path_Mac));
+      gROOT->LoadMacro(Form("%sCombinationFacV2.C+",PMS.path_Mac));
       //GetPosCode();
       //OCombinationFac();
       CombinationFac();
@@ -90,22 +96,24 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
       // cout<<"Find Hk .txt data Number:  "<<Hktxtfnum<<endl;
       
     }
-  
   }
+
   if(!SkipBlocks){
     if(PMS.BlockConvertor){
       /* P.08 *///-New-
       /* Convert File from raw .txt to be raw .root */
+                                         
       if(!PMS.MCMode){
-        gROOT->LoadMacro(Form("%sCaConvertor.C+",PMS.path_Mac));
-        MuoCaConvertor();
+        gROOT->LoadMacro(Form("%sCaConvertorV2.C+",PMS.path_Mac));
+        MuoCaConvertorV2();
       }else{
-        gROOT->LoadMacro(Form("%sG4CaConvertorV2.C+",PMS.path_Mac));
+        gROOT->LoadMacro(Form("%sG4CaConvertorV4.C+",PMS.path_Mac));
         const char* sourceFs = Form("%s%s", PMS.path_MC, PMS.name_MC);
-        G4CaConvertorV2(sourceFs, PMS.path_Rot, PMS.name_MC);
+        G4CaConvertorV4(sourceFs, PMS.path_Rot, PMS.name_MC);
       }
       
     }
+    // FATAL("Finish CaConvtorV2.C test!");
     if(PMS.BlockFindRFile){
       /* P.09 */
       /* Find Raw .root data Names and path */
@@ -116,12 +124,13 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
       //int DataNameAnaRoot_Mu(const char OPT='P') 
       cout<<"Find Raw .root data Number:  "<<rotfnum<<endl;
     }
-  
+
+  // FATAL("123");
     if(PMS.BlockDSLAna){
       /* P.10 *///-Able-
       /*Analize the Data for time start to end and save to head file*/
-      gROOT->LoadMacro(Form("%sDSLAnaV4.C+",PMS.path_Mac));
-      DSLAnaV4(PMS.MCMode);
+      gROOT->LoadMacro(Form("%sDSLAnaV5.C+",PMS.path_Mac));
+      DSLAnaV5(PMS.MCMode,PMS.GammaCutMode);
     }
 
     if(PMS.BlockDayEff){
@@ -130,34 +139,41 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
       gROOT->LoadMacro(Form("%sDayEAnaV4.C+",PMS.path_Mac));
       DayEAnaV4();
     }
-  }
+                  
     if(PMS.BlockEventGaps){
       /* P.12 *///-New-
       /*Convert Raw_Mu.root to be Gap*.root by tcnt cut*/
-      gROOT->LoadMacro(Form("%sEventAnaV2.C+",PMS.path_Mac));
+      gROOT->LoadMacro(Form("%sEventAnaV3.C+",PMS.path_Mac));
       //int Num_RawEVE = EventAna(33,34);
       //void EventAna(const int indexi=28, const int indexf=29, const int unixtimeini = unixtimei, const int unixtimefin = unixtimef, const char * runName="-NA-" ) {//140
-      EventAnaV2(33,34);
+      EventAnaV3(33,34);
       // EventGapAna();
     }
-  // FATAL("ueotngpbv");
+  }
+
+
   if(!SkipBlocks){
     if(PMS.BlockEzMuEID){
       /* P.13 *///-New-
       /*Simpling ID of Mu and Ele to be Events*.root */
-      gROOT->LoadMacro(Form("%sMuonElectronID.C+",PMS.path_Mac));
-      MuoEleIDAna(OperMode, 33,34);//300
+      gROOT->LoadMacro(Form("%sMuonElectronIDAna.C+",PMS.path_Mac));
+      string cmdline = Form(
+        "sleep 0 &&root -l -b -q %sMuonElectronIDAna.C+\\(%d,%d,%d,%d\\)&"
+          , PMS.path_Mac, PMS.testMode, PMS.rootFileMode, 33, 34);
+      MuonElectronIDAna(PMS.testMode, PMS.rootFileMode, 33, 34);
+      // FATAL(Form("cmdline: %s",cmdline.data()));
+      // system(cmdline.data());
       //MuoEleIDAna(c.bool*OperMode, c.int indexi=28, c.int indexf=29)
     }
-    
+  }
+  if(!SkipBlocks){
     if(PMS.BlockVTrack){
       /* P.14 */
       /* Verticle Straight line Event Ana to be Track*.root */
-      gROOT->LoadMacro(Form("%sVerticalTracksAna.C+",PMS.path_Mac));
-      VerticalTracksAnaV2(OperMode,33,34);
+      gROOT->LoadMacro(Form("%sVerticalTracksAnaV3.C+",PMS.path_Mac));
+      VerticalTracksAnaV3(OperMode,33,34);
       //VerticalTracksAna(c.int indexi=28, c.int indexf=29 )
     }
-  
     if(PMS.BlockVTrackEff){
       /* P.15 */
       /* Find real events in straight line Tracking Ana. */
@@ -172,10 +188,12 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
       /* P.16 *///-New-
       /* Pwidth analyze for function fitting and trigger ana. */
       gROOT->LoadMacro(Form("%sPwidthAna.C+",PMS.path_Mac));
-      PwidthAnaV2(OperMode,33);
+      // PwidthAnaV2(OperMode,33);
       //PWidthPeakAna(c.bool*OperMode)
     }
+   
 
+                  
     if(!PMS.SkipBlockStop){
       /* P.17 */
       /* Pwidth analyze for function fitting and trigger ana. */
@@ -183,22 +201,25 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
       //PWidthPeakAna(OperMode);
       //PWidthPeakAna(const bool*OperMode)
     }
+   
 
+  }
     if(PMS.BlockFitTrick){
       /* P.18 *///-New--@@
       /* Straight line Tracking of Event to be ETracks*.txt */
-      gROOT->LoadMacro(Form("%sTrackAna.C+",PMS.path_Mac));
-      TrackAna(33,34);
+      gROOT->LoadMacro(Form("%sTrackAnaV5.C+",PMS.path_Mac));
+      TrackAnaV5(SavePassRatePath,33,34);
       FitTrackInfoAna(33);
       //void  FitTrackResAna(c.int indexi=28, c.int indexf=29 )
     }
+  if(!SkipBlocks){
   }
 
     if(PMS.BlockFitTrickRes){
       /* P.19 *///-New--
       /* Straight line Tracking Result display*.txt */
-      gROOT->LoadMacro(Form("%sFitTrackResAna.C+",PMS.path_Mac));
-      FitTrackResAnaV2(33,PMS.RotateSciMode);
+      gROOT->LoadMacro(Form("%sFitTrackResAnaV2.C+",PMS.path_Mac));
+      FitTrackResAnaAll(33,PMS.RotateSciMode);
       //void  FitTrackResAna(const int indexGap=28)
     }
   if(!SkipBlocks){
@@ -208,13 +229,14 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
       gROOT->LoadMacro(Form("%sPwidthAna.C+",PMS.path_Mac));
       PwidthAnaV2P(OperMode,33);
     }
-  }
     if(PMS.BlockFinalSelect){
       /* P.21 */
       /* ana. of Select Event numbers per day and pwidth distribution */
       gROOT->LoadMacro(Form("%sSEAnaV2.C+",PMS.path_Mac));
       SEAnaV2(33);
     }
+   
+  }
 
   FATAL("wogf");
   if(!SkipBlocks){
@@ -269,7 +291,7 @@ void MainControl(char *Settingfile){// = "/home/yusiang/TestV4/AdjustPath-AnaR13
     //SeqSkipAna();
   }
   
-  cout<<"End the Program for:  "<<name_Raw<<"   "<<name_Hk<<endl;
+  // cout<<"End the Program for:  "<<name_Raw<<"   "<<name_Hk<<endl;
   throw;
   
 
@@ -281,9 +303,10 @@ void MainControl()
   //Name of save the setting JSON file
   const char *JSONtmp = ReCreateJSON("./OutSettingTmp.json");
   //default: false; //The data is MC or not
-  bool MCMode    = true;
+  bool MCMode    = false;
   /* @AdjustPath */
   /* Adjustable Path Variable */
+                         
   JSONFileIOSet PathModeSetting(MCMode);
   //path of original Macros, it is the Macro path your download from GitHub  
   PathModeSetting.path_Lib = "./Macro/";
@@ -297,6 +320,7 @@ void MainControl()
   // path of the runs data for detector information (Setup_*.txt)
   PathModeSetting.path_Run = "/data4/YuSiang/TEST/OdetData/";
   
+                   
   if(PathModeSetting.MCMode){
     // path of the MC data for muon (*.root)
     PathModeSetting.path_MC  = "/data4/AndyLu/to_cw/";
@@ -339,6 +363,9 @@ void MainControl()
     PathModeSetting.normalizeMode   = true;
       //default: true ; //Normalize the difference by the statistic in pwidth ana. program.
       
+    PathModeSetting.GammaCutMode    = false;
+    //default: true ; //neglect pwidth = 0 for EventAna.C because gamma gives detector 0 Edep
+
     PathModeSetting.NegHiRatChMode  = false;
       //default: true ; //Could not use now!
       

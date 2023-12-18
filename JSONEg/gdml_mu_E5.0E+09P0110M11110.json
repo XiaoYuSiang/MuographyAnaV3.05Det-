@@ -1,8 +1,8 @@
 {
   "comment1":	"------------PathSetting-----------",
   "path_Lib":	"./Macro/",
-  "path_Mac":	"/data4/YuSiang/ShowerTest5/gdml_mu/AnaE5.0E+09P0110M11110/MacroTmp/",
-  "path_OpR":	"/data4/YuSiang/ShowerTest5/gdml_mu/AnaE5.0E+09P0110M11110/",
+  "path_Mac":	"/data4/YuSiang/ToBY/TestSpace_EG_MGAnaCodeV2p2G4F4/MAnaE5.0E+09P0110M11110/MacroTmp/",
+  "path_OpR":	"/data4/YuSiang/ToBY/TestSpace_EG_MGAnaCodeV2p2G4F4/MAnaE5.0E+09P0110M11110/",
 
   "det_ver":	"V3.05",
   "path_Run":	"/data4/YuSiang/TEST/OdetData/",
@@ -12,9 +12,11 @@
 
   "path_Raw":	"NULL",
   "path_Hk":	"NULL",
-  "path_Rot":	"/data4/YuSiang/ShowerTest5/gdml_mu/rootfile/",
+  "path_Rot":	"/data4/YuSiang/ToBY/TestSpace_EG_MGAnaCodeV2p2G4F4/rootfile/",
   "name_Raw":	"NULL",
   "name_Hk":	"NULL",
+  
+  "PBCode":		"0110",
 
   "comment2":	"-----------AnalizeModes-----------",
   "MCMode":	"true",

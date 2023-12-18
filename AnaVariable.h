@@ -101,17 +101,22 @@ namespace MuographAnaVariable
   int neglectHourRange[2] = {11,15};
   
   //Direction vector table division on x and y
-  const int binNumFluxX = 281;//93;
-  const int binNumFluxY = 281;//93;
+  const int    FluxBinDXYDZCases = 6;
+  const double FluxBinDXYDZWidth[FluxBinDXYDZCases]
+    = {0.0333334,0.0301075,0.025,0.02,0.015,0.01};
+  const double FluxBinDXYDZRange    = 0.267;
   
-  const bool NegLowSta = true;
+  
+  const bool NegLowSta = false;//@@
   
   // if Selection Event number of some Combination Lower than trigger, Neglect.
-  const Float_t TriggerNegLowSEComb = 15;
+  // const Float_t TriggerNegLowSEComb = 15;
+  const Float_t TriggerNegLowSEComb = 0;
   
   //Neglect the data which DxDz or DyDz < Trigger
   const Float_t TriggerLessDxDz = -100;
-  const Float_t TriggerLessDyDz = -100;
+  // const Float_t TriggerLessDyDz = -0.1;
+  const Float_t TriggerLessDyDz = -0.2;
   
   //Not recreate the GapT file when size > TriggerEventAnaSkip% of the predict size
   
@@ -250,7 +255,7 @@ namespace MuographAnaVariable
   };
   
   const char SE_CaseA[80]={
-    "(nLayers == 4 && nH == 4)"};
+    "(nLayers == 4 && nH <= 6)"};
   const char SE_CaseB[80]={
     "(nLayers == 3 && nH0== 0 && nH == 3)"};
     
@@ -304,5 +309,5 @@ namespace MuographAnaVariable
   const Double_t G4eventGap    = 140;
     //suppose pwidth(100s) = EdeptoPWit*Edep(GeV)
   
-  
+
 }

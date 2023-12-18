@@ -8,7 +8,10 @@ public:
   char *path_MC, *name_MC;
   char *path_Raw,*path_Hk, *path_Rot, *name_Raw, *name_Hk  ;
   
-  bool ReRunRunMode    , testMode        , normalizeMode   ;
+  char *PBCode;
+  
+  bool ReRunRunMode    ;
+  bool testMode        , normalizeMode   , GammaCutMode    ;
   bool NegHiRatChMode  , lowstatisticMode, rootFileMode    ;
   bool SETightMode     , PointTextMode   , RotateSciMode   ;
   
@@ -29,7 +32,8 @@ public:
     CheckJSONGood(JSONFiletmp);
     SetJSONName(JSONFiletmp);
     if(!MCorNot)      SetDataDefault();
-    else if(MCorNot)  SetMotCDefault();
+    else              SetMotCDefault();
+    // cout<<"if !mcornot "<<!MCorNot<<endl;
     ImportJSON();
   }
   void CheckJSONGood(const char *JSONFiletmp){
@@ -62,12 +66,14 @@ public:
     SaveAttrJSON(JSONFileName,"name_Raw"         ,name_Raw         );
     SaveAttrJSON(JSONFileName,"name_Hk"          ,name_Hk          );
     SaveBLinJSON(JSONFileName);  
+    SaveAttrJSON(JSONFileName,"PBCode"           ,PBCode           );
     SaveAttrJSON(JSONFileName,"comment2"         ,"-----------AnalizeModes-----------"    );
     SaveAttrJSON(JSONFileName,"MCMode"           ,MCMode           );
     SaveBLinJSON(JSONFileName);
     SaveAttrJSON(JSONFileName,"ReRunRunMode"     ,ReRunRunMode     );
     SaveAttrJSON(JSONFileName,"testMode"         ,testMode         );
     SaveAttrJSON(JSONFileName,"normalizeMode"    ,normalizeMode    );
+    SaveAttrJSON(JSONFileName,"GammaCutMode"     ,GammaCutMode     );
     SaveAttrJSON(JSONFileName,"NegHiRatChMode"   ,NegHiRatChMode   );
     SaveAttrJSON(JSONFileName,"lowstatisticMode" ,lowstatisticMode );
     SaveAttrJSON(JSONFileName,"rootFileMode"     ,rootFileMode     );
@@ -105,7 +111,6 @@ public:
     SetJSONName(JSONFiletmp);
     ExportJSON();
   }
-
   void Show(){
     cout<<"comment1\t"         <<"------------PathSetting-----------"    <<endl;
     cout<<"path_Lib\t"         <<path_Lib         <<endl;
@@ -124,12 +129,15 @@ public:
     cout<<"name_Raw\t"         <<name_Raw         <<endl;
     cout<<"name_Hk\t"          <<name_Hk          <<endl;
     cout<<endl;  
+    cout<<"PBCode\t"           <<PBCode           <<endl;
+    cout<<endl;  
     cout<<"comment2\t"         <<"-----------AnalizeModes-----------"    <<endl;
     cout<<"MCMode\t"           <<MCMode           <<endl;
     cout<<endl;
     cout<<"ReRunRunMode\t"     <<ReRunRunMode     <<endl;
     cout<<"testMode\t"         <<testMode         <<endl;
     cout<<"normalizeMode\t"    <<normalizeMode    <<endl;
+    cout<<"GammaCutMode\t"     <<GammaCutMode     <<endl;
     cout<<"NegHiRatChMode\t"   <<NegHiRatChMode   <<endl;
     cout<<"lowstatisticMode\t" <<lowstatisticMode <<endl;
     cout<<"rootFileMode\t"     <<rootFileMode     <<endl;
@@ -165,7 +173,8 @@ private:
     path_MC        = Form("NULL");
     name_MC        = Form("NULL");
     
-    ReRunRunMode    = true;  testMode        = false; normalizeMode   = true;
+    ReRunRunMode    = true;
+    testMode        = false; normalizeMode   = true;  GammaCutMode    = false;
     NegHiRatChMode  = false; lowstatisticMode= true;  rootFileMode    = true;
     SETightMode     = false; PointTextMode   = true;  RotateSciMode   = false;
 
@@ -186,8 +195,10 @@ private:
     path_Rot       = Form("NULL");
     name_Raw       = Form("NULL");
     name_Hk        = Form("NULL");
+    PBCode         = Form("1111");
     
-    ReRunRunMode    = true;  testMode        = false; normalizeMode   = true;
+    ReRunRunMode    = true;  
+    testMode        = false; normalizeMode   = true;  GammaCutMode    = false;
     NegHiRatChMode  = false; lowstatisticMode= false; rootFileMode    = true;
     SETightMode     = true;  PointTextMode   = false; RotateSciMode   = false;
 
@@ -218,18 +229,21 @@ private:
     name_Raw       = FindJSONAttrS( JSONFileName, "name_Raw"          ,'W');
     name_Hk        = FindJSONAttrS( JSONFileName, "name_Hk"           ,'W');
     
-    MCMode          = FindJSONAttrB( JSONFileName, "MCMode"           ,'W');
+    PBCode         = FindJSONAttrS( JSONFileName, "PBCode"            ,'W');
     
+    MCMode          = FindJSONAttrB( JSONFileName, "MCMode"           ,'W');
+    // cout<<"if mcornot "<<MCMode<<endl;
     ReRunRunMode    = FindJSONAttrB( JSONFileName, "ReRunRunMode"     ,'W');
     testMode        = FindJSONAttrB( JSONFileName, "testMode"         ,'W');
     normalizeMode   = FindJSONAttrB( JSONFileName, "normalizeMode"    ,'W');
+    GammaCutMode    = FindJSONAttrB( JSONFileName, "GammaCutMode"     ,'W');
     NegHiRatChMode  = FindJSONAttrB( JSONFileName, "NegHiRatChMode"   ,'W');
     lowstatisticMode= FindJSONAttrB( JSONFileName, "lowstatisticMode" ,'W');
     rootFileMode    = FindJSONAttrB( JSONFileName, "rootFileMode"     ,'W');
     SETightMode     = FindJSONAttrB( JSONFileName, "SETightMode"      ,'W');
     PointTextMode   = FindJSONAttrB( JSONFileName, "PointTextMode"    ,'W');
     RotateSciMode   = FindJSONAttrB( JSONFileName, "RotateSciMode"    ,'W');
-
+    
     SkipBlockStop   = FindJSONAttrB( JSONFileName, "SkipBlockStop"    ,'W');
 
     BlockEnv        = FindJSONAttrB( JSONFileName, "BlockEnv"         ,'W');
@@ -249,6 +263,7 @@ private:
     BlockFitPWAna   = FindJSONAttrB( JSONFileName, "BlockFitPWAna"    ,'W');
     BlockFinalSelect= FindJSONAttrB( JSONFileName, "BlockFinalSelect" ,'W');
     BlockRateVTime  = FindJSONAttrB( JSONFileName, "BlockRateVTime"   ,'W');
+    
   }
   
   
