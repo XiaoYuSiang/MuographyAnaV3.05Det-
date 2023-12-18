@@ -53,6 +53,7 @@ int G4CaConvertorV4(
   cout<<"G4.Conv.C opening: "<<vRootFiles<<endl;
   infile.open(vRootFiles);
   TreeReader data(vRootFiles,"mu_detector");
+  TreeReader Sourse(vRootFiles,"Beam_info");
 
   Int_t            frame_= 0 ;
   Long64_t         unixtime_;
@@ -65,6 +66,7 @@ int G4CaConvertorV4(
   Int_t            pwidth;
   
   double            hit_time;
+  double            s_Pos[3], s_Dir[3];
   
   vector<Int_t>      gid_;
   vector<Int_t>      mcgid_;
@@ -99,11 +101,19 @@ int G4CaConvertorV4(
   t->Branch("dtimeInt", &dtimeInt_);
   t->Branch("pcnt",     &pcnt_);
   t->Branch("tcnt",     &tcnt_);
-  t->Branch("pwidth",   &pwidth_);     
+  t->Branch("pwidth",   &pwidth_);
+  t->Branch("s_PosX",   &s_Pos[0]);
+  t->Branch("s_PosY",   &s_Pos[1]);
+  t->Branch("s_PosZ",   &s_Pos[2]);
+  t->Branch("s_DirX",   &s_Dir[0]);
+  t->Branch("s_DirY",   &s_Dir[1]);
+  t->Branch("s_DirZ",   &s_Dir[2]);
+  
 
   nHits_ = 0;
   
   int evs = data.GetEntriesFast();
+  cout<<"Total evs: "<<evs<<endl; // FATAL("");
   Int_t frame=0, frame0=0;
   data.GetEntry(0);
   frame    = data.GetInt("eID");
@@ -135,7 +145,15 @@ int G4CaConvertorV4(
       frame_= frame0;
       unixTimeToHumanReadable(unixtime_,
           tYear_, tMonth_, tDate_, tHour_, tMinute_, tSecond_,timeZone);
-
+      Sourse.GetEntry(frame);
+      // cout<<187<<endl;
+      s_Pos[0] = Sourse.GetDouble("Beam_pos_X");
+      s_Pos[1] = Sourse.GetDouble("Beam_pos_Y");
+      s_Pos[2] = Sourse.GetDouble("Beam_pos_Z");
+      s_Dir[0] = Sourse.GetDouble("Beam_dir_X");
+      s_Dir[1] = Sourse.GetDouble("Beam_dir_Y");
+      s_Dir[2] = Sourse.GetDouble("Beam_dir_Z");
+      // cout<<ev<<"\t"<<frame<<"\t"<<s_Pos[0]<<"\t"<<s_Pos[1]<<"\t"<<s_Pos[2]<<"\n";
       if(nHits_!=0) t->Fill();
       gid_.clear();
       mcgid_.clear();
@@ -166,7 +184,15 @@ int G4CaConvertorV4(
       frame_= frame0;
       unixTimeToHumanReadable(unixtime_,
           tYear_, tMonth_, tDate_, tHour_, tMinute_, tSecond_,timeZone);
-
+      Sourse.GetEntry(frame);
+      // cout<<187<<endl;
+      s_Pos[0] = Sourse.GetDouble("Beam_pos_X");
+      s_Pos[1] = Sourse.GetDouble("Beam_pos_Y");
+      s_Pos[2] = Sourse.GetDouble("Beam_pos_Z");
+      s_Dir[0] = Sourse.GetDouble("Beam_dir_X");
+      s_Dir[1] = Sourse.GetDouble("Beam_dir_Y");
+      s_Dir[2] = Sourse.GetDouble("Beam_dir_Z");
+      // cout<<s_Pos[0]<<"\t"<<s_Pos[1]<<"\t"<<s_Pos[2]<<"\n";
       if(nHits_!=0) t->Fill();
       gid_.clear();
       mcgid_.clear();

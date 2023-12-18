@@ -1,6 +1,7 @@
 #include "TrackAnaSubV5.C"
 
-void TrackAnaV4(
+void TrackAnaV5(
+  const string savePassRatePath,
   const int indexi=28, 
   const int indexf=29, 
   const double trigger = TriggerTrFitSigSizeX,
@@ -26,7 +27,7 @@ void TrackAnaV4(
   map<string, GeometricAreaData> MSGAD;
   LoadPosCodeTable(MSGAD);
     
-  ofstream ott("/home/yusiang/G4DataFindR3/lbhgrsabhvrs.txt", ofstream::out | ofstream::app );
+  ofstream ott(savePassRatePath.data(), ofstream::out | ofstream::app );
 
   
   for(int i0=indexi;i0<indexf;i0++){
@@ -180,7 +181,10 @@ void TrackAnaV4(
     
     int Osss [6] = {0,0,0,0,0,0}, StaTrackIndex = 0;
     vector<int> vStaTrackIndex;
-    for(int ifOs; ifOs<int(vOsfiles.size()); ifOs++){
+    // cout<<184<<endl;
+    for(int ifOs = 0; ifOs<int(vOsfiles.size()); ifOs++){
+      // cout<<186<<" ";
+      // cout<<vOsfiles[ifOs].data()<<endl;
       ifstream in((vOsfiles[ifOs]).data());
       // cout<< vOsfiles[ifOs].data() <<endl;
       int tmp_OsData[6] = {0};
@@ -190,9 +194,12 @@ void TrackAnaV4(
         Osss[iOs] += tmp_OsData[iOs];
       } 
       in>>StaTrackIndex;
+      // cout<<" "<<ifOs<<"\t"<<StaTrackIndex<<endl;
       vStaTrackIndex.push_back(StaTrackIndex);
       in.close();
     }
+    // for(int i=0;i<int(vStaTrackIndex.size());i++) cout<<vStaTrackIndex[i]<<endl;
+    // throw;
     ott<<DirOperate<<"\t"<<trigger;
     cout<<DirOperate<<":\n\t"<<trigger;
     for(int iOs = 0; iOs<6; iOs++){ 
@@ -202,14 +209,15 @@ void TrackAnaV4(
     cout<<endl;
     ott<<endl;
     
-    
+    // cout<<206<<" "<<&vStaTrackIndex<<" "<<vStaTrackIndex[7]<<endl;
     TrackAnaSubHAdd(OutputGapTFile,vTmp_ETrFile,vStaTrackIndex);
-    cout<<"\nFinished HAdd ETrack files, and sort leaf TrackIndex"<<endl;
     
+    cout<<"\nFinished HAdd ETrack files, and sort leaf TrackIndex"<<endl;
+    // cout<<209<<endl;
     for(int i=0; i<int(vTmp_ETrFile.size());i++)
       system(Form("rm %s",vTmp_ETrFile[i].data()));
     cout<<"rm all Tmp_ETrack* files."<<endl;
-    
+    // cout<<213<<endl;
     for(int i=0; i<int(vOsfiles.size());i++)
       system(Form("rm %s",vOsfiles[i].data()));
     cout<<"rm all Os files."<<endl;

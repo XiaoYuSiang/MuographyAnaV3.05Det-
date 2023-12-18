@@ -104,10 +104,10 @@ void FitTrackResAna(
     sprintf(TriLesDxDzADyDz,"(DxDz>%f)&&(DyDz>%f)%s",TriggerLessDxDz,TriggerLessDyDz,TriTimeRange);
     sprintf(TriLesDxDzADyDzPos,"(DxDzPos>%f)&&(DyDzPos>%f)%s",TriggerLessDxDz,TriggerLessDyDz,TriTimeRange);
   }
-    
+  cout<<"Set Trigger of Less DxDz & DyDz:"<<TriggerLessDxDz<<"\t"<<TriggerLessDyDz<<endl;
   cout<<TriLesDxDzADyDz<<endl;
   cout<<TriLesDxDzADyDzPos<<endl;
-  
+
   TF1 AF = GetAngularFunction(opt);
   char AngTerm[20]={""};
   if(opt=='C'){
@@ -413,13 +413,13 @@ void FitTrackResAna(
 void  FitTrackResAnaV2( const int indexGap=28, const bool Rotate=false){
   
   // FitTrackResAna(indexGap,281,281,Rotate);
-  FitTrackResAna(indexGap,93,93,'C',Rotate); cout<<416<<endl;
-  FitTrackResAna(indexGap,93,93,'T',Rotate); cout<<417<<endl;
+  FitTrackResAna(indexGap,93,93,'C',Rotate); //cout<<416<<endl;
+  FitTrackResAna(indexGap,93,93,'T',Rotate); //cout<<417<<endl;
   // FitTrackResAna(indexGap,281,281,'C',Rotate); cout<<418<<endl;
   // FitTrackResAna(indexGap,281,281,'T',Rotate); cout<<419<<endl;
-  if(binNumFluxX!=93&&binNumFluxX!=281&&binNumFluxY!=93&&binNumFluxY!=281){ cout<<420<<endl;
-    FitTrackResAna(indexGap,binNumFluxX,binNumFluxY,'C',Rotate); cout<<421<<endl;
-    FitTrackResAna(indexGap,binNumFluxX,binNumFluxY,'T',Rotate); cout<<422<<endl;
+  if(binNumFluxX!=93&&binNumFluxX!=281&&binNumFluxY!=93&&binNumFluxY!=281){ //cout<<420<<endl;
+    FitTrackResAna(indexGap,binNumFluxX,binNumFluxY,'C',Rotate); //cout<<421<<endl;
+    FitTrackResAna(indexGap,binNumFluxX,binNumFluxY,'T',Rotate); //cout<<422<<endl;
   }
   
 }

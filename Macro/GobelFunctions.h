@@ -476,6 +476,16 @@ namespace MuographGobelFuns{
     return lossTime;
   }
   
+  void StrReplaceAll(string &origin, string target, string newstr){
+    int pos = 0;
+    while(1) {
+      pos = origin.find( target, pos ); 
+      if( pos == -1 ) break;
+      origin.replace(pos, target.length(), newstr);
+      pos += newstr.length(); 
+    }
+  }
+
   
   // const char cmdline_leftbrace [5] = "\\\(";
   // const char cmdline_rightbrace[5] = "\\\)";
@@ -484,6 +494,14 @@ namespace MuographGobelFuns{
     // return Form("")
   // }
 
+  void GetFluxRangeOddBinNum(double MinRange, double Width, double &RangeN, double &RangeP, int &BinNum, const bool Queit = false){
+    BinNum = ceil(MinRange*2./Width);
+    BinNum = BinNum%2 == 1 ? BinNum : BinNum+1;
+    RangeP = (BinNum)*0.5*Width;
+    RangeN = -RangeP;
+    if(!Queit)
+      cout<<"Return:  Range(N,P) = ("<<RangeN<<","<<RangeP<<"), BinNum = "<<BinNum<<endl;
+  }
 
 };
 

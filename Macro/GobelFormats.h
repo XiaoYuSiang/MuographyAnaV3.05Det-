@@ -6,7 +6,10 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <map>
-
+#ifndef DEFNtupleV8_YS_H
+  #define DEFNtupleV8_YS_H
+    #include "/data4/YuSiang/personalLib/RootFile/untuplizerv8_YuSiang01.h"
+#endif
 using namespace std;
 namespace MuographGobelForm{//@@ADD read.h at IMF
   class scintillator{
@@ -646,6 +649,298 @@ namespace MuographGobelForm{//@@ADD read.h at IMF
     
   };
   
+  class VertTrackData{
+  public:
+    int       TrackIndex, frame, EvIndex;
+    Long64_t  unixtime;
+    int       tYear, tMonth, tDate, tHour, tMinute, tSecond;
+    int       nLayers, iHit, eventHit;
+    int       BLay;
+    vector<Int_t>    board, channel, iX, iY, iZ;
+    vector<Int_t>    BiX, BiY, BiZ;
+    vector<Int_t>    pwidth,pwidthScaleFactor;
+    vector<Int_t>    pcnt;
+    vector<Long64_t> tcnt;
+    vector<Double_t> dtime;
+    Int_t    *board_,*channel_,*iX_,*iY_,*iZ_;
+    Int_t    *BiX_,*BiY_,*BiZ_;
+    Int_t    *pwidth_,*pwidthScaleFactor_;
+    Int_t    *pcnt_;
+    Long64_t *tcnt_;
+    Double_t *dtime_;
+    VertTrackData(const int OriTrackIndex = 0){
+      TrackIndex = OriTrackIndex;
+    };
+    virtual ~VertTrackData(){};
+
+    void SetTreeBranch(TTree *tree){
+      tree->Branch("TrackIndex" ,&TrackIndex  );
+      tree->Branch("frame"      ,&frame       );
+      tree->Branch("EvIndex"    ,&EvIndex     );
+      tree->Branch("unixtime"   ,&unixtime    );
+      tree->Branch("tYear"      ,&tYear       );
+      tree->Branch("tMonth"     ,&tMonth      );
+      tree->Branch("tDate"      ,&tDate       );
+      tree->Branch("tHour"      ,&tHour       );
+      tree->Branch("tMinute"    ,&tMinute     );
+      tree->Branch("tSecond"    ,&tSecond     );
+      tree->Branch("nLayers"    ,&nLayers     );
+      tree->Branch("BLay"       ,&BLay        );
+      tree->Branch("iHit"       ,&iHit        );
+      tree->Branch("eventHit"   ,&eventHit    );
+      tree->Branch("board"      ,&board       );
+      tree->Branch("channel"    ,&channel     );
+      tree->Branch("iX"         ,&iX          );
+      tree->Branch("iY"         ,&iY          );
+      tree->Branch("iZ"         ,&iZ          );
+      tree->Branch("BiX"        ,&BiX         );
+      tree->Branch("BiY"        ,&BiY         );
+      tree->Branch("BiZ"        ,&BiZ         );
+      tree->Branch("pwidth"     ,&pwidth      );
+      tree->Branch("pwidthScaleFactor",&pwidthScaleFactor);
+      tree->Branch("pcnt"       ,&pcnt        );
+      tree->Branch("tcnt"       ,&tcnt        );
+      tree->Branch("dtime"      ,&dtime       );
+    }
+    void GetTreeReaderTGap(TreeReader &TreeReaderdata, const Long64_t ev){
+      TreeReaderdata.GetEntry(ev);
+      frame    = TreeReaderdata.GetInt("frame");
+      EvIndex  = TreeReaderdata.GetInt("EvIndex");
+      unixtime = TreeReaderdata.GetLong64("unixtime");
+      tYear    = TreeReaderdata.GetInt("tYear");
+      tMonth   = TreeReaderdata.GetInt("tMonth");
+      tDate    = TreeReaderdata.GetInt("tDate");
+      tHour    = TreeReaderdata.GetInt("tHour");
+      tMinute  = TreeReaderdata.GetInt("tMinute");
+      tSecond  = TreeReaderdata.GetInt("tSecond");
+      nLayers  = TreeReaderdata.GetInt("nLayers");
+      eventHit = TreeReaderdata.GetInt("nH");
+      board_   = TreeReaderdata.GetPtrInt("board");
+      channel_ = TreeReaderdata.GetPtrInt("channel");
+      pwidth_  = TreeReaderdata.GetPtrInt("pwidth");
+      pwidthScaleFactor_   =
+                 TreeReaderdata.GetPtrInt("pwidthScaleFactor");
+      pcnt_    = TreeReaderdata.GetPtrInt("pcnt");
+      tcnt_    = TreeReaderdata.GetPtrLong64("tcnt");
+      dtime_   = TreeReaderdata.GetPtrDouble("dtime");
+      // cout<<board_[0]<<"\t"<<channel_[0]<<endl;
+    }
+    void GetTreeReaderVTrack(TreeReader &TreeReaderdata, const Long64_t ev){
+      TreeReaderdata.GetEntry(ev);
+      TrackIndex = TreeReaderdata.GetInt("TrackIndex");
+      frame    = TreeReaderdata.GetInt("frame");
+      EvIndex  = TreeReaderdata.GetInt("EvIndex");
+      unixtime = TreeReaderdata.GetLong64("unixtime");
+      tYear    = TreeReaderdata.GetInt("tYear");
+      tMonth   = TreeReaderdata.GetInt("tMonth");
+      tDate    = TreeReaderdata.GetInt("tDate");
+      tHour    = TreeReaderdata.GetInt("tHour");
+      tMinute  = TreeReaderdata.GetInt("tMinute");
+      tSecond  = TreeReaderdata.GetInt("tSecond");
+      nLayers  = TreeReaderdata.GetInt("nLayers");
+      BLay     = TreeReaderdata.GetInt("BLay");
+      iHit     = TreeReaderdata.GetInt("iHit");
+      eventHit = TreeReaderdata.GetInt("eventHit");
+      board_   = TreeReaderdata.GetPtrInt("board");
+      channel_ = TreeReaderdata.GetPtrInt("channel");
+      iX_      = TreeReaderdata.GetPtrInt("iX");
+      iY_      = TreeReaderdata.GetPtrInt("iY");
+      iZ_      = TreeReaderdata.GetPtrInt("iZ");
+      BiX_     = TreeReaderdata.GetPtrInt("BiX");
+      BiY_     = TreeReaderdata.GetPtrInt("BiY");
+      BiZ_     = TreeReaderdata.GetPtrInt("BiZ");
+      pwidth_  = TreeReaderdata.GetPtrInt("pwidth");
+      pwidthScaleFactor_   =
+                 TreeReaderdata.GetPtrInt("pwidthScaleFactor");
+      pcnt_    = TreeReaderdata.GetPtrInt("pcnt");
+      tcnt_    = TreeReaderdata.GetPtrLong64("tcnt");
+      dtime_   = TreeReaderdata.GetPtrDouble("dtime");
+    }
+    void TReaderPtrToVec(){
+      for(int iiHit=0;iiHit<iHit;iiHit++){
+        board.push_back(board_[iiHit]);
+        channel.push_back(channel_[iiHit]);
+        iX.push_back(iX_[iiHit]);
+        iY.push_back(iY_[iiHit]);
+        iZ.push_back(iZ_[iiHit]);
+        BiX.push_back(BiX_[iiHit]);
+        BiY.push_back(BiY_[iiHit]);
+        BiZ.push_back(BiZ_[iiHit]);
+        pwidth.push_back(pwidth_[iiHit]);
+        pwidthScaleFactor.push_back(pwidthScaleFactor_[iiHit]);
+        pcnt.push_back(pcnt_[iiHit]);
+        tcnt.push_back(tcnt_[iiHit]);
+        dtime.push_back(dtime_[iiHit]);
+      }
+    }
+    void Clear(){
+      BLay   =0;
+      board.clear();
+      channel.clear();
+      pwidth.clear();
+      pwidthScaleFactor.clear();
+      pcnt.clear();
+      iX.clear();
+      iY.clear();
+      iZ.clear();
+      BiX.clear();
+      BiY.clear();
+      BiZ.clear();
+      tcnt.clear();
+      dtime.clear();
+      iHit = 0;
+    }
+  };
   
+  
+  class MuEleIDData{
+  public:
+    int       TrackIndex;
+    Long64_t  unixtime;
+    int       tYear, tMonth, tDate, tHour, tMinute, tSecond;
+    int       nLayers, iHit, nH;
+    bool      ElectronID, MuonID, NoiseID;
+    short     IDtight;
+    vector<Int_t>    board, channel, iX, iY, iZ;
+    vector<Int_t>    pwidth,pwidthScaleFactor;
+    vector<Int_t>    pcnt;
+    vector<Long64_t> tcnt;
+    vector<Double_t> dtime;
+    vector<Long64_t> dtimeInt;
+    Int_t    *board_,*channel_, *iX_, *iY_, *iZ_;
+    Int_t    *pwidth_,*pwidthScaleFactor_;
+    Int_t    *pcnt_;
+    Long64_t *tcnt_;
+    Double_t *dtime_;
+    Long64_t *dtimeInt_;
+    MuEleIDData(const int OriTrackIndex = 0){
+      TrackIndex = OriTrackIndex;
+      ElectronID=false;
+      MuonID=false;
+      NoiseID=false;
+    };
+    virtual ~MuEleIDData(){};
+
+    void SetTreeBranch(TTree *tree){
+      tree->Branch("TrackIndex",&TrackIndex);
+      tree->Branch("unixtime",&unixtime);
+
+      tree->Branch("nH" ,&nH);
+      tree->Branch("nLayers",&nLayers);
+      tree->Branch("iHit",&iHit);
+      tree->Branch("tYear",&tYear);
+      tree->Branch("tMonth",&tMonth);
+      tree->Branch("tDate",&tDate);
+      tree->Branch("tHour",&tHour);
+      tree->Branch("tMinute",&tMinute);
+      tree->Branch("tSecond",&tSecond);
+
+      tree->Branch("ElectronID",&ElectronID);
+      tree->Branch("MuonID"   ,&MuonID);
+      tree->Branch("NoiseID"  ,&NoiseID);
+      tree->Branch("IDtight"  ,&IDtight);
+      tree->Branch("board",&board);
+      tree->Branch("channel",&channel);
+      tree->Branch("iX",&iX);
+      tree->Branch("iY",&iY);
+      tree->Branch("iZ",&iZ);
+      tree->Branch("pwidth",&pwidth);
+      tree->Branch("pwidthScaleFactor",&pwidthScaleFactor); 
+      tree->Branch("pcnt",&pcnt);
+      tree->Branch("tcnt",&tcnt);
+      tree->Branch("dtime",&dtime);
+      tree->Branch("dtimeInt",&dtimeInt);
+    }
+    void GetTreeReaderTGap(TreeReader &TreeReaderdata, const Long64_t ev){
+      TreeReaderdata.GetEntry(ev);
+      unixtime = TreeReaderdata.GetLong64("unixtime");
+      tYear    = TreeReaderdata.GetInt("tYear");
+      tMonth   = TreeReaderdata.GetInt("tMonth");
+      tDate    = TreeReaderdata.GetInt("tDate");
+      tHour    = TreeReaderdata.GetInt("tHour");
+      tMinute  = TreeReaderdata.GetInt("tMinute");
+      tSecond  = TreeReaderdata.GetInt("tSecond");
+      nLayers  = TreeReaderdata.GetInt("nLayers");
+      nH       = TreeReaderdata.GetInt("nH");
+      iHit     = nH;
+      board_   = TreeReaderdata.GetPtrInt("board");
+      channel_ = TreeReaderdata.GetPtrInt("channel");
+      pwidth_  = TreeReaderdata.GetPtrInt("pwidth");
+      pwidthScaleFactor_ 
+               = TreeReaderdata.GetPtrInt("pwidthScaleFactor");;
+      pcnt_    = TreeReaderdata.GetPtrInt("pcnt");
+      tcnt_    = TreeReaderdata.GetPtrLong64("tcnt");
+      dtime_   = TreeReaderdata.GetPtrDouble("dtime");
+      dtimeInt_= TreeReaderdata.GetPtrLong64("dtimeInt");
+    }
+    void GetTreeReaderMEID(TreeReader &TreeReaderdata, const Long64_t ev){
+      TreeReaderdata.GetEntry(ev);
+      TrackIndex = TreeReaderdata.GetInt("TrackIndex");
+      unixtime   = TreeReaderdata.GetLong64("unixtime");
+      tYear      = TreeReaderdata.GetInt("tYear");
+      tMonth     = TreeReaderdata.GetInt("tMonth");
+      tDate      = TreeReaderdata.GetInt("tDate");
+      tHour      = TreeReaderdata.GetInt("tHour");
+      tMinute    = TreeReaderdata.GetInt("tMinute");
+      tSecond    = TreeReaderdata.GetInt("tSecond");
+      ElectronID = TreeReaderdata.GetBool("ElectronID");
+      MuonID     = TreeReaderdata.GetBool("MuonID");
+      NoiseID    = TreeReaderdata.GetBool("NoiseID");
+      IDtight    = TreeReaderdata.GetShort("IDtight");
+      nLayers    = TreeReaderdata.GetInt("nLayers");
+      iHit       = TreeReaderdata.GetInt("iHit");
+      nH         = TreeReaderdata.GetInt("nH");
+      board_     = TreeReaderdata.GetPtrInt("board");
+      channel_   = TreeReaderdata.GetPtrInt("channel");
+      iX_        = TreeReaderdata.GetPtrInt("iX");
+      iY_        = TreeReaderdata.GetPtrInt("iY");
+      iZ_        = TreeReaderdata.GetPtrInt("iZ");
+      pwidth_    = TreeReaderdata.GetPtrInt("pwidth");
+      pwidthScaleFactor_ 
+                 = TreeReaderdata.GetPtrInt("pwidthScaleFactor");
+      pcnt_      = TreeReaderdata.GetPtrInt("pcnt");
+      tcnt_      = TreeReaderdata.GetPtrLong64("tcnt");
+      dtime_     = TreeReaderdata.GetPtrDouble("dtime");
+      dtimeInt_  = TreeReaderdata.GetPtrLong64("dtimeInt");
+    }
+    void TReaderPtrToVec(){
+      for(int iiHit=0;iiHit<iHit;iiHit++){
+        board   .push_back(board_   [iiHit]); 
+        channel .push_back(channel_ [iiHit]);
+        iX      .push_back(iX_      [iiHit]); 
+        iY      .push_back(iY_      [iiHit]); 
+        iZ      .push_back(iZ_      [iiHit]);
+        pwidth  .push_back(pwidth_  [iiHit]);
+        pwidthScaleFactor
+                .push_back(pwidthScaleFactor_[iiHit]); 
+        pcnt    .push_back(pcnt_    [iiHit]);
+        tcnt    .push_back(tcnt_    [iiHit]);
+        dtime   .push_back(dtime_   [iiHit]);
+        dtimeInt.push_back(dtimeInt_[iiHit]);
+      }
+    }
+    void Clear(){
+      MuonID =false;
+      ElectronID=false;
+      NoiseID =false;
+      IDtight =0;
+      pwidth.clear();
+      pwidthScaleFactor.clear();
+      board.clear();
+      channel.clear();
+      pcnt.clear();
+      tcnt.clear();
+      dtime.clear();
+      dtimeInt.clear();
+      iX.clear();
+      iY.clear();
+      iZ.clear();
+    }
+  };
 };
+
+
+
+  
+
 void GobelFormats(){}

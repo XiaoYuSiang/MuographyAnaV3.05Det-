@@ -23,11 +23,11 @@ using namespace ROOT::Math;
 const bool LineFit3D_C_TestMode_only = 0; //@@ LineFit3D_C_TestMode_only
 
 // define the parametric line equation
-double line( double *x, const double *p ) {
-  return p[0] *( x[0] - p[1] );
+double line ( double *x, const double *p ) {
+  return p[0] * x[0] + p[1] ;
 }
 double Hline( double *x, const double *p ) {
-  return x[0]*0. + p[1] ;
+  return   0. * x[0] + p[1] ;
 }
 
 
@@ -60,15 +60,17 @@ public:
     delete flzy;
   };
   void SetFitInitial(){
-    if(abs(rzx)<1.E-3){
+    if(abs(rzx)<1.E-4){
       rzx = 0;
-      flzx->SetParameter(0,dzx);
+      flzx->SetParameter(rzx,dzx);
+      // flzx->SetParLimits(0,-2,2);
     }else{
       flzx->SetParameters(rzx,dzx);
     }          
-    if(abs(rzy)<1.E-3){
+    if(abs(rzy)<1.E-4){
       rzy = 0;
-      flzy->SetParameter(0,dzy);
+      flzy->SetParameter(rzy,dzy);
+      // flzy->SetParLimits(0,-2,2);
     }else{
       flzy->SetParameters(rzy,dzy); 
     }
@@ -79,9 +81,17 @@ public:
     dzz = 0.;
     erzz = 0.;
     edzz = 0.;
-    if(abs(rzx)>1.E-3) rzx = flzx->GetParameter(0);
+    if(abs(rzx)>1.E-4) rzx = flzx->GetParameter(0);
+    else{
+      rzx = 0;
+      flzx->SetParameter(0,rzx);
+    } 
     dzx = flzx->GetParameter(1);
-    if(abs(rzy)>1.E-3) rzy = flzy->GetParameter(0);
+    if(abs(rzy)>1.E-4) rzy = flzy->GetParameter(0);
+    else{
+      rzy = 0;
+      flzy->SetParameter(0,rzy);
+    } 
     dzy = flzy->GetParameter(1);
     erzx = flzx->GetParError(0);
     edzx = flzx->GetParError(1);
@@ -102,13 +112,15 @@ public:
   }
   
   void fit3D(){
-    if(abs(rzx)<1.E-3) flzx = new TF1("flzx",Hline,-60,1560,2);
-    else               flzx = new TF1("flzx",line,-60,1560,2);
-    if(abs(rzy)<1.E-3) flzy = new TF1("flzy",Hline,-60,1560,2);
-    else               flzy = new TF1("flzy",line,-60,1560,2);
+    if(abs(rzx)<1.E-4) flzx = new TF1("flzx",Hline,-60,1560,2);
+    else               flzx = new TF1("flzx", line,-60,1560,2);
+    if(abs(rzy)<1.E-4) flzy = new TF1("flzy",Hline,-60,1560,2);
+    else               flzy = new TF1("flzy", line,-60,1560,2);
     SetFitInitial();
     lzx->Fit(flzx,"NQ");
     lzy->Fit(flzy,"NQ");
+    if(rzx>10) cout<<"116 too large \t"<<flzx->GetParameter(0)<<"\t"<<flzx->GetParameter(1)<<"\n";
+    if(rzy>10) cout<<"117 too large \t"<<flzy->GetParameter(0)<<"\t"<<flzy->GetParameter(1)<<"\n";
     GetFitImf();
   }
   
@@ -129,9 +141,9 @@ public:
       "y-"<<Form("%9.2e",dzy)<<"   "<<
       "z-"<<Form("%9.2e",dzz)<<endl;
       cout<<"LF:"<<
-      "(───────────)+(───────────)+(───────────)=d, ";
-      cout<<Form("d:(-inf,+inf)")<<endl;
-      cout<<"     "<<
+      "(───────────)=(───────────)=(───────────)";//=d, ";
+      // cout<<Form("d:(-inf,+inf)")<<endl;
+      cout<<"\n     "<<
       Form("%9.2e",rzx)<<"     "<<
       Form("%9.2e",rzy)<<"     "<<
       Form("%9.2e",rzz)<<endl;
@@ -302,7 +314,7 @@ public:
     nxy = np* mX*mY;
     nxx = np* mX*mX;
     rxy = (Sxy - nxy) / (Sxx - nxx);
-    if(abs(rxy)<1.E-3){
+    if(abs(rxy)<1.E-4){
       dxy= mY;
       rxy= 0;
     } else dxy = mX - mY / rxy;
@@ -313,7 +325,16 @@ public:
     // SigXY = sqrt(SigXY);
     
   }
-  
+
+  // void LSM(vector<double> X, vector<double> Y, double &dxy, double &rxy, double &mX, double &mY/*, double &SigXY*/){
+  //   /* least square Method In 2D X-Y plane*/
+  //   if(int(X.size())!=int(Y.size())){
+  //     cout<<"Error: LineFit.h:~L320 LSM(v.d. X,v.d. Y,...):\n";
+  //     cout<<"  int(X.size())!=int(Y.size()): "<<int(X.size())<<" "<<int(Y.size())<<endl;
+  //     throw;
+  //   }
+  //   LSM(X.data(), Y.data(), int(X.size()), dxy, double &rxy, double &mX, double &mY/*, double &SigXY*/)
+  // }
   void line3Dfit(const double points[][3] , const int npo, const char names[]="fitting result"){
     npoint = npo;
     
@@ -333,8 +354,10 @@ public:
     }
     LSM(pz, px, npo, dzx, rzx, mz, mx);//, Sigzx);
     LSM(pz, py, npo, dzy, rzy, mz, my);//, Sigzy);
-    
-    // Show(1);
+    // cout<<rzx<<"\t"<<dzx<<"\t"<<rzy<<"\t"<<dzy<<"\n";
+    if(rzx>10) cout<<"352 too large \t"<<rzx<<"\n";
+    if(rzy>10) cout<<"353 too large \t"<<rzy<<"\n";
+
     lzx = new TGraphErrors(npoint,pz,px,ez,ex);
     lzy = new TGraphErrors(npoint,pz,py,ez,ey);
 
@@ -356,7 +379,38 @@ public:
     }
     line3Dfit(points,npoint,names);
   }
-  
+
+  double RMSOfPointsAndBL( const vector<double> px, const vector<double> py, const vector<double> pz){
+    if( px.size()!=py.size() || py.size()!=pz.size()){
+      cout<<"Error: LineFit.h:~L370 RMSOfPointsAndBL(c.v.d. px,c.v.d. py,c.v.d. pz,c. line3D LBest):\n";
+      cout<<"  int(px.size())!=int(py.size())!=int(pz.size()): "<<int(px.size())<<" "<<int(py.size())<<" "<<int(pz.size())<<endl;
+      throw;
+    }
+    int npos = int(px.size());
+    double PointLineBest[3] = {dzx,dzy,dzz};
+    double DirLineBest[3] = {rzx,rzy,1};
+    double SumDisSQ = 0;
+    for(int ip=0; ip<npos; ip++){
+      double Point[3] = {px[ip],py[ip],pz[ip]};
+      SumDisSQ += pow(distOfPlanePoint(PointLineBest, DirLineBest, Point),2);
+    }
+    /*
+    if(sqrt(SumDisSQ/(1.*npos))>300){
+      cout<<"\nSumDisSQ:npos:sqrt(SumDisSQ/(1.*npos)):"<<"\t"<<SumDisSQ<<"\t"<<npos<<"\t"<<sqrt(SumDisSQ/(1.*npos))<<endl;
+      cout<<"p0:"<<"\t"<<PointLineBest[0]<<"\t"<<PointLineBest[1]<<"\t"<<PointLineBest[2]<<endl;
+      cout<<"lb:"<<"\t"<<DirLineBest[0]<<"\t"<<DirLineBest[1]<<"\t"<<DirLineBest[2]<<endl;
+      cout<<"395\t"<<flzx->GetParameter(0)<<"\t"<<flzx->GetParameter(1)<<endl;
+      cout<<"396\t"<<rzx<<"\t"<<dzx<<endl;
+      cout<<"397\t"<<flzy->GetParameter(0)<<"\t"<<flzy->GetParameter(1)<<endl;
+      cout<<"398\t"<<rzy<<"\t"<<dzy<<endl;
+      Show();
+      for(int ip=0; ip<npos; ip++){
+        double Point[3] = {px[ip],py[ip],pz[ip]};
+        cout<<"SumDisSQ:"<<"\t"<< Form("%5.5E",distOfPlanePoint(PointLineBest, DirLineBest, Point))<<"\t"<<px[ip]<<"\t"<<py[ip]<<"\t"<<pz[ip]<<endl;
+      }
+    }*/
+    return sqrt(SumDisSQ/(1.*npos));
+  }
 
 };
 
