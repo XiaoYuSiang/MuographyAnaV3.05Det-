@@ -35,7 +35,7 @@ void MainControl(char *Settingfile = DefaultJSONFile.data()){
   string SavePassRatePath = "./PassingRate.txt";
 
   /**/
-  bool SkipBlocks = 0;
+  bool SkipBlocks = 1;
     if(PMS.BlockEnv){
       /* P.01 */
       /* Copy the AnaVariable.h and the macros into path_Mac and locate tmpdir*/
@@ -55,7 +55,6 @@ void MainControl(char *Settingfile = DefaultJSONFile.data()){
       cout<<"Path of Root Dir: "<<PMS.path_OpR<<endl;
     }
     
-  if(!SkipBlocks){
     if(PMS.ReRunRunMode){
       /* P.03 *///-Able-
       gROOT->LoadMacro(Form("%sRunDataSortAnaV3.C+",PMS.path_Mac));
@@ -80,6 +79,7 @@ void MainControl(char *Settingfile = DefaultJSONFile.data()){
       CombinationFac();
     }
     
+  if(!SkipBlocks){
     if(PMS.BlockFindOriFile){
       /* P.06 */
       /* Find Raw .txt data Names and path */
@@ -98,7 +98,6 @@ void MainControl(char *Settingfile = DefaultJSONFile.data()){
     }
   }
 
-  if(!SkipBlocks){
     if(PMS.BlockConvertor){
       /* P.08 *///-New-
       /* Convert File from raw .txt to be raw .root */
@@ -133,13 +132,14 @@ void MainControl(char *Settingfile = DefaultJSONFile.data()){
       DSLAnaV5(PMS.MCMode,PMS.GammaCutMode);
     }
 
+  if(!SkipBlocks){
     if(PMS.BlockDayEff){
       /* P.11 *///-New-
       /* Data Collection Efficiency on every day */
       gROOT->LoadMacro(Form("%sDayEAnaV4.C+",PMS.path_Mac));
       DayEAnaV4();
     }
-                  
+  }
     if(PMS.BlockEventGaps){
       /* P.12 *///-New-
       /*Convert Raw_Mu.root to be Gap*.root by tcnt cut*/
@@ -149,7 +149,6 @@ void MainControl(char *Settingfile = DefaultJSONFile.data()){
       EventAnaV3(33,34);
       // EventGapAna();
     }
-  }
 
 
   if(!SkipBlocks){
@@ -166,7 +165,6 @@ void MainControl(char *Settingfile = DefaultJSONFile.data()){
       //MuoEleIDAna(c.bool*OperMode, c.int indexi=28, c.int indexf=29)
     }
   }
-  if(!SkipBlocks){
     if(PMS.BlockVTrack){
       /* P.14 */
       /* Verticle Straight line Event Ana to be Track*.root */
@@ -180,6 +178,7 @@ void MainControl(char *Settingfile = DefaultJSONFile.data()){
       gROOT->LoadMacro(Form("%sSTRealEvAna.C+",PMS.path_Mac));
       STRealEvAnaV2(33);
     }
+  if(!SkipBlocks){
   }
 
   
