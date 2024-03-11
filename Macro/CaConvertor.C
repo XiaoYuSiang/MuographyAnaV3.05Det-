@@ -75,7 +75,9 @@ bool pcntCheck(int board, Long64_t &pcntM, Long64_t &tcntM, Long64_t &tcnt, int 
     //cout<<pcnt<<"/"<<pcntM<<" "<<Form("%.11f",dtime)<<"\n";
   }
 }
-
+void CaConvertorV2(){
+  FATAL("Can't direct to use this script, please use:\n  CaConvertorV2.C+CaConvertor(TS.filename,TS.ofile,I.FrameNumEsti)");
+}
 void CaConvertor(
   TString filename="/data4/YuSiang/DaXi/20220907_Run1_0_Mu.txt", 
   TString ofile="/data4/YuSiang/DaXi/Ana2/rootfile/20220907_Run1_0_Mu.root",
@@ -84,7 +86,10 @@ void CaConvertor(
 
   ifstream infile;
   infile.open(filename);
-  
+  string outExceptionFileName = Form("%sCaConvertProblem.dat", DirOperate);
+  ofstream ott(outExceptionFileName.data(), ofstream::out | ofstream::app );
+
+
   Int_t            frame_= 0 ;
   Long64_t         unixtime_;
   Int_t            tYear_;
@@ -276,15 +281,22 @@ void CaConvertor(
     pwidth_.clear();
     data2.clear();
   }
-  cout<<"\nBadLine: [linebad] : [pc>2.56E9] : [pcM>2E9&pc<1E9] : [UT-pc!=pcOff]"<<endl;
-  cout<<"         "<<badline[0]<<":"<<badline[1]<<":"<<badline[2]<<":"<<badline[3]<<endl;
-  cout<<"\nFinish reading and convert.\n";
-  
-  
-  cout<<"Hits number of File:\t:  "<<data1Size;
 
-  cout<<"\tNframe:  "<<time1Size<<endl;
 
+  string OutStrs;
+  OutStrs+="--------------------------------------------------------\n";
+  OutStrs+="Input raw file:"+filename+"\n";
+  OutStrs+="outpt raw file:"+ofile+"\n";
+  OutStrs+=Form("#Estiment Frame:%d\n",FrameNumEsti);
+  OutStrs+="BadLine: [linebad] : [pc>2.56E9] : [pcM>2E9&pc<1E9] : [UT-pc!=pcOff]\n";
+  OutStrs+=Form("         %d\t:\t%d\t:\t%d\t:\t%d\n",badline[0],badline[1],badline[2],badline[3]);
+  OutStrs+="Finish reading and convert.\n";
+  OutStrs+=Form("Hits number of File:\t%d",data1Size);
+  OutStrs+=Form("\tNframe:\t%d\n",time1Size);
+  OutStrs+="--------------------------------------------------------";
+  ott<<OutStrs<<endl;
+  cout<<OutStrs<<endl;
+  ott.close();
   //cout<<time1[0].fr<<"\t"<<time1[0].nH<<"\t"<<time1[0].ut<<"\n";
   //cout<<s1<<" "<<frame<<" "<<s2<<" "<<unixtime<<endl;
 
@@ -294,12 +306,16 @@ void CaConvertor(
   
 }
 
-void MuoCaConvertor(const char OPT=' '){
+void MuoCaConvertor2(const char OPT=' '){
   char path_txts[180], path_filetxt[180];
   sprintf(path_txts,"%sDataTxtNameAna.dat",DirOperate);
   ifstream intxtfile(path_txts);
 
   int Fnum=0;
+  string ShfileName = Form("%stmp_mutiBash_CaConvertor.sh", DirOperate);
+  ofstream MutiCoreBash(ShfileName.data());
+  cout<<"Create muti process bash file: "<<ShfileName.data()<<endl;
+  int ibatch = 0;
   for(; intxtfile>>path_filetxt;Fnum++){
     char path_fileroot[180], name_fileroot[180];
     for(int ic = 0 ; ic<180 ; ic++){
@@ -330,9 +346,24 @@ void MuoCaConvertor(const char OPT=' '){
               cout<<"Warning: File Larger than 2GB! use the ProCaConvertor()"<<endl;
             
             }
+            int timeDelay = ibatch==0?ibatch*1:ibatch*1+7;
             cout<<"CaConvertor\\("<<path_filetxt<<","<<path_fileroot<<","<<FrameNumEsti<<"\\)"<<endl;
-              CaConvertor(path_filetxt,path_fileroot,FrameNumEsti);
-            //else CaConvertor(path_filetxt,path_fileroot,FrameNumEsti);
+            
+            // CaConvertor(path_filetxt,path_fileroot,FrameNumEsti);
+            
+            MutiCoreBash<<"sleep "<<timeDelay<<" &&root -l -b "
+              <<DirMacros<<"CaConvertor.C+"
+                <<"\\("
+                  <<"\\\""<<path_filetxt<<"\\\""<<","
+                  <<"\\\""<<path_fileroot<<"\\\""<<","
+                  <<FrameNumEsti
+                <<"\\) &\n";
+            ibatch++;
+            if(ibatch==cpuCores){
+              ibatch = 0;
+              MutiCoreBash<<"wait\n";
+            } 
+            
             cout<<"root file  : "<<path_fileroot<<endl;
             break;
           }
@@ -345,5 +376,10 @@ void MuoCaConvertor(const char OPT=' '){
     // cout<<name[Fnum]<<endl;
     
   }
+  MutiCoreBash<<endl<<"wait"<<endl;
+  MutiCoreBash<<endl<<"echo Finish all tracking by muti process."<<endl;
+  MutiCoreBash.close();
+  system(Form("sh %s",ShfileName.data()));
+  cout<<"\nFinish all process & rm: "<<ShfileName.data()<<endl;
   
 }

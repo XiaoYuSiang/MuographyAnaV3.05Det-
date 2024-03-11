@@ -1,4 +1,5 @@
 #include <typeinfo>
+#include <sstream>
 #include <algorithm>
 #include <TStyle.h>
 #include <TF1.h>
@@ -28,6 +29,15 @@ using namespace MuographAnaVariable;
 namespace MuographGobelFuns{
   const Double_t TcntOneSec  = 2.56E+9;
   
+  void locatedDirbyPath(const char *path_dir){
+    char cmdline[180];
+    sprintf(cmdline,"mkdir -p %s",path_dir);
+    if (system(cmdline)!=0){
+      // cout<<"Don't find dir path:  "<<path_dir<<", and create this directory"<<endl;
+      system(cmdline);
+    }
+  }
+  
   int BDcheck(const int b){
     int z = -1;
     for(int i=0;i<NumBD;i++){
@@ -37,7 +47,7 @@ namespace MuographGobelFuns{
       } 
     }if(z==-1){
       cout<<"Warning: GobelFun.h: Please Enter the true value b into the int BDcheck(int b)!!!   ";
-      cout<<"Now the Enter value b is:  "<< b <<endl;
+      cout<<"Now the Enter value b is:  "<< b << ", Set val to be -1" <<endl;
       //throw;
     } 
     return z;
@@ -47,7 +57,7 @@ namespace MuographGobelFuns{
     int z = -1;
     if(c>NumCh-1||c<0){
       cout<<"Warning: GobelFun.h: Please Enter the true value c into the int CHcheck(int c)!!!   ";
-      cout<<"Now the Enter value c is:  "<< c <<endl;
+      cout<<"Now the Enter value c is:  "<< -1 <<endl;
       //throw;
     }else{
       z = c;
@@ -155,39 +165,60 @@ namespace MuographGobelFuns{
   bool DetVerCheck(char *version, const char *DetectorVersion = "v03.05") {
     // cout<<DirIMFdat<<endl;
 
-    const char V2OptionName  [20][10]={
-      "V2.0","v2.0","V2","v2","V2.","v2.","V02.00","v02.00","V2.00","v2.00","v2_00","V2_00","v2_0","V2_0","v02","V02_0","v02_0","V02_0","v02_00","V02_00"
+    const char V2OptionName  [22][10]={
+      "V2.0","v2.0","V2","v2","V2.","v2.","V02.00","v02.00","V2.00","v2.00","v2_00","V2_00","v2_0","V2_0","v02","V02_0","v02_0","V02_0","v02_00","V02_00","v0200","V0200"
     };
-    const char V300OptionName[16][10]={
-      "V3.00","v3.00","V03.00","v03.00","V3.0","v3.0","V3","v3","V3_00","v3_00","V03_00","v03_00","V3_0","v3_0","V03_0","v03_0",
+    const char V203OptionName  [10][10]={
+      "V02.03","v02.03","V2.03","v2.03","v2_03","V2_03","V0203","v0203","v02_03","V02_03"
     };
-    const char V305OptionName[8][10]={
-      "V3.05","v3.05","V03.05","v03.05","V3_05","v3_05","V03_05","v03_05"
+    const char V300OptionName[18][10]={
+      "V3.00","v3.00","V03.00","v03.00","V3.0","v3.0","V3","v3","V3_00","v3_00","V03_00","v03_00","V3_0","v3_0","V03_0","v03_0","v0300","V0300"
     };
-    
-    for(int iV2Ns=0 ; iV2Ns<20 ; iV2Ns++){
+    const char V305OptionName[10][10]={
+      "V03.05","v03.05","V3.05","v3.05","v3_05","V3_05","V0305","v0305","v03_05","V03_05"
+    };
+    const char V306OptionName[10][10]={
+      "V03.06","v03.06","V3.06","v3.06","v3_06","V3_06","V0306","v0306","v03_06","V03_06"
+    };
+    for(int iV2Ns=0 ; iV2Ns<22 ; iV2Ns++){
       if(strcmp(DetectorVersion,V2OptionName[iV2Ns])==0) {
         sprintf(version,"V02_00");
         break;
       }
     }
-    for(int iV3Ns=0 ; iV3Ns<16; iV3Ns++){
+    for(int iV2Ns=0 ; iV2Ns<10; iV2Ns++){
+      if(strcmp(DetectorVersion,V203OptionName[iV2Ns])==0) {
+        sprintf(version,"V02_03");
+        break;
+      }
+    }
+    for(int iV3Ns=0 ; iV3Ns<18; iV3Ns++){
       if(strcmp(DetectorVersion,V300OptionName[iV3Ns])==0) {
         sprintf(version,"V03_00");
         break;
       }
     }
-    for(int iV305Ns=0 ; iV305Ns<8 ; iV305Ns++){
+    for(int iV305Ns=0 ; iV305Ns<10 ; iV305Ns++){
       if(strcmp(DetectorVersion,V305OptionName[iV305Ns])==0) {
         sprintf(version,"V03_05");
         break;
       }
     }
+    for(int iV306Ns=0 ; iV306Ns<10 ; iV306Ns++){
+      if(strcmp(DetectorVersion,V306OptionName[iV306Ns])==0) {
+        sprintf(version,"V03_06");
+        break;
+      }
+    }
     if(strcmp(version,"V02_00")==0){
+      return true;
+    }else if(strcmp(version,"V02_03")==0){
       return true;
     }else if(strcmp(version,"V03_00")==0){
       return true;
     }else if(strcmp(version,"V03_05")==0){
+      return true;
+    }else if(strcmp(version,"V03_06")==0){
       return true;
     }else{
       cout<<endl;
@@ -195,16 +226,24 @@ namespace MuographGobelFuns{
       cout<<"Now, Enter version number is:    "<<DetectorVersion<<"    can not be Identified by program"<<endl;
       cout<<"Please Enter Like this List:    "<<endl;
       cout<<"-------List of V02_00:-------"<<endl;
-      for(int iV2Ns=0 ; iV2Ns<20 ; iV2Ns++){
+      for(int iV2Ns=0 ; iV2Ns<22 ; iV2Ns++){
         cout<<Form("%10.10s    =    %10.10s",V2OptionName[iV2Ns],"V02_00")<<endl;
       }
+      cout<<"-------List of V02_03:-------"<<endl;
+      for(int iV2Ns=0 ; iV2Ns<10 ; iV2Ns++){
+        cout<<Form("%10.10s    =    %10.10s",V203OptionName[iV2Ns],"V02_03")<<endl;
+      }
       cout<<"-------List of V03_00:-------"<<endl;
-      for(int iV300Ns=0 ; iV300Ns<16 ; iV300Ns++){
+      for(int iV300Ns=0 ; iV300Ns<18 ; iV300Ns++){
         cout<<Form("%10.10s    =    %10.10s",V300OptionName[iV300Ns],"V03_00")<<endl;
       }
       cout<<"-------List of V03_05:-------"<<endl;
-      for(int iV305Ns=0 ; iV305Ns<8 ; iV305Ns++){
+      for(int iV305Ns=0 ; iV305Ns<10 ; iV305Ns++){
         cout<<Form("%10.10s    =    %10.10s",V305OptionName[iV305Ns],"V03_05")<<endl;
+      }
+      cout<<"-------List of V03_06:-------"<<endl;
+      for(int iV306Ns=0 ; iV306Ns<10 ; iV306Ns++){
+        cout<<Form("%10.10s    =    %10.10s",V306OptionName[iV306Ns],"V03_06")<<endl;
       }
       cout<<"Or contact the author to update the detector version table."<<endl;
       
@@ -476,6 +515,16 @@ namespace MuographGobelFuns{
     return lossTime;
   }
   
+  void StrReplaceAll(string &origin, string target, string newstr){
+    int pos = 0;
+    while(1) {
+      pos = origin.find( target, pos ); 
+      if( pos == -1 ) break;
+      origin.replace(pos, target.length(), newstr);
+      pos += newstr.length(); 
+    }
+  }
+
   
   // const char cmdline_leftbrace [5] = "\\\(";
   // const char cmdline_rightbrace[5] = "\\\)";
@@ -484,6 +533,147 @@ namespace MuographGobelFuns{
     // return Form("")
   // }
 
+  void GetFluxRangeOddBinNum(double MinRange, double Width, double &RangeN, double &RangeP, int &BinNum, const bool Queit = false){
+    BinNum = ceil(MinRange*2./Width);
+    BinNum = BinNum%2 == 1 ? BinNum : BinNum+1;
+    RangeP = (BinNum)*0.5*Width;
+    RangeN = -RangeP;
+    if(!Queit)
+      cout<<"Return:  Range(N,P) = ("<<RangeN<<","<<RangeP<<"), BinNum = "<<BinNum<<endl;
+  }
+  vector<float> GetFluxRangeBins(double MinRange, double Width, const bool Queit = false){
+    int BinNum = ceil(MinRange*2./Width);
+    BinNum = BinNum%2 == 1 ? BinNum : BinNum+1;
+    double RangeP = +MinRange;
+    double RangeN = -MinRange;
+    if(!Queit)
+      cout<<"Return:  Range(N,P) = ("<<RangeN<<","<<RangeP<<"), BinNum = "<<BinNum<<endl;
+    vector<float> vRBin;
+    vRBin.push_back(RangeN);
+    // cout<<RangeN<<endl;
+    for(int ibin=1; ibin<BinNum; ibin++){
+      vRBin.push_back(-Width*((BinNum*1.+1.)/2.-0.5)+Width*(1.*ibin));
+      // cout<<"-"<<Width<<"*(("<<BinNum<<"*1.+1.)/2.-0.5)+"<<Width<<"*(1.*"<<ibin<<")) = "<<-Width*((BinNum*1.+1.)/2.-0.5)+Width*(1.*ibin)<<endl;
+    }
+    // cout<<RangeP<<endl;
+    // FATAL("sdrgh");
+    vRBin.push_back(RangeP);
+    return vRBin;
+  }
+  
+  TH2F *SetTDDDModel(
+    const char *Name = "TDDM",
+    const char *Title = "#font[12]{Tracking result direction distribution}",
+    const double binWidth = 0.01 
+  ){
 
+    vector <float> vRxyBin = GetFluxRangeBins(FluxBinDXYDZRange,binWidth,false);
+    int     NumBins = vRxyBin.size()-1;
+    stringstream iss;
+    for(int i=0;i<int(vRxyBin.size());i++) iss<<i<<" "<<vRxyBin[i]<<endl;
+    cout<<iss.str();
+    TH2F *TDDDM = new TH2F(Name,Title,NumBins,vRxyBin.data(),NumBins,vRxyBin.data());
+    TDDDM->SetStats(0);
+    TDDDM->GetXaxis()->SetTitle("dx/dz");
+    TDDDM->GetXaxis()->SetLabelSize(0.03);
+    TDDDM->GetYaxis()->SetTitle("dy/dz");
+    TDDDM->GetYaxis()->SetTitleOffset(1.4);
+    TDDDM->GetYaxis()->SetLabelSize(0.03);
+    TDDDM->GetZaxis()->SetTitle("Numbers of event");
+    TDDDM->GetZaxis()->SetTitleOffset(1.4);
+    TDDDM->GetZaxis()->RotateTitle(true);
+    TDDDM->GetZaxis()->SetLabelSize(0.03);
+    TDDDM->GetXaxis()->SetNdivisions(13,1,1);
+    TDDDM->GetYaxis()->SetNdivisions(13,1,1);
+    char version[8] = {};
+    DetVerCheck(version,detVer);
+    if(strcmp(version,"V03_05")==0||strcmp(version,"V02_03")==0){ 
+      TDDDM->GetXaxis()->SetRangeUser(-FluxBinDXYDZRange,FluxBinDXYDZRange);
+      TDDDM->GetYaxis()->SetRangeUser(-FluxBinDXYDZRange,FluxBinDXYDZRange);
+    }else{
+      cout<<"Error: Version content to be addition!!!  GobelFunc.C:SetTDDDModel~L30~L60"<<endl;
+      cout<<"Now, version: "<< version<<endl;
+      throw;
+    }
+    return TDDDM;
+  }
+  TH2F *SetTDDDModelRAD(
+    const char *Name = "TDDM",
+    const char *Title = "#font[12]{Tracking result direction distribution}",
+    const double binWidth = 0.01 
+  ){
+
+    vector <float> vRxyBin = GetFluxRangeBins(FluxBinDXYDZRange,binWidth,false);
+    int     NumBins = vRxyBin.size()-1;
+    stringstream iss;
+    for(int i=0;i<int(vRxyBin.size());i++) iss<<i<<" "<<vRxyBin[i]<<endl;
+    cout<<iss.str();
+    TH2F *TDDDM = new TH2F(Name,Title,NumBins,vRxyBin.data(),NumBins,vRxyBin.data());
+    TDDDM->SetStats(0);
+    TDDDM->GetXaxis()->SetTitle("dx/dz(Rad)");
+    TDDDM->GetYaxis()->SetTitleOffset(1.4);
+    TDDDM->GetXaxis()->SetLabelSize(0.03);
+    TDDDM->GetYaxis()->SetTitle("dy/dz(Rad)");
+    TDDDM->GetYaxis()->SetTitleOffset(1.4);
+    TDDDM->GetYaxis()->SetLabelSize(0.03);
+    TDDDM->GetZaxis()->SetTitle("Numbers of event");
+    TDDDM->GetZaxis()->SetTitleOffset(1.4);
+    TDDDM->GetZaxis()->RotateTitle(true);
+    TDDDM->GetZaxis()->SetLabelSize(0.03);
+    TDDDM->GetXaxis()->SetNdivisions(13,1,1);
+    TDDDM->GetYaxis()->SetNdivisions(13,1,1);
+    char version[8] = {};
+    DetVerCheck(version,detVer);
+    if(strcmp(version,"V03_05")==0||strcmp(version,"V02_03")==0){ 
+      TDDDM->GetXaxis()->SetRangeUser(-FluxBinDXYDZRange,FluxBinDXYDZRange);
+      TDDDM->GetYaxis()->SetRangeUser(-FluxBinDXYDZRange,FluxBinDXYDZRange);
+    }else{
+      cout<<"Error: Version content to be addition!!!  GobelFunc.C:SetTDDDModel~L30~L60"<<endl;
+      cout<<"Now, version: "<< version<<endl;
+      throw;
+    }
+    return TDDDM;
+  }
+  
+  bool ruleDisPlayTStrOrNot(const int total_days, const int tY, const int tM, const int tD, const int tH){
+    // cout<<tY<<"\t"<<tM<<"\t"<<tD<<"\t"<<tH<<"\n";
+    if(total_days<=2){
+      if(tH%2==0) return true;
+      else return false;
+    }else if(total_days<=4){
+      if(tH%4==0) return true;
+      else return false;
+    }else if(total_days<=6){
+      if(tH%6==0) return true;
+      else return false;
+    }else if(total_days<=8){
+      if(tH%8==0) return true;
+      else return false;
+    }else if(total_days<=12){
+      if(tH%12==0) return true;
+      else return false;
+    }else if(total_days<=24){
+      if(tH%24==0) return true;
+      else return false;
+    }else if(total_days<=48){
+      if(tD%2==1&&tH==0) return true;
+      else return false;
+    }else if(total_days<=96){
+      if(tD%4==1&&tH==0) return true;
+      else return false;
+    }else if(total_days<=120){
+      if(tD%5==1&&tH==0) return true;
+      else return false;
+    }else if(total_days<=200){
+      if(tD%8==1&&tH==0) return true;
+      else return false;
+    }else if(total_days>200){
+      if(tD==1&&tH==0) return true;
+      else return false;
+    }
+      
+    else return false;
+  }
+  
 };
 

@@ -1,4 +1,4 @@
-  //V03.05
+  //V03.06
   /*Detector Information variable*/
   char detVer[10] = {"V3.05"};  //detector version
   //number of boards, nuber of channel per board, number of board layers

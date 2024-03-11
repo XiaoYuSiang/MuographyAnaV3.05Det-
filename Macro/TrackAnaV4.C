@@ -1,4 +1,3 @@
-//include
 #include "TrackAnaSub.C"
 
 void TrackAnaV4(
@@ -27,9 +26,8 @@ void TrackAnaV4(
   map<string, GeometricAreaData> MSGAD;
   LoadPosCodeTable(MSGAD);
     
-  ofstream ott("/home/yusiang/G4DataFindR2/lbhgrsabhvrs.txt", ofstream::out | ofstream::app );
+  ofstream ott("/home/yusiang/TestV5/Rp.txt", ofstream::out | ofstream::app );
 
-  
   for(int i0=indexi;i0<indexf;i0++){
     int int_Os[6]={0};
     eventGap[i0] = (1.0*eventGapTcnt[i0])/2560000000.;
@@ -52,12 +50,14 @@ void TrackAnaV4(
     //take time and set anlyze Constant for boundry condition
     Long64_t evsTr = data.GetEntriesFast(), lastev = 0;
     cout <<"total event:\t"<<evsTr<<endl;
-    if(testMode||evsTr>3000) evsTr = evsTr*0.01;
+    if(MCMode&&(testMode||evsTr>3000)) evsTr = evsTr*0.01;
+    else if(testMode) evsTr = evsTr*0.01;
     //Fill the data
     
     vector<int> vEffir;
     vector<Long64_t> vRunStartev, vRunFinalev; 
-
+    Long64_t lastRunEv = 0;
+    cout<<"totalRunNum: "<<totalRunNum<<endl;
     for(int ir = 0; ir < totalRunNum ; ir ++){
       if(RunID[ir] == -1) continue;
       vEffir.push_back(ir);
@@ -69,43 +69,70 @@ void TrackAnaV4(
       tERPos->SetBranchAddress("EndUT"       ,&runDatatmp.EndUT   );
       tERPos->GetEntry(0);
       cout<<"StartUT : EndUT  "<<runDatatmp.StartUT<<"  "<<runDatatmp.EndUT<<endl;
+      cout<<"op process: "<<endl;
+    // throw;
       int rnum = 0;
-      for (Long64_t ev = lastev; ev <evsTr; ++ev) {
-        data.GetEntry(ev);
-        unixtime_ = data.GetLong64("unixtime");
-        if(ev%1000 == 0) 
-          cout<<Form("\r%.5f%%",(ev*100.)/(1.*evsTr))
-              <<Form("   %d",unixtime_)
-              <<Form("   %d",rnum)<<flush;
-        
-        if(!MCMode){
+      if(MCMode){
+        vRunStartev.push_back(0);
+        vRunFinalev.push_back(evsTr);
+        // cout<<endl<<102<<endl;
+        break;
+      }else{
+        for (Long64_t ev = lastev; ev <evsTr; ++ev) {
+          data.GetEntry(ev);
+          unixtime_ = data.GetLong64("unixtime");
+          // if(ev%1000 == 0) 
+            // cout<<Form("\r%.5f%%",(ev*100.)/(1.*evsTr))
+                // <<Form("   %d",unixtime_)
+                // <<Form("   %d",rnum)<<flush;
+          
+          if(ev == 0){
+            vRunStartev.push_back(ev);//@@
+            cout<<"start at: "<<unixtime_<<"\t/"<<runDatatmp.StartUT<<"\t"<<(ev+1)<<"\n";
+            // cout<<endl<<88<<endl;
+          }else if(ev == lastev){
+            vRunStartev.push_back(ev);
+            cout<<"start at: "<<unixtime_<<"\t/"<<runDatatmp.StartUT<<"\t"<<(ev)<<"\n";
+          }else if(ev == evsTr-1){
+            lastev = ev;
+            vRunFinalev.push_back(lastev+1);//@@
+            cout<<"End   at: "<<unixtime_<<"\t/"<<runDatatmp.EndUT<<"\t"<<lastev<<"\n";
+          }
           if(unixtime_<runDatatmp.StartUT){
             if(vRunStartev.size()==vEffir.size()) 
               vRunStartev[vEffir.size()-1] = ev+1;
             else vRunStartev.push_back(ev+1);//@@
+            cout<<"start at: "<<unixtime_<<"\t/"<<runDatatmp.StartUT<<"\t"<<(ev+1)<<"\n";
             continue;
-          } 
-          if(unixtime_>runDatatmp.EndUT){
-            lastev = ev;
+          }else if(unixtime_>runDatatmp.EndUT){
+            ev--; lastev = ev;
             vRunFinalev.push_back(lastev);//@@
+            lastRunEv = lastev;
+            cout<<"End   at: "<<unixtime_<<"\t/"<<runDatatmp.EndUT<<"\t"<<lastev<<"\n";
+            // cout<<(lastev)<<"\n";
             break;
-          } 
-        }else{
-          vRunStartev.push_back(0);
-          vRunFinalev.push_back(evsTr);
-          break;
+            // cout<<endl<<91<<endl;
+          }
         }
       }
+      // lastev--;
+      // cout<<endl<<108<<endl;
     }
     vector<string> vOsfiles, vTmp_ETrFile;
-    cout<<"int(vEffir.size())"<<int(vEffir.size())<<endl;
-    string RfileName = Form("%stmp_mutiBash.sh", DirOperate,RfileName.data());
+    cout<<"\nint(vEffir.size())\t"<<int(vEffir.size())<<endl;
+    cout<<"\nint(vRunStartev.size())\t"<<int(vRunStartev.size())<<endl;
+    cout<<"\nint(vRunFinalev.size())\t"<<int(vRunFinalev.size())<<endl;
+    for(int ir = 0; ir < int(vEffir.size()) ; ir ++){
+      cout<<vRunStartev[ir]<<"\t"<<vRunFinalev[ir]<<"\n";
+    }// throw;
+    string RfileName = Form("%stmp_mutiBash.sh", DirOperate);
     ofstream MutiCoreBash(RfileName.data());
     cout<<"Create muti process bash file: "<<RfileName.data()<<endl;
+    // FATAL("Tr4.C L111");
     for(int ir = 0; ir < int(vEffir.size()) ; ir ++){
-      
+      // cout<<106<<endl;
       int Num_RunTotalev = vRunFinalev[ir] - vRunStartev[ir]+1;
-      cout<< "Num_RunTotalev"<<Num_RunTotalev <<endl;
+      cout<< "Num_RunTotalev\t"<<Num_RunTotalev <<endl;
       int batchSize = Num_RunTotalev/cpuCores;
       for(int ibatch = 0; ibatch<cpuCores; ibatch++){
         int evFirFin[2] = {
@@ -117,7 +144,7 @@ void TrackAnaV4(
         string Tmp_ETrFile = Form("%stmp_ETracksGT%s%s.root", DirOperate, RFNStr, evhash.data());
         string OsName = Form("%sOs%s.txt", DirOperate, evhash.data());
 
-        int timeDelay = ibatch==0?ibatch*1:ibatch*1+7;
+        int timeDelay = ibatch==0?0:7;
         MutiCoreBash<<"sleep "<<timeDelay<<" &&root -l -b "
           <<DirMacros<<"TrackAnaSub.C+"
             "\\\("
@@ -158,6 +185,7 @@ void TrackAnaV4(
     // MutiCoreBash<<"echo remove unmergefiles"<<OutputGapTFiles<<endl;
 
     MutiCoreBash.close();
+    // FATAL("177");
     system(Form("sh %s",RfileName.data()));
     // system(Form("rm %s",RfileName.data()));
     cout<<"\nFinish all process & rm: "<<RfileName.data()<<endl;

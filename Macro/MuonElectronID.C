@@ -141,6 +141,7 @@ void MuonElectronID( const bool*OperMode, const int indexi=28, const int indexf=
       Int_t*     board_;
       Int_t*     channel_;
       Int_t*     pwidth_;
+      float*     pwidthScaleFactor_;
       Int_t*     pcnt_;
       Long64_t*  tcnt_;
       Double_t*  dtime_;

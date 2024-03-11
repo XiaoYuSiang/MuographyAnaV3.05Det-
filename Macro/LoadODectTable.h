@@ -172,17 +172,17 @@ map<int, scintillator> LoadEDectTable(const char* EffFile , const char QMode='q'
 
 }
 
-  inline string getRelCode(int pos[][2],int layerN){
-    string res;
-    for(int i =1;i<layerN;i++){
-      string x=Form("%d",(pos[i][0]-pos[0][0]));
-      string y=Form("%d",(pos[i][1]-pos[0][1]));
-      if(i!=1)
-        res+="_";
-      res=res+x+","+y;
-    }
-    return res;
+inline string getRelCode(int pos[][2],int layerN){
+  string res;
+  for(int i =1;i<layerN;i++){
+    string x=Form("%d",(pos[i][0]-pos[0][0]));
+    string y=Form("%d",(pos[i][1]-pos[0][1]));
+    if(i!=1)
+      res+="_";
+    res=res+x+","+y;
   }
+  return res;
+}
 
 void LoadPosCodeTable(map<int, GeometricAreaData> &MapGAD){
   ifstream in(Form("%sGA8x8_2.csv",DirMacros));

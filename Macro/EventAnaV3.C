@@ -1,4 +1,3 @@
-//include
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -173,6 +172,7 @@ void EventAnaV3(const int indexi=28, const int indexf=29, const int unixtimeini 
 
       for( int i=0 ; i<nHits; i++){
         if(GammaCutMode) if(pwidth_[i]==0) continue;
+        if(board_[i]>=17) continue;
         dtcnt.push_back(abs(dtimeInt_[i]-dtime0));
         if(((!MCMode)&&(nHit!=0&&dtcnt[nHit]>eventGap[i0]))||(MCMode&&frameLast!=frame_)){
           dtcnt.pop_back();

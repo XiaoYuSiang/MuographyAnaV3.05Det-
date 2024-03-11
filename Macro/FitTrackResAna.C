@@ -42,7 +42,7 @@ TH2F *SetTDDDModel(
   const int binNFX = binNumFluxX,
   const int binNFY = binNumFluxY
 ){
-  TH2F *TDDDM = new TH2F(Name,Title,binNFX,-1.400,1.400,binNFY,-1.400,1.400);
+  TH2F *TDDDM = new TH2F(Name,Title,binNFX,FluxDxDzRx[0],FluxDxDzRx[1],binNFY,FluxDxDzRy[0],FluxDxDzRy[1]);
   //TDDDM->SetStats(0);
   TDDDM->GetXaxis()->SetTitle("dx/dz");
   TDDDM->GetXaxis()->SetLabelSize(0.03);
@@ -181,7 +181,7 @@ void FitTrackResAna(
 
     C->Close();
     delete C;
-    C = new TCanvas("Canvas","",0,0,1050*8,1000*8);
+    C = new TCanvas("Canvas","",0,0,1050*4,1000*4);
     C->SetRightMargin(0.15); 
     C->SetPhi(0);
     C->SetTheta(90);
@@ -221,7 +221,7 @@ void FitTrackResAna(
     // DrawPdfPng(C,Form("%sTryThetaVsPhiSP45",DirSave));
     // DrawPdfPng(C,Form("%sTryThetaVsPhiSP45",DirRes_FluxCal));
 
-    
+    C->SetGrid(1,1);
     FastStyleStats(1,1);
     gStyle->SetStatH(0.066);
     gStyle->SetStatW(0.150);
@@ -413,13 +413,13 @@ void FitTrackResAna(
 void  FitTrackResAnaV2( const int indexGap=28, const bool Rotate=false){
   
   // FitTrackResAna(indexGap,281,281,Rotate);
-  FitTrackResAna(indexGap,93,93,'C',Rotate); cout<<416<<endl;
-  FitTrackResAna(indexGap,93,93,'T',Rotate); cout<<417<<endl;
+  // FitTrackResAna(indexGap,93,93,'C',Rotate); //cout<<416<<endl;
+  // FitTrackResAna(indexGap,93,93,'T',Rotate); //cout<<417<<endl;
   // FitTrackResAna(indexGap,281,281,'C',Rotate); cout<<418<<endl;
   // FitTrackResAna(indexGap,281,281,'T',Rotate); cout<<419<<endl;
-  if(binNumFluxX!=93&&binNumFluxX!=281&&binNumFluxY!=93&&binNumFluxY!=281){ cout<<420<<endl;
-    FitTrackResAna(indexGap,binNumFluxX,binNumFluxY,'C',Rotate); cout<<421<<endl;
-    FitTrackResAna(indexGap,binNumFluxX,binNumFluxY,'T',Rotate); cout<<422<<endl;
+  if(binNumFluxX!=93&&binNumFluxX!=281&&binNumFluxY!=93&&binNumFluxY!=281){ //cout<<420<<endl;
+    FitTrackResAna(indexGap,binNumFluxX,binNumFluxY,'C',Rotate); //cout<<421<<endl;
+    FitTrackResAna(indexGap,binNumFluxX,binNumFluxY,'T',Rotate); //cout<<422<<endl;
   }
   
 }

@@ -4,8 +4,12 @@
 #include <typeinfo>
 #include <algorithm>
 #include <TF1.h>
+#include "./SettingJSONIO.h"
 
 using namespace std;
+const string StrPathErrorCase[5] = { "Raw data", "HK data", "Run data", "Root data", "data base"};
+const string StrNameErrorCase[5] = { "Raw data", "HK data"};
+
 void locatedDirbyPath(const char *path_dir){
   char cmdline[180];
   sprintf(cmdline,"mkdir -p %s",path_dir);
@@ -14,17 +18,75 @@ void locatedDirbyPath(const char *path_dir){
     system(cmdline);
   }
 }
-
+void CheckCorrection( JSONFileIOSet &PMS ){
+  
+  string paths[5] = {
+    string(PMS.path_Raw),     string(PMS.path_Hk),     string(PMS.path_Run), 
+    string(PMS.path_Rot),     string(PMS.path_Mac)
+  };
+  string names[5] = {
+    string(PMS.name_MC),     string(PMS.name_Hk)
+  };
+  bool NotEndWithDiv = false, nameEndWithExt = false;
+  for(int ipath=0; ipath<5;ipath++){
+    if(paths[ipath][0]=='.'){
+      cout<<endl;
+      cout<<"\"Error\" Path of "<<StrPathErrorCase[ipath]<<" need to be !!!\"Absolute\" Path!!!"<<endl;
+      cout<<"      Now, the enter "<<StrPathErrorCase[ipath]<<" path is: "<<paths[ipath]<<endl;
+      cout<<"      Please check the path of <<StrPathErrorCase[ipath]<< !!!"<<endl;
+      cout<<endl;
+      throw;
+    }
+    if(paths[ipath][paths[ipath].size()-1] != '/'){
+      cout<<endl;
+      cout<<"\"Warning\" Path of "<<StrPathErrorCase[ipath]<<" need to be end with '/'!!!"<<endl;
+      cout<<"      Now, the enter "<<StrPathErrorCase[ipath]<<" path is: "<<paths[ipath]<<endl;
+      cout<<"      Please check the path of "<<StrPathErrorCase[ipath]<<" and end with '/' !!!"<<endl;
+      cout<<"\"Warning\" Atomatic add the end of path by '/'."<<endl;
+      paths[ipath]+="/";
+      cout<<endl;
+      NotEndWithDiv = true;
+    }
+  }
+  for(int iname=0;iname<2;iname++){
+    if(int(names[iname].find(".txt"))!=-1){
+      cout<<endl;
+      cout<<"\"Warning\" Name of "<<StrNameErrorCase[iname]<<" needn't end with \".txt\"!!!"<<endl;
+      cout<<"      Now, the enter "<<StrNameErrorCase[iname]<<" name is: "<<names[iname]<<endl;
+      cout<<"      Please check the name of "<<StrNameErrorCase[iname]<<" and delete \".txt\" !!!"<<endl;
+      cout<<"\"Warning\" Atomatic remove the ext name of name."<<endl;
+      names[iname]=names[iname].substr(0,names[iname].size()-4);
+      cout<<endl;
+      nameEndWithExt = true;
+    }
+  }
+  if(NotEndWithDiv){
+    sprintf(PMS.path_Raw,"%s",paths[0].data());
+    sprintf(PMS.path_Hk ,"%s",paths[1].data());
+    sprintf(PMS.path_Run,"%s",paths[2].data());
+    sprintf(PMS.path_Rot,"%s",paths[3].data());
+    sprintf(PMS.path_Mac,"%s",paths[4].data());
+  }
+  if(nameEndWithExt){
+    if(PMS.MCMode) sprintf(PMS.name_MC,"%s" , names[0].data());
+    else            sprintf(PMS.name_Raw,"%s", names[0].data());
+    sprintf(PMS.name_Hk,"%s" , names[1].data());
+  }
+  if(NotEndWithDiv||nameEndWithExt){
+    cout<<"\"Warning\" Now, restart to located the databace with correct paths and names!!"<<endl;
+    // DataBaseLocateV4( PMS, OPT);
+  }
+}
 
 void DataBaseLocate( const char *path_dirRawData, const char *path_dirHkData, const char *path_dirAnaData, const char *path_dirMacros="./", const char *name_Raw="*_Mu" , const char *name_Hk="*_HK" ,const char OPT='P'){
   
-  cout<<"Error!!! Please use the DataBaseLocate.C::DataBaseLocateV3(c.cdRD*,c.cdHK*,c.cdRT*,c.cdAD*,c.cdMa*,c.cNRD*,c.cNHk*,c.cOPT*) "<<endl;
+  cout<<"Error!!! Please use the DataBaseLocate.C::DataBaseLocateV4(c.cdRD*,c.cdHK*,c.cdRT*,c.cdAD*,c.cdMa*,c.cNRD*,c.cNHk*,c.cOPT*) "<<endl;
   throw;
 }
 
 void DataBaseLocateV2( const char *path_dirRawData, const char *path_dirHkData, const char *path_dirAnaData, const char *path_dirMacros="./", const char *name_Raw="*_Mu" , const char *name_Hk="*_HK" ,const char OPT='P'){
   
-  cout<<"Error!!! Please use the DataBaseLocate.C::DataBaseLocateV3(c.cdRD*,c.cdHK*,c.cdRN*,c.cdRT*,c.cdAD*,c.cdMa*,c.cNRD*,c.cNHk*,c.cNRN*,c.cOPT*) "<<endl;
+  cout<<"Error!!! Please use the DataBaseLocate.C::DataBaseLocateV4(c.cdRD*,c.cdHK*,c.cdRN*,c.cdRT*,c.cdAD*,c.cdMa*,c.cNRD*,c.cNHk*,c.cNRN*,c.cOPT*) "<<endl;
   throw;
 }
 
@@ -32,44 +94,20 @@ void DataBaseLocateV3(
   const char *path_dirRawData, const char *path_dirHkData, const char *path_dirRunData, const char *path_dirRTData, const char *path_dirAnaData, 
   const char *path_dirMacros="./", const char *name_Raw="*_Mu" , const char *name_Hk="*_HK" ,const char OPT='P')
 {
-  
-  
-  if(path_dirRawData[0]=='.'){
-    cout<<endl;
-    cout<<"\"Error\" Path of Raw data need to be \"Full\" Path!!!"<<endl;
-    cout<<"      Now, the enter Raw data path is: "<<path_dirRawData<<endl;
-    cout<<"      Please check the path of Raw dat !!!"<<path_dirRawData<<endl;
-    cout<<endl;
-    throw;
-  }else if(path_dirHkData[0]=='.'){
-    cout<<endl;
-    cout<<"\"Error\" Path of HK data need to be \"Full\" Path!!!"<<endl;
-    cout<<"      Now, the enter HK data path is: "<<path_dirHkData<<endl;
-    cout<<"      Please check the path of HK dat !!!"<<path_dirHkData<<endl;
-    cout<<endl;
-    throw;
-  }else if(path_dirRunData[0]=='.'){
-    cout<<endl;
-    cout<<"\"Error\" Path of Run data need to be \"Full\" Path!!!"<<endl;
-    cout<<"      Now, the enter Run data path is: "<<path_dirRunData<<endl;
-    cout<<"      Please check the path of Run dat !!!"<<path_dirRunData<<endl;
-    cout<<endl;
-    throw;
-  }else if(path_dirRTData[0]=='.'){
-    cout<<endl;
-    cout<<"\"Error\" Path of Root data need to be \"Full\" Path!!!"<<endl;
-    cout<<"      Now, the enter Root data path is: "<<path_dirRTData<<endl;
-    cout<<"      Please check the path of Root dat !!!"<<path_dirRTData<<endl;
-    cout<<endl;
-    throw;
-  }else if (path_dirAnaData[0]=='.'){
-    cout<<endl;
-    cout<<"\"Error\" Root path of data base need to be \"Full\" Path!!!"<<endl;
-    cout<<"      Now, the enter data base path is: "<<path_dirAnaData<<endl;
-    cout<<"      Please check the path of root !!!"<<path_dirAnaData<<endl;
-    cout<<endl;
-    throw;
-  }
+  cout<<"Error!!! Please use the DataBaseLocate.C::DataBaseLocateV4(c.cdRD*,c.cdHK*,c.cdRN*,c.cdRT*,c.cdAD*,c.cdMa*,c.cNRD*,c.cNHk*,c.cNRN*,c.cOPT*) "<<endl;
+  throw;
+}
+
+void DataBaseLocateV4( JSONFileIOSet &PMS ,const char OPT='P'){
+  CheckCorrection( PMS );
+  char path_dirRawData[200]; sprintf(path_dirRawData,"%s",PMS.path_Raw);
+  char path_dirHkData [200]; sprintf(path_dirHkData ,"%s",PMS.path_Hk );
+  char path_dirRunData[200]; sprintf(path_dirRunData,"%s",PMS.path_Run);
+  char path_dirRTData [200]; sprintf(path_dirRTData ,"%s",PMS.path_Rot);
+  char path_dirAnaData[200]; sprintf(path_dirAnaData,"%s",PMS.path_OpR);
+  char path_dirMacros [200]; sprintf(path_dirMacros ,"%s",PMS.path_Mac);
+  char name_Raw        [200]; sprintf(name_Raw        ,"%s",PMS.MCMode ? PMS.name_MC : PMS.name_Raw);
+  char name_Hk         [200]; sprintf(name_Hk         ,"%s",PMS.name_Hk );
   
   char DirMacros[150];
   sprintf(DirMacros ,"%s"               ,path_dirMacros);
@@ -151,12 +189,15 @@ void DataBaseLocateV3(
   
   
   
-  char name_Raw_txt [50], name_Raw_root[50], name_Hk_txt[50];
+  char name_Raw_txt [50], name_Raw_root[50], name_RMC_root[50], name_Hk_txt[50];
   sprintf (name_Raw_txt , "%s.txt" ,name_Raw);
   sprintf (name_Raw_root, "%s.root",name_Raw);
+  sprintf (name_RMC_root, "%s.root",name_Raw);
   sprintf (name_Hk_txt  , "%s.txt" ,name_Hk );
+  cout<<198<<endl;
   cout<<"name_Raw_txt:   "<<name_Raw_txt<<endl;
   cout<<"name_Raw_root:  "<<name_Raw_root<<endl;
+  cout<<"name_RMC_root:  "<<name_RMC_root<<endl;
   cout<<"name_Hk_txt:  "  <<name_Hk_txt<<endl;
   
   
@@ -170,7 +211,7 @@ void DataBaseLocateV3(
   
   
   
-  
+  cout<<"Located the path_dir.h @ "<<path_dirMacros<<endl;
   /* Locate Dir Path data HeadFile */
   ofstream outHfile(Form("%spath_dir.h",path_dirMacros));
   outHfile<<"#include <iostream>"<<endl;
@@ -227,7 +268,12 @@ void DataBaseLocateV3(
   outHfile<<"  /*  Name marker of raw datas  */"<<endl;
   outHfile<<Form("  const char %-16.16s[50] = \"%s\";","name_Raw_txt"   ,name_Raw_txt  )<<endl;
   outHfile<<Form("  const char %-16.16s[50] = \"%s\";","name_Raw_root"  ,name_Raw_root )<<endl;
+  outHfile<<Form("  const char %-16.16s[50] = \"%s\";","name_RMC_root"  ,name_RMC_root )<<endl;
   outHfile<<Form("  const char %-16.16s[50] = \"%s\";","name_Hk_txt"    ,name_Hk_txt    )<<endl;
+  cout<<Form("  const char %-16.16s[50] = \"%s\";","name_Raw_txt"   ,name_Raw_txt  )<<endl;
+  cout<<Form("  const char %-16.16s[50] = \"%s\";","name_Raw_root"  ,name_Raw_root )<<endl;
+  cout<<Form("  const char %-16.16s[50] = \"%s\";","name_RMC_root"  ,name_RMC_root )<<endl;
+  cout<<Form("  const char %-16.16s[50] = \"%s\";","name_Hk_txt"    ,name_Hk_txt    )<<endl;
   
   outHfile<<"};"<<endl;
   outHfile.close();
@@ -280,6 +326,7 @@ void DataBaseLocateV3(
     cout<<"  /*  Name marker of raw datas  */"<<endl;
     cout<<Form("  c.char*    %-16.16s = \"%s","name_Raw_txt"  ,name_Raw_txt  )<<endl;
     cout<<Form("  c.char*    %-16.16s = \"%s","name_Raw_root" ,name_Raw_root )<<endl;
+    cout<<Form("  c.char*    %-16.16s = \"%s","name_RMC_root" ,name_RMC_root )<<endl;
     cout<<Form("  c.char*    %-16.16s = \"%s","name_Hk_txt"   ,name_Hk_txt    )<<endl;
     cout<<"Finish to establish the Data base!!"<<endl;
     

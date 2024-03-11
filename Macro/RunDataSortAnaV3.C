@@ -617,7 +617,7 @@ void RunFileNumCheck( int &iRunStart, int &iRunFinal ){
       iRunFinal--;
       break;
     } 
-    if(iRunStart>50) {
+    if(iRunStart>MaxRun) {
       cout<<"Not find 1st RunFile.in "<<DirRunData<<endl;
       throw;
     }
@@ -674,13 +674,17 @@ void RunDataSortAna(){
   cout<<"Please use the last version: RunDataSortAnaV2"<<endl;
 }
 
-void RunDataSortAnaV3(){
+void RunDataSortAnaV3(const char opt = 'N'){
   int iRunStart = 0, iRunFinal = 0;
   RunFileNumCheck(iRunStart,iRunFinal);
   
   char  infileName[200], outfileName[200];
   CRunData runData = CRunData();
   
+  if(opt=='R'||opt=='r'){
+    system(Form("rm %s*Till*",DirRunTillfile));
+    cout<<"Warning: Remove all run till files !!!!!!"<<endl;
+  }
   int lastTillFileIndex = TillFileCheck(DirRunTillfile, iRunStart, iRunFinal);
   // cout<<524<<endl;
   cout<<"Finish the checking of till file, final data is run"<<lastTillFileIndex<<endl;

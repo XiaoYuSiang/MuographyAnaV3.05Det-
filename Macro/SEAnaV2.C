@@ -311,12 +311,12 @@ void SEAnaV2(const int indexGap=28) {
     g4->Draw("barsame");
     g3->Draw("barsame");
   }
-  TLegend *Lg = new TLegend(0.66,0.85,0.98,0.95);
+  TLegend *Lg = new TLegend(0.34,0.85,0.98,0.95);
   Lg->SetFillColor(0);
   Lg->SetNColumns(2);
   // Lg->SetFillColorAlpha (0, 0.00);
-  Lg->AddEntry(g4,Form("Case A:  %4d",nhERT4),"F");
-  Lg->AddEntry(g3,Form("Case B:  %4d",nhERT3),"F");
+  Lg->AddEntry(g4,Form("Case A%s:  %4d",SE_CaseA,nhERT4),"F");
+  Lg->AddEntry(g3,Form("Case B%s:  %4d",SE_CaseB,nhERT3),"F");
   Lg->Draw();
  // hMod->GetYaxis()->SetRangeUser(0,;
   c1->Print(Form("%sSEPWidth_%dday.pdf",DirRes_LFirTra,bindays));
@@ -381,12 +381,13 @@ void SEAnaV2(const int indexGap=28) {
   report<<"YYYYMMDD\tUT\tTZone\tNumCaseA\tNumCaseB"<<endl;
   report<<"--------------------------------------------------"<<endl;
   for(int i=0;i<ndivise;i++){
-    TLegend *Lgp = new TLegend(0.66,0.85,0.98,0.95);
+    TLegend *Lgp = new TLegend(0.34,0.85,0.98,0.95);
     Lgp->SetNColumns(2);
     int g4b = g4->GetBinContent(i+1), g3b = g3->GetBinContent(i+1);
     cout<<"g4b:g3b:   "<<g4b<<"\t"<<g3b<<endl;
-    Lgp->AddEntry(g4,Form("Case A:  %4d",g4b),"F");
-    Lgp->AddEntry(g3,Form("Case B:  %4d",g3b),"F");
+    
+    Lgp->AddEntry(g4,Form("Case A%s:  %4d",SE_CaseA,g4b),"F");
+    Lgp->AddEntry(g3,Form("Case B%s:  %4d",SE_CaseB,g3b),"F");
     Lgp->Draw();
     
     int timeBinDay = FirDaySec + 86400*i;

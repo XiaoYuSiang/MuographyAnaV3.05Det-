@@ -6,18 +6,22 @@
 #include <algorithm>
 
 #include "/data4/YuSiang/personalLib/FileIO/FileIO.h"
-TString MacrosNames[50]={
+TString MacrosNames[100]={
   "AnaVariable.h",
-  "CaConvertor.C",
-  "CombinationFac.C",
+  "CaConvertorV2.C",
+  // "CombinationFacV2.C",
+  "CombinationFacV3.C",
   "DataBaseLocate.C",
-  "DataNameAnaV2.C",
+  "DataNameAnaV3.C",
   "dataSpaceDirShow.C",
   "DayEAnaV4.C",
-  "DSLAnaV4.C",
-  "EventAnaV2.C",
-  "FitTrackResAna.C",
-  "G4CaConvertorV2.C",
+  "DSLAnaV5.C",
+  "EventAnaV3.C",
+  "EventAnaV4.C",
+  "EventAnaV5.C",
+  // "FitTrackResAnaV2.C",
+  "FitTrackResAnaV3.C",
+  "G4CaConvertorV4.C",
   "GA4x4_2.csv",
   "GA8x8_2.csv",
   "GobelFormats.h",
@@ -26,8 +30,13 @@ TString MacrosNames[50]={
   "LoadODectTable.h",
   "HKPosAna.C",
   "HKProAna.C",
-  "MuonElectronID.C",
+  "MuonElectronIDAna.C",
+  "MuonElectronIDAnaV2.C",
+  "MuonElectronIDAnaV3.C",
+  "MuonElectronIDSub.C",
+  "MuonElectronIDSubV2.C",
   "ODectImfAna.C",
+  "ODectImfAnaV2.C",
   "PwidthAna.C",
   "PWidthPeakAna.C",
   "R4VTAna.C",
@@ -35,11 +44,24 @@ TString MacrosNames[50]={
   "RVHKAna.C",
   "RVTAna.C",
   "RVTCAna.C",
-  "SEAnaV2.C",
+  // "SEAnaV2.C",
+  // "SEAnaV3.C",
+  "SEAnaV4.C",
   "SeqSkipAna.C",
   "STRealEvAna.C",
-  "TrackAna.C",
-  "VerticalTracksAna.C",
+  "TrackAnaV2.C",
+  "TrackAnaV3.C",
+  "TrackAnaV4.C",
+  "TrackAnaV5.C",
+  "TrackAnaV6.C",
+  "TrackAnaSub.C",
+  "TrackAnaSubV2.C",
+  "TrackAnaSubV3.C",
+  "TrackAnaSubV5.C",
+  "TrackInFoAna.C",
+  "VerticalTracksAnaV3.C",
+  "VerticalTracksAnaV4.C",
+  "VerticalTracksSub.C",
 };
 
 void RenewMacros(const TString TargetPath="./Macro/Operate/", const TString MacrosPath="./Macro/" ){
@@ -92,6 +114,12 @@ void RenewMacrosV2(const char *vertmp, const TString TargetPath="./Macro/Operate
     // while (getline(ifsDetSet, linetmp)) ofsAnaVabh << linetmp << '\n';
     // ifsDetSet.close(); 
     cout<<"detVer is: "<<vertmp<<endl;
+  }else if(strcmp(vertmp,"V2.03")==0){
+    AppendHeadFile("./AnaVariable.h","./DetInforSet/DetSetV0203.h", Form("%sAnaVariable.h",MacrosPath.Data()));
+    // ifstream ifsDetSet("./DetInforSet/DetSetV0200.dat");
+    // while (getline(ifsDetSet, linetmp)) ofsAnaVabh << linetmp << '\n';
+    // ifsDetSet.close(); 
+    cout<<"detVer is: "<<vertmp<<endl;
   }else if(strcmp(vertmp,"V3.00")==0){
     AppendHeadFile("./AnaVariable.h","./DetInforSet/DetSetV0300.h", Form("%sAnaVariable.h",MacrosPath.Data()));
     // ifstream ifsDetSet("./DetInforSet/DetSetV0200.dat");
@@ -100,6 +128,12 @@ void RenewMacrosV2(const char *vertmp, const TString TargetPath="./Macro/Operate
     cout<<"detVer is: "<<vertmp<<endl;
   }else if(strcmp(vertmp,"V3.05")==0){
     AppendHeadFile("./AnaVariable.h","./DetInforSet/DetSetV0305.h", Form("%sAnaVariable.h",MacrosPath.Data()));
+    // ifstream ifsDetSet("./DetInforSet/DetSetV0200.dat");
+    // while (getline(ifsDetSet, linetmp)) ofsAnaVabh << linetmp << '\n';
+    // ifsDetSet.close(); 
+    cout<<"detVer is: "<<vertmp<<endl;
+  }else if(strcmp(vertmp,"V3.06")==0){
+    AppendHeadFile("./AnaVariable.h","./DetInforSet/DetSetV0306.h", Form("%sAnaVariable.h",MacrosPath.Data()));
     // ifstream ifsDetSet("./DetInforSet/DetSetV0200.dat");
     // while (getline(ifsDetSet, linetmp)) ofsAnaVabh << linetmp << '\n';
     // ifsDetSet.close(); 
@@ -114,7 +148,7 @@ void RenewMacrosV2(const char *vertmp, const TString TargetPath="./Macro/Operate
     cout<<"Error: The temp version set of vertmp: "<<vertmp<<endl;
     cout<<"Isn't record in data base"<<endl;
     cout<<"Please enter the true verion name:\n";
-    cout<<"Hint: V2.00,V3.00,V3.05,User"<<endl;
+    cout<<"Hint: V2.00,V2.03,V3.00,V3.05,V3.06,User"<<endl;
     throw;
   }
   // ofsAnaVabh<<"\n}"; 

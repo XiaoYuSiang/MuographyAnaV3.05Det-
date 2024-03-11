@@ -132,7 +132,6 @@ void DayEAnaV4(const int SPD = 24) {
   for(int iev = 0; iev <evs; iev++){
     data.GetEntry(iev);
     if(iev%1000 == 0) cout<<Form("\r%.5f%%\t%d",(iev*100.)/(1.*evs))<<flush;
-
     t1        = data.GetLong64("unixtime");
     board     = data.GetPtrInt("board");
     channel   = data.GetPtrInt("channel");
@@ -140,6 +139,7 @@ void DayEAnaV4(const int SPD = 24) {
     //XBins     = (t1-FirDaySec)/600.;
     // if(iev%10000==0) cout<<XBins<<endl;
     for(int iHit = 0; iHit<nHits ; iHit++){
+      // if(17<=board[iHit]) continue;
       htmp->Fill(t1,BDCheck(board[iHit]));
       htmpc->Fill(t1,(BDCheck(board[iHit]))*NumCh+channel[iHit]);
     }

@@ -13,6 +13,8 @@
   const int    NumChLys    = BinNumOnCha/NumLY;
   //MTB ID of a board at position index(ix,iy,iz): BD[ix+NumBY*iy+NumBX*NumBY*iz]
   const int    BD[NumBD]   = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+  //MTB ID of a board at position index(ix,iy,iz): BD[ix+NumBY*iy+NumBX*NumBY*iz]
+  const int    BDLay[NumBD]= {0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3};
   //pwidth scale factor of MTB board because the Magnification of DAQ at index x: BDPwWei[x]
   const int    BDPwWei[NumBD] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
   //(MTB id)%NumLY at board position index(BiX,BiY): LayArr[BiX][BiY]

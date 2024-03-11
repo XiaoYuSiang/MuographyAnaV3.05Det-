@@ -504,6 +504,7 @@ void TillRunODInf(){
     Scin_fileO->Close();
     Scin_fileR->Close();
     rotfile->Close();
+    // throw;
   }
   
   
@@ -523,7 +524,7 @@ map<int, EffciencyData> LoadChEffData(const char* EffdataName){
   return MEffdata;
 }
 
-void EffTillRunODInf(const char* EffdataName=""){
+void EffTillRunODInf(const char* EffdataName="",const char opt = 'N'){
 
   map<int, EffciencyData> MEffdata = LoadChEffData(EffdataName);
 
@@ -534,7 +535,7 @@ void EffTillRunODInf(const char* EffdataName=""){
   int iRunStart = 0, iRunFinal = 0;
   char infileNamerot[150], outfileNamerot[150];
   sprintf(infileNamerot,"ODetCh%s_Till_Run",version);
-
+  
   FindAllTillFile(DirIMFdat, version, iRunStart, iRunFinal,infileNamerot);
 
   sprintf(outfileNamerot,"EDetCh%s_Till_Run",version);
@@ -542,7 +543,7 @@ void EffTillRunODInf(const char* EffdataName=""){
   FindStartProduct(DirIMFdat, version, iRunStart,outfileNamerot);
 
   char infileName[150];
-  
+  // if(opt=='R') iRunStart = 0;
   for(int iR = iRunStart ; iR < iRunFinal ; iR++){
 
     char Path_file_O[150];

@@ -8,7 +8,8 @@ public:
   char *path_MC, *name_MC;
   char *path_Raw,*path_Hk, *path_Rot, *name_Raw, *name_Hk  ;
   
-  bool ReRunRunMode    , testMode        , normalizeMode   ;
+  bool ReRunRunMode    ;
+  bool testMode        , normalizeMode   , GammaCutMode    ;
   bool NegHiRatChMode  , lowstatisticMode, rootFileMode    ;
   bool SETightMode     , PointTextMode   , RotateSciMode   ;
   
@@ -29,7 +30,8 @@ public:
     CheckJSONGood(JSONFiletmp);
     SetJSONName(JSONFiletmp);
     if(!MCorNot)      SetDataDefault();
-    else if(MCorNot)  SetMotCDefault();
+    else              SetMotCDefault();
+    // cout<<"if !mcornot "<<!MCorNot<<endl;
     ImportJSON();
   }
   void CheckJSONGood(const char *JSONFiletmp){
@@ -68,6 +70,7 @@ public:
     SaveAttrJSON(JSONFileName,"ReRunRunMode"     ,ReRunRunMode     );
     SaveAttrJSON(JSONFileName,"testMode"         ,testMode         );
     SaveAttrJSON(JSONFileName,"normalizeMode"    ,normalizeMode    );
+    SaveAttrJSON(JSONFileName,"GammaCutMode"     ,GammaCutMode     );
     SaveAttrJSON(JSONFileName,"NegHiRatChMode"   ,NegHiRatChMode   );
     SaveAttrJSON(JSONFileName,"lowstatisticMode" ,lowstatisticMode );
     SaveAttrJSON(JSONFileName,"rootFileMode"     ,rootFileMode     );
@@ -105,7 +108,6 @@ public:
     SetJSONName(JSONFiletmp);
     ExportJSON();
   }
-
   void Show(){
     cout<<"comment1\t"         <<"------------PathSetting-----------"    <<endl;
     cout<<"path_Lib\t"         <<path_Lib         <<endl;
@@ -130,6 +132,7 @@ public:
     cout<<"ReRunRunMode\t"     <<ReRunRunMode     <<endl;
     cout<<"testMode\t"         <<testMode         <<endl;
     cout<<"normalizeMode\t"    <<normalizeMode    <<endl;
+    cout<<"GammaCutMode\t"     <<GammaCutMode     <<endl;
     cout<<"NegHiRatChMode\t"   <<NegHiRatChMode   <<endl;
     cout<<"lowstatisticMode\t" <<lowstatisticMode <<endl;
     cout<<"rootFileMode\t"     <<rootFileMode     <<endl;
@@ -165,7 +168,8 @@ private:
     path_MC        = Form("NULL");
     name_MC        = Form("NULL");
     
-    ReRunRunMode    = true;  testMode        = false; normalizeMode   = true;
+    ReRunRunMode    = true;
+    testMode        = false; normalizeMode   = true;  GammaCutMode    = false;
     NegHiRatChMode  = false; lowstatisticMode= true;  rootFileMode    = true;
     SETightMode     = false; PointTextMode   = true;  RotateSciMode   = false;
 
@@ -187,7 +191,8 @@ private:
     name_Raw       = Form("NULL");
     name_Hk        = Form("NULL");
     
-    ReRunRunMode    = true;  testMode        = false; normalizeMode   = true;
+    ReRunRunMode    = true;  
+    testMode        = false; normalizeMode   = true;  GammaCutMode    = false;
     NegHiRatChMode  = false; lowstatisticMode= false; rootFileMode    = true;
     SETightMode     = true;  PointTextMode   = false; RotateSciMode   = false;
 
@@ -211,25 +216,25 @@ private:
     
     path_MC        = FindJSONAttrS( JSONFileName, "path_MC"           ,'W');
     name_MC        = FindJSONAttrS( JSONFileName, "name_MC"           ,'W');
-    
     path_Raw       = FindJSONAttrS( JSONFileName, "path_Raw"          ,'W');
     path_Hk        = FindJSONAttrS( JSONFileName, "path_Hk"           ,'W');
     path_Rot       = FindJSONAttrS( JSONFileName, "path_Rot"          ,'W');
     name_Raw       = FindJSONAttrS( JSONFileName, "name_Raw"          ,'W');
     name_Hk        = FindJSONAttrS( JSONFileName, "name_Hk"           ,'W');
-    
     MCMode          = FindJSONAttrB( JSONFileName, "MCMode"           ,'W');
-    
+
     ReRunRunMode    = FindJSONAttrB( JSONFileName, "ReRunRunMode"     ,'W');
     testMode        = FindJSONAttrB( JSONFileName, "testMode"         ,'W');
     normalizeMode   = FindJSONAttrB( JSONFileName, "normalizeMode"    ,'W');
+    GammaCutMode    = FindJSONAttrB( JSONFileName, "GammaCutMode"     ,'W');
     NegHiRatChMode  = FindJSONAttrB( JSONFileName, "NegHiRatChMode"   ,'W');
     lowstatisticMode= FindJSONAttrB( JSONFileName, "lowstatisticMode" ,'W');
     rootFileMode    = FindJSONAttrB( JSONFileName, "rootFileMode"     ,'W');
     SETightMode     = FindJSONAttrB( JSONFileName, "SETightMode"      ,'W');
     PointTextMode   = FindJSONAttrB( JSONFileName, "PointTextMode"    ,'W');
-    RotateSciMode   = FindJSONAttrB( JSONFileName, "RotateSciMode"    ,'W');
 
+    RotateSciMode   = FindJSONAttrB( JSONFileName, "RotateSciMode"    ,'W');
+    
     SkipBlockStop   = FindJSONAttrB( JSONFileName, "SkipBlockStop"    ,'W');
 
     BlockEnv        = FindJSONAttrB( JSONFileName, "BlockEnv"         ,'W');
@@ -249,6 +254,7 @@ private:
     BlockFitPWAna   = FindJSONAttrB( JSONFileName, "BlockFitPWAna"    ,'W');
     BlockFinalSelect= FindJSONAttrB( JSONFileName, "BlockFinalSelect" ,'W');
     BlockRateVTime  = FindJSONAttrB( JSONFileName, "BlockRateVTime"   ,'W');
+    
   }
   
   

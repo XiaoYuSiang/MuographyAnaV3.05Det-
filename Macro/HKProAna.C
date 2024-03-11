@@ -124,7 +124,7 @@ void HKProAnaV2() {
       iss>>HKD.degX>>HKD.degY>>HKD.degZ;
       iss>>HKD.accX>>HKD.accY>>HKD.accZ;
       iss>>HKD.unixtime;
-      
+      HKD.Humidity = HKD.Humidity<0 ? HKD.Humidity+127:HKD.Humidity;
       if((tn==HKD.unixtime&&boan==HKD.boardID)||HKD.TempCen<1||tn==HKD.unixtime<TriggerUTLeast) continue;
       boan=HKD.boardID; tn=HKD.unixtime;
       int bdtmp = BDcheck(boan);
@@ -221,21 +221,23 @@ void HKProAnaV3() {
         if((HKD.unixtime-cnts[0])!=pcntOff) HKD.unixtime = cnts[0]+pcntOff;
       }
       
+      HKD.Humidity = HKD.Humidity<0 ? HKD.Humidity+127:HKD.Humidity;
+      
       if((tn==HKD.unixtime&&boan==HKD.boardID)||HKD.TempCen<1||tn==HKD.unixtime<TriggerUTLeast) continue;
       boan=HKD.boardID; tn=HKD.unixtime;
       int bdtmp = BDcheck(boan);
       HKD.dunixtime = Lut[bdtmp]==0 ? 60 : tn-Lut[bdtmp];
       Lut[bdtmp] = HKD.unixtime;
       if(HKD.dunixtime==0) continue;
-      if(Num_Hkterm<=21){
+      // if(Num_Hkterm<=21){
         HKD.HK_Tem_TxtOuput(outFT);
         HKD.HK_Hum_TxtOuput(outFH);
         HKD.HK_Deg_TxtOuput(outFD);
         HKD.HK_Acc_TxtOuput(outFA);
-      }else{
+      // }else{
         HKD.HK_Pre_TxtOuput(outFP);
         HKD.HK_Mag_TxtOuput(outFM);
-      }
+      // }
       tHK->Fill();
     }
     in.close();
